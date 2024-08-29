@@ -14,12 +14,8 @@ const config: QuartzConfig = {
     analytics: {
       provider: "plausible",
     },
-<<<<<<< HEAD
-    baseUrl: "kimfra.com",
-=======
     locale: "en-US",
-    baseUrl: "quartz.jzhao.xyz",
->>>>>>> 6715079a8908e8807291415eb3dee506574b5459
+    baseUrl: "kimfra.com",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "created",
     theme: {
