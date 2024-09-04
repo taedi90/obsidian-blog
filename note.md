@@ -9,3 +9,5 @@ brew install node@22
 npm i
 
 npx quartz build --serve
+
+npx quartz sync
