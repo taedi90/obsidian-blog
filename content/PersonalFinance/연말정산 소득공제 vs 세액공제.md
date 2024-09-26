@@ -1,13 +1,14 @@
 ---
 title: 소득공제 vs 세액공제
 date: 2024-09-24
-draft: true
+draft: false
 tags:
-banner:
-cssclasses:
-description:
-permalink:
-aliases:
+  - 연말정산
+banner: 
+cssclasses: 
+description: 
+permalink: 
+aliases: 
 completed:
 ---
 ## 소득공제 vs 세액공제
