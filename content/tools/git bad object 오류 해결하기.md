@@ -1,7 +1,7 @@
 ---
 title: git bad object 오류 해결하기
 date: 2023-07-21
-draft: true
+draft: false
 tags:
   - git
 banner: 
