@@ -1,5 +1,5 @@
 ---
-title: 소득공제 vs 세액공제
+title: 연말정산 소득공제 vs 세액공제
 date: 2024-09-24
 draft: false
 tags:
