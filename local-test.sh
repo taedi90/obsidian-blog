@@ -20,4 +20,4 @@ ln -s "${SOURCE_DIR_PATH}/" "${CONTENT_DIR_PATH}"
 echo sync
 cd "${HERE}"
 npm i
-npx quartz build --serve
+npx quartz build --serve --port 3000
