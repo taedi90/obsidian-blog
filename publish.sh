@@ -15,13 +15,10 @@ if [ -d "${CONTENT_DIR_PATH}" ]; then
     rm -rf "${CONTENT_DIR_PATH}"
 fi
 
-cd "${HERE}"
-git filter-branch --force --index-filter "git rm -r --cached --ignore-unmatch content/" --prune-empty --tag-name-filter cat -- --all
-git push origin --force
-
 rsync -avz "${SOURCE_DIR_PATH}/" "${CONTENT_DIR_PATH}"
 
 echo sync
+cd "${HERE}"
 npm i
 npx quartz sync
 
