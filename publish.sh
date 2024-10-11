@@ -19,6 +19,7 @@ rsync -avz "${SOURCE_DIR_PATH}/" "${CONTENT_DIR_PATH}"
 
 echo sync
 cd "${HERE}"
+# brew install node@22
 npm i
 npx quartz sync
 
