@@ -1,5 +1,5 @@
 ---
-title: 오프라인에서 npm 프로젝트 빌드
+title: "[Npm] 오프라인에서 프로젝트 빌드하기"
 date: 2023-02-09
 draft: false
 tags:
@@ -14,7 +14,7 @@ completed:
 ---
 ## 요약
 
-> [!important]  
+> [!Note]  
 > offline-mirror 를 활용한다!  
 
 ## 이슈

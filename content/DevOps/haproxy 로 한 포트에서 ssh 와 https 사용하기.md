@@ -1,9 +1,10 @@
 ---
-title: haproxy 로 한 포트에서 ssh 와 https 사용하기
+title: "[Haproxy] 한 포트로 ssh 와 https 동시에 사용하기"
 date: 2023-02-02
 draft: false
 tags:
   - network
+  - haproxy
 banner: 
 cssclasses: 
 description: 동일한 포트로 https 프로토콜과 ssh 프로토콜을 함께 사용하는 방법을 알아본다.

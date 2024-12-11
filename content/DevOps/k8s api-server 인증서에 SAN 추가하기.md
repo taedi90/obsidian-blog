@@ -1,5 +1,5 @@
 ---
-title: k8s api-server 인증서에 SAN 추가
+title: "[K8s] api-server 인증서에 SAN 추가"
 date: 2023-01-30
 draft: false
 tags:

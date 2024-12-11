@@ -1,5 +1,5 @@
 ---
-title: Galera Arbitrator 컨테이너 생성 & failover 테스트
+title: "[Galera Arbitrator] 컨테이너 생성 & failover 테스트"
 date: 2024-10-10
 draft: false
 tags:

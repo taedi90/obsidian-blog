@@ -4,6 +4,8 @@ date: 2022-11-28
 draft: false
 tags:
   - microk8s
+  - k8s
+  - linux
 banner: 
 cssclasses: 
 description: Ubuntu 22.04 에 microk8s 설치하기
@@ -44,8 +46,8 @@ $ sudo vim /etc/default/grub
 > cgroup_enable=memory cgroup_memory=1 systemd.unified_cgroup_hierarchy=0
 
 - 작성 완료 예시
-    
-    ```bash
+
+```bash
     $ sudo cat /etc/default/grub
     # If you change this file, run 'update-grub' afterwards to update
     # /boot/grub/grub.cfg.

@@ -1,5 +1,5 @@
 ---
-title: 외부 애플리케이션 ingress 와 service 연결
+title: "[K8s] 외부 애플리케이션 ingress 와 service 연결"
 date: 2023-01-30
 draft: false
 tags:

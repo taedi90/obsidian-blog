@@ -1,5 +1,5 @@
 ---
-title: ES 자동 스냅샷 설정
+title: "[Elasticsearch] 자동 스냅샷 설정"
 date: 2023-02-08
 draft: false
 tags:

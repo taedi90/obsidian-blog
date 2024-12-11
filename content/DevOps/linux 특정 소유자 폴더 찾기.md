@@ -1,8 +1,9 @@
 ---
-title: linux 특정 소유자 폴더 찾기
+title: "[Linux] 특정 소유자 폴더 찾기"
 date: 2022-12-19
 draft: false
-tags: 
+tags:
+  - linux
 banner: 
 cssclasses: 
 description: find 명령어를 사용해 특정 user 와 group  소유의 파일을 찾는 방법을 알아본다.

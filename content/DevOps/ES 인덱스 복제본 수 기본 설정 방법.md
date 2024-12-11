@@ -1,5 +1,5 @@
 ---
-title: 인덱스 복제본 수 기본 설정
+title: "[Elasticsearch] 인덱스 복제본 수 기본 설정"
 date: 2023-02-09
 draft: false
 tags:

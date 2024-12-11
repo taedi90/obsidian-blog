@@ -1,5 +1,5 @@
 ---
-title: git 여러 리모트에 한번에 push 하기
+title: "[Git] 여러 리모트에 한번에 push 하기"
 date: 2023-02-07
 draft: false
 tags:

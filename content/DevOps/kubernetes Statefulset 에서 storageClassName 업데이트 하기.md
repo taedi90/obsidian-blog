@@ -1,5 +1,5 @@
 ---
-title: k8s Statefulset storageClassName 업데이트
+title: "[K8s] Statefulset storageClassName 업데이트"
 date: 2023-01-30
 draft: false
 tags:

@@ -1,5 +1,5 @@
 ---
-title: k8s 데몬셋(daemonset) 파드 scale
+title: "[K8s] 데몬셋(daemonset) 파드 scale"
 date: 2023-01-30
 draft: false
 tags:

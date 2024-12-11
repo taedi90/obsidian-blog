@@ -1,5 +1,5 @@
 ---
-title: 오라클 클라우드 CentOS 8 세팅
+title: "[Oracle cloud] CentOS 8 세팅"
 date: 2021-12-01
 draft: false
 tags:

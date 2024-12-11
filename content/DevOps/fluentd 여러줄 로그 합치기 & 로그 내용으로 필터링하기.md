@@ -1,9 +1,10 @@
 ---
-title: "fluentd 로그\b병합 & 필터링"
+title: "[Fluentd] 로그\b병합 & 필터링"
 date: 2023-02-02
 draft: false
 tags:
   - logging
+  - fluentd
 banner: 
 cssclasses: 
 description: fluentd로 도커 로그를 수집할 때 로그가 분리되는 현상을 수정하고 그 중 필요한 로그만 선별하는 방법을 알아본다.

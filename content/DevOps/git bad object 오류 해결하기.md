@@ -1,5 +1,5 @@
 ---
-title: git bad object 오류 해결하기
+title: "[Git] bad object 오류 해결하기"
 date: 2023-07-21
 draft: false
 tags:

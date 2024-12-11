@@ -1,5 +1,5 @@
 ---
-title: MariaDB 데드락 로그 확인 방법
+title: "[MariaDB] 데드락 로그 확인 방법"
 date: 2024-09-27
 draft: false
 tags:

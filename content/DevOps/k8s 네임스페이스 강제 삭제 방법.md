@@ -1,8 +1,9 @@
 ---
-title: k8s 네임스페이스 강제 삭제
+title: "[K8s] 네임스페이스 강제 삭제"
 date: 2023-01-30
 draft: false
-tags: 
+tags:
+  - k8s
 banner: 
 cssclasses: 
 description: 쿠버네티스 네임스페이스가 Terminating 상태에서 삭제되지 않는 현상을 해결한다.

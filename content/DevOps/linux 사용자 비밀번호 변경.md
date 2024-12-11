@@ -1,8 +1,9 @@
 ---
-title: linux 사용자 비밀번호 변경
+title: "[Linux] 사용자 비밀번호 변경"
 date: 2022-11-28
 draft: false
-tags: 
+tags:
+  - linux
 banner: 
 cssclasses: 
 description: 리눅스 사용자 비밀번호 변경 방법을 알아본다.
