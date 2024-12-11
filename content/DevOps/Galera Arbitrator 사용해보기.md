@@ -15,14 +15,14 @@ completed:
 
 ## ⚙️ 환경
 - mariadb 10.8.3 (bitnami/mariadb-galera:10.8.3-debian-11-r0)
-	- galera 26.22
+- galera 26.22
 
 ## 💬 이슈
 Galera Cluster 가 Failover 를 처리하기 위해서는 최소 3개의 노드가 필요하다. 하지만 불가피하게 2개 노드에서 Galera Cluster 를 이용해야하는 상황이 생겨 Galera Arbitrator 를 활용하는 방법을 알아보았다.  
 Galera Cluster 는 클러스터 분산이 이뤄지면 Quorum 알고리즘을 이용해 Primary 클러스터와 non-Primary 클러스터 섹션을 구분하는데 Quorum 알고리즘에 일반 노드가 아닌 Galera Arbitrator(이하 garbd) 노드도 참여가 가능하다고 한다.  
 
 ## 🧗 해결
-### garbd 컨테이너 이미지 생성
+### 1. garbd 컨테이너 이미지 생성
 garbd 공식 컨테이너 이미지는 없기 때문에 생성이 필요했고, 기존 mariadb 컨테이너와 별도로 준비해도 되겠지만 굳이 분리할 필요가 없다면 1개 이미지로 통합시키고 command 로 일반 galera node 와 garbd 노드로 분리하는 방법을 택했다.  
 현재 클러스터 버전과 일치하는 garbd 를 설치하기 위해 [mariadb 공식 문서](https://mariadb.com/kb/en/meta/galera-versions/)를 확인해봤지만 정확하게 일치하는 버전은 없었으나 갈레라 major 버전이 26인 경우 galera-arbitrator-4 를 설치하는 것이 맞을 것으로 판단되어 아래와 같이 Dockerfile 내용을 추가했다.  
 
@@ -41,7 +41,7 @@ RUN apt install -y --no-install-recommends software-properties-common &&\
 2024-10-10 13:01:02.729  INFO: garbd: Terminated.
 > 
 
-### garbd 옵션 설정
+### 2. garbd 옵션 설정
 [갈레라 공식문서](https://galeracluster.com/library/documentation/arbitrator.html)를 확인해보면 옵션을 직접 command 에 추가해주는 방법과 config 파일을 이용하는 방법이 있었다.  
 
 #### command 방식
@@ -73,7 +73,7 @@ log=/var/log/mysql/garbd.log
 options="base_dir=/bitnami/mariadb"
 ```
 
-### failover 확인
+### 3. failover 확인
 garbd 노드가 정상적으로 실행되면 wsrep_cluster_size 이 1 증가하고 정상적으로 클러스터에 join 한 것으로 보인다. 하지만 이정도로는 garbd 가 정상적으로 동작하는지 판단하기가 난감하다. 그렇기때문에 인위적으로 장애를 발생시키고 garbd 노드 유무에 따른 failover 처리 여부를 파악했다.   
 
 #### 테스트 방식
