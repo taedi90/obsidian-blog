@@ -1,7 +1,7 @@
 ---
 title: "[Maven] 빌드 속도 최적화"
 date: 2024-12-12
-draft: true
+draft: false
 tags:
   - maven
 banner: 
