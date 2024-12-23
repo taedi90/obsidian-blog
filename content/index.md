@@ -5,7 +5,7 @@ tags:
 ---
 [[프로필|개발자]]로 일하고 아주 가끔 [[재테크]]에 신경쓰는 사람의 디지털 가든(~~이라 쓰고 낙서장이라 읽는~~)입니다. 최근까지 노션을 사용하다 [[메모앱 유목민의 옵시디언 정착기|옵시디언으로 이주]]하는 바람에 아직 옵시디언의 아이덴티티를 따라가지 못하고 있는 중입니다.😅
 
-## 카테고리
+## 📋 카테고리
 
 | Category                |                                                     | Description                      |
 | ----------------------- | --------------------------------------------------- | -------------------------------- |
@@ -16,9 +16,9 @@ tags:
 |                         | [OS](DevOps/OS/OS)                                  | 운영체제                             |
 |                         | [ETC](DevOps/ETC/ETC)                               | 기타 미분류                           |
 | [Life](Life/Life)       |                                                     |                                  |
-|                         | [Investment](Life/Investment/investment)            | 재테크                              |
+|                         | [Investment](Life/Investment/Investment)            | 재테크                              |
 
-## 최근 게시물
+## 📝 최근 게시물
 <!-- QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS Name, regexreplace(file.folder, ".*\/([^\/]+)$", "$1") AS Category, dateformat(date, "yyyy-MM-dd") AS Date FROM "Publish/DevOps" WHERE draft = false SORT date DESC LIMIT 20 -->
 <!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS Name, regexreplace(file.folder, ".*\/([^\/]+)$", "$1") AS Category, dateformat(date, "yyyy-MM-dd") AS Date FROM "Publish/DevOps" WHERE draft = false SORT date DESC LIMIT 20 -->
 
