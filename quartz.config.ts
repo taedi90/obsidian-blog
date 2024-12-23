@@ -8,7 +8,7 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "📝 생각 정리",
+    pageTitle: "🐟 Small pond",
     enableSPA: true,
     enablePopovers: true,
     analytics: {
