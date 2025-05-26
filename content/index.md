@@ -1,5 +1,5 @@
 ---
-title: 🖐🏻 반갑습니다!
+title: 반갑습니다🙇
 draft: false
 tags:
 ---
@@ -31,8 +31,8 @@ tags:
 | [[MariaDB 데드락 로그 확인\|MariaDB 데드락 로그 확인 방법]]                                                     | MariaDB       | 2024-09-27 |
 | [[git bad object 오류 해결하기\|Git bad object 오류 해결하기]]                                                  | ETC           | 2023-07-21 |
 | [[linux 서버에 열려있는 포트 확인하기\|Linux 서버에 열려있는 포트 확인하기]]                                                   | OS            | 2023-07-19 |
-| [[Npm 오프라인 환경에서 프로젝트를 빌드하는 방법\|Npm 오프라인에서 프로젝트 빌드하기]]                                               | ETC           | 2023-02-09 |
 | [[ES 인덱스 복제본 수 기본 설정 방법\|Elasticsearch 인덱스 복제본 수 기본 설정]]                                  | Elasticsearch | 2023-02-09 |
+| [[Npm 오프라인 환경에서 프로젝트를 빌드하는 방법\|Npm 오프라인에서 프로젝트 빌드하기]]                                               | ETC           | 2023-02-09 |
 | [[K8s CUDAFailed to initialize NVML- Unknown Error 오류\|CUDAFailed to initialize NVML 오류]]     | Container     | 2023-02-08 |
 | [[ES 자동 스냅샷 설정\|Elasticsearch 자동 스냅샷 설정]]                                                 | Elasticsearch | 2023-02-08 |
 | [[쿠버네티스\|쿠버네티스란?]]                                                                            | Container     | 2023-02-07 |
