@@ -1,387 +1,171 @@
 ---
-title: HTML
-date: 2024-09-05
-draft: true
+title: HTML 기본 구조
+date: 2022-09-05
+draft: false
 tags:
-banner:
-cssclasses:
-description:
-permalink:
-aliases:
-completed:
+  - html
+  - web
+  - frontend
+  - semantic-web
+banner: 
+cssclasses: 
+description: HTML의 기본 문서 구조, 블록과 인라인 요소의 차이, 그리고 웹 접근성과 SEO를 위해 중요한 시맨틱 태그의 개념과 사용법을 정리한다.
+permalink: 
+aliases: 
+completed: true
+type:
+  - note
 ---
-HTML 기본
 
-- 프로그래밍 언어가 아닌 마크업 언어로 웹페이지를 표현하기 위한 규약(HyperText Markup Language)
-- 어느 정도의 문법적 오류는 신경쓰지 않기 때문에, 웹페이지가 정상적으로 출력되더라도 오류가 있을 수 있음
-- 약속된 표기법을 태그(tag)라고 부르며 <와>를 이용해 구분하며 소문자를 권장
-- 태그는 속성과 함께 사용할 수 있음
-- tag + content = element
+## 1. 개요
 
-## 기본 형태
+<b>HTML(HyperText Markup Language)</b>은 웹 페이지의 콘텐츠와 구조를 정의하기 위한 <b>마크업 언어</b>다. 프로그래밍 언어처럼 복잡한 로직을 수행하는 것이 아니라, <b>태그(Tag)</b>라는 약속된 표기법을 사용하여 텍스트, 이미지, 비디오 등의 콘텐츠를 감싸고 그 의미와 구조를 부여하는 역할을 한다.
 
-```HTML
-<!DOCTYPE html> <!-- 문서 유형 지정 선언문 -->
-<html lang="ko"> <!-- 웹 문서 시작 태그, 문서에 사용될 언어 지정(검색 or 화면낭독기) -->
-<head> <!-- 브라우저에 정보를 주는 태그 -->
-    <meta charset="UTF-8"> <!-- 문자 세트 지정 -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- 인터넷 익스플로러 브라우저 고려 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 모바일 기기 고려 -->
-    
-    <meta name="keywords" content="문서의 키워드1, 키워드2"> <!-- 검색엔진을 위한 부분 -->
-    <meta name="description" content="해당 문서의 설명">
-    <meta name="author" content="문서의 소유자 또는 저자">
+브라우저는 HTML 코드를 해석하여 사용자에게 시각적인 웹 페이지로 보여준다. 흥미로운 점은 HTML이 문법적으로 다소 관대하여 약간의 오류가 있더라도 브라우저가 최대한 페이지를 렌더링하려고 노력한다는 것이다. 하지만 이는 잠재적인 문제를 숨길 수 있으므로, 웹 표준에 맞는 정확한 마크업을 작성하는 습관이 매우 중요하다고 보았다.
 
-    <!-- CSS 문서 참조 -->
-    <link rel="stylesheet" href="경로/스타일시트.css">
+이 문서는 HTML의 가장 기본적인 구조부터 시작하여, 웹 페이지의 레이아웃을 구성하는 방법, 그리고 검색 엔진 최적화(SEO)와 웹 접근성에 필수적인 <b>시맨틱 웹(Semantic Web)</b>의 개념까지 핵심적인 내용을 정리하는 것을 목표로 한다.
 
-    <!-- 파비콘, rel 속성은 아래 중 택일(우선순위 높은순) -->
-    <!-- shortcut icon, icon, default icon, apple-touch-icon, apple-touch-icon-precomposed -->
-    <link rel="shortcut icon" href="경로/파비콘.ico" /> 
+## 2. HTML 문서의 기본 구조
 
-    <title>Document</title> <!-- 타이틀 -->
+모든 HTML 문서는 아래와 같은 기본적인 구조를 가진다. 각 태그는 웹 브라우저와 검색 엔진에게 문서의 유형, 언어, 문자 인코딩 방식 등 중요한 정보를 전달한다.
 
+```html
+<!DOCTYPE html> <!-- 이 문서가 HTML5 표준에 따라 작성되었음을 선언 -->
+<html lang="ko"> <!-- HTML 문서의 시작과 끝을 나타내며, 주 사용 언어를 명시 -->
+<head> <!-- 브라우저에게 필요한 정보(메타데이터)를 담는 영역 -->
+    <meta charset="UTF-8"> <!-- 문자 인코딩 방식을 UTF-8로 지정 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 모바일 기기에서 화면 배율을 설정 -->
+    <meta name="description" content="이 페이지에 대한 간략한 설명"> <!-- 검색 엔진을 위한 설명 -->
+    <link rel="stylesheet" href="style.css"> <!-- 외부 CSS 파일 연결 -->
+    <link rel="shortcut icon" href="favicon.ico"> <!-- 파비콘(favicon) 설정 -->
+    <title>문서 제목</title> <!-- 브라우저 탭에 표시될 제목 -->
 </head>
-<body> <!-- 실제 브라우저에 표시될 내용 -->
-    hello world!
+<body> <!-- 사용자에게 실제로 보여질 모든 콘텐츠를 담는 영역 -->
+    <h1>안녕하세요!</h1>
+    <p>이곳에 웹 페이지의 내용이 들어갑니다.</p>
 </body>
-</html> <!-- 웹 문서 종료 태그 -->
+</html>
 ```
 
----
+## 3. 블록(Block)과 인라인(Inline) 요소
 
-  
+HTML 요소는 크게 <b>블록 레벨 요소</b>와 <b>인라인 레벨 요소</b> 두 가지로 나뉜다. 이 둘의 가장 큰 차이는 화면에 표시될 때 차지하는 공간의 방식이다.
 
-  
+-   <b>블록 레벨 요소(Block-level elements)</b>
+    -   항상 새로운 줄에서 시작하며, 사용 가능한 가로 너비 전체를 차지한다.
+    -   `<div>`, `<p>`, `<h1>`~`<h6>`, `<ul>`, `<li>`, `<header>`, `<footer>` 등이 해당된다.
 
-# 학습방법
+-   <b>인라인 레벨 요소(Inline-level elements)</b>
+    -   새로운 줄에서 시작하지 않으며, 자신의 콘텐츠만큼의 너비만 차지한다.
+    -   문장이나 단어 등 작은 부분에 스타일을 적용할 때 주로 사용된다.
+    -   `<span>`, `<a>`, `<img>`, `<strong>`, `<em>` 등이 해당된다.
 
-- 통계에 의해 자주 사용하는 태그위주로 공부할 것
-    
-    > [!info] World's longest standing rank tracking tool - Advanced Web Ranking  
-    > Advanced Web Ranking provides fresh daily, weekly or on demand geo-located rankings.  
-    > [https://www.advancedwebranking.com/](https://www.advancedwebranking.com/)  
-    
+> [!IMPORTANT]
+> 인라인 요소는 내부에 블록 레벨 요소를 포함할 수 없다. 예를 들어, `<a>` 태그 안에 `<div>` 태그를 넣는 것은 웹 표준에 어긋난다.
 
-  
+## 4. 시맨틱 웹(Semantic Web)과 레이아웃
 
-- google it, 모든 내용을 한번에 습득하기 보다 개괄적인 내용을 습득하고 추후에 검색을 활용할 것
+과거에는 웹 페이지의 레이아웃을 `<div>` 태그만으로 구성하는 경우가 많았다. 하지만 이는 코드의 가독성을 떨어뜨리고, 검색 엔진이나 스크린 리더가 페이지의 구조를 이해하기 어렵게 만드는 문제가 있었다.
 
-  
+<b>시맨틱 HTML(Semantic HTML)</b>은 태그 자체가 자신의 콘텐츠가 어떤 의미를 가지는지 명확하게 설명해주는 것을 말한다. 예를 들어, `<div>` 대신 `<header>`, `<nav>`, `<main>`, `<footer>` 와 같은 시맨틱 태그를 사용하면, 브라우저와 개발자 모두가 해당 영역의 역할을 쉽게 파악할 수 있다.
 
-  
+-   <b>시맨틱 태그를 사용한 레이아웃 예시</b>
+    ```html
+    <header> <!-- 페이지 상단, 로고, 제목 등이 위치 -->
+        <h1>My Website</h1>
+    </header>
+    <nav> <!-- 다른 페이지로 이동하는 내비게이션 링크 -->
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+    </nav>
+    <main> <!-- 페이지의 핵심적인 주요 콘텐츠 -->
+        <section>
+            <h2>Section Title</h2>
+            <p>This is the main content.</p>
+        </section>
+    </main>
+    <footer> <!-- 페이지 하단, 저작권, 연락처 정보 등이 위치 -->
+        <p>&copy; 2024 My Website</p>
+    </footer>
+    ```
 
-# 레이아웃
+> [!NOTE]
+> `<table>` 태그는 데이터를 표 형태로 표현하기 위한 시맨틱 태그다. 과거에는 레이아웃을 잡기 위해 사용되기도 했지만, 이는 태그의 본래 의미에 맞지 않는 사용법이므로 지양해야 한다.
 
-- HTML (semantic) 요소, div를 활용한 방법이 있음
-- table 은 데이터를 위한 태그로 레이아웃 용도로는 적합하지 않음
+## 5. 주요 태그(Tag) 정리
 
-  
+자주 사용되는 핵심 태그들을 기능별로 정리했다.
 
-## semantic 요소 활용
+### 5-1. 텍스트 관련 태그
 
-```HTML
-<header><h2>Header 영역</h2></header>
-
-<nav><h2>Nav 영역</h2></nav>
-
-<section><p>Section 영역</p></section>
-
-<footer><h2>Footer 영역</h2></footer>
+```html
+<h1>가장 큰 제목</h1> <!-- h1부터 h6까지 있으며, 숫자가 클수록 글자 크기가 작아짐 -->
+<p>이것은 하나의 문단(paragraph)입니다.</p>
+<br> <!-- 줄바꿈(line break) -->
+<hr> <!-- 주제 변경을 의미하는 수평선 -->
+<blockquote>다른 곳에서 인용한 내용 블록</blockquote>
+<ul><li>순서 없는 목록 (Unordered List)</li></ul>
+<ol><li>순서 있는 목록 (Ordered List)</li></ol>
+<strong>중요한 텍스트 (Bold)</strong>
+<em>강조하는 텍스트 (Italic)</em>
+<span>특별한 의미 없이 스타일 적용을 위해 묶는 인라인 컨테이너</span>
 ```
 
-![[/Untitled 6.png|Untitled 6.png]]
+### 5-2. 이미지와 하이퍼링크
 
-출처 : [http://tcpschool.com/html/html_space_layouts](http://tcpschool.com/html/html_space_layouts)
+```html
+<!-- 이미지 삽입. alt 속성은 이미지가 로드되지 않았을 때 표시될 대체 텍스트 -->
+<img src="image.jpg" alt="이미지 설명">
 
-![[스크린샷_2021-09-04_오전_10.37.44.png]]
+<!-- 다른 페이지나 외부 사이트로 연결하는 하이퍼링크 -->
+<!-- target="_blank"는 새 탭에서 링크를 열도록 함 -->
+<a href="https://taedi.net" target="_blank">내 사이트로 가기</a>
 
-출처 : [http://tcpschool.com/html/html_space_layouts](http://tcpschool.com/html/html_space_layouts)
-
-## div 태그 활용
-
-```HTML
-<div id="header"><h2>Header 영역</h2></div>
-
-<div id="nav"><h2>Nav 영역</h2></div>
-
-<div id="section"><p>Section 영역</p></div>
-
-<div id="footer"><h2>Footer 영역</h2></div>
+<!-- 페이지 내부의 특정 id를 가진 요소로 이동 (앵커) -->
+<a href="#section1">1번 섹션으로 이동</a>
 ```
 
-  
+### 5-3. 폼(Form) 관련 태그
 
-# Block level 과 Inline level
+사용자로부터 입력을 받기 위한 요소들이다. `name` 속성은 서버로 데이터를 전송할 때 키(key) 역할을 한다.
 
-- block level 은 항상 새로운 line에서 시작
-- block 요소 : div, form, ol, ul, table, h1~6, p, blockquote, header, footer 등
+```html
+<form action="/submit-data" method="post">
+    <!-- 사용자가 텍스트를 입력할 수 있는 필드 -->
+    <label for="username">이름:</label>
+    <input type="text" id="username" name="user_name">
 
-  
+    <!-- 여러 개 중 하나만 선택 가능한 라디오 버튼 -->
+    <input type="radio" id="html" name="fav_language" value="HTML">
+    <label for="html">HTML</label>
 
-- Inline level 은 새로운 line에서 시작하지 않음
-- inline 요소 : a, br, button, img, span 등  
-    note :  
-    _inline 요소는 block 요소를 담을 수 없음!_
+    <!-- 여러 개 선택 가능한 체크박스 -->
+    <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+    <label for="vehicle1">I have a bike</label>
 
-  
+    <!-- 여러 줄의 텍스트를 입력받는 영역 -->
+    <textarea name="message" rows="5"></textarea>
 
-  
-
-# 주요 Tags
-
-## 텍스트 관련
-
-```HTML
-<!-- Block level -->
-<h1>제목1</h1> <!-- h1 ~ h6 -->
-<p>단락</p>
-<br> <!-- 줄바꿈 -->
-<hr> <!-- 구분선 -->
-<blockquote>인용문</blockquote>
-<ol><li>목록 - ordered</li></ol>
-<ul><li>목록 - unordered</li></ul>
-
-<table>
-    <caption>수학 성적</caption> <!-- caption-side: bottom -->
-    <thead>
-        <tr>
-            <th>학반</th>
-            <th>이름</th>
-            <th>점수</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>1</td>
-            <td>김영득</td>
-            <td>90</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>이갑자</td>
-            <td>80</td>
-        </tr>
-    </tbody>
-    <tfoot>
-        <tr>
-            <th colspan="2">평균</th> <!-- rowspan -->
-            <th>85</th>
-        </tr>
-    </tfoot>
-</table>
-<!-- Inline level -->
-<strong>bold체 - 낭독기 강조</strong>
-<b>bold체 - 낭독기 강조 안함</b>
-<em>기울임꼴 - emphasis, 강조</em>
-<i>기울임꼴 - italic, 관용구</i>
-<q>인용 - 따옴표로 구분</q>
-<mark>형광펜</mark>
-<span>영역묶기 - 스타일 적용에 활용</span>
+    <!-- 폼 데이터를 서버로 전송하는 버튼 -->
+    <button type="submit">제출</button>
+</form>
 ```
 
-## 이미지 & 하이퍼링크
+## 6. Emmet 활용하기
 
-```Bash
-<figure>
-    <img src="../상위경로이미지.svg" alt="엑박시 설명">
-    <figcaption>이미지 설명</figcaption>
-</figure>
+Emmet은 HTML과 CSS 코드를 매우 빠르고 효율적으로 작성할 수 있도록 도와주는 플러그인이다. 대부분의 최신 코드 에디터에 내장되어 있으며, 간단한 축약 문법을 통해 복잡한 HTML 구조를 한번에 생성할 수 있다.
 
+-   `div>ul>li*3` → `<div><ul><li></li><li></li><li></li></ul></div>`
+-   `div#header+div.content` → `<div id="header"></div><div class="content"></div>`
+-   `a[href="#"]{Click Me}` → `<a href="#">Click Me</a>`
 
-<map name="primary">
-    <area shape="circle" coords="75,75,75" href="left.html">
-    <area shape="circle" coords="275,75,75" href="right.html">
-</map>
-<img usemap="\#primary" src="https://via.placeholder.com/350x150" alt="350 x 150 pic">
+## 7. 참고 자료
 
-
-<a href="https://taedi.net" target="_blank">사이트 바로가기</a>
-<a href="\#id">앵커태그에 id활용 가능</a>
-```
-
-## table
-
-```HTML
-<table>
-    <caption>수학 성적</caption> <!-- caption-side: bottom -->
-    <thead>
-        <tr>
-            <th>학반</th>
-            <th>이름</th>
-            <th>점수</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>1</td>
-            <td>김영득</td>
-            <td>90</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>이갑자</td>
-            <td>80</td>
-        </tr>
-    </tbody>
-    <tfoot>
-        <tr>
-            <th colspan="2">평균</th> <!-- rowspan -->
-            <th>85</th>
-        </tr>
-    </tfoot>
-</table>
-```
-
-## form 관련
-
-```HTML
-<div id="wrap_apply">
-
-    <h1>프런트 엔드 개발자 지원서</h1>
-    <p>HTML, CSS, Javascript에 대한 기술적 이해와 경험이 있는 분을 찾습니다.</p>
-    <hr><br>
-
-    <form action="result.html" method="POST">
-        <div>
-            <div class="label_col">
-                <label for="username">이름</label>
-            </div>
-            <div class="input_col">
-                <input type="text" name="username" placeholder="공백없이 입력하세요" required autofocus minlength="2">
-            </div>
-        </div>
-
-        <div>
-            <div class="label_col">
-                <label for="phone">연락처</label>
-            </div>
-            <div class="input_col">
-                <input type="tel" name="phone" required maxlength="13">
-            </div>
-        </div>
-        <br>
-
-        <h3>지원 분야</h3>
-        <div class="radiobox">
-            <p><input type="radio" name="area" value="web"> 웹 퍼블리싱</p>
-            <p><input type="radio" name="area" value="webapp"> 웹 어플리케이션 개발</p>
-            <p><input type="radio" name="area" value="dev"> 개발환경 개선</p>
-        </div>
-        <br>
-
-        <h3>지원 동기</h3>
-        <textarea rows="5" name="comment" placeholder="본사 지원동기를 적어보시라요" ></textarea>
-        <button type="submit">제출하기</button>
-        <button type="reset">다시쓰기</button>
-
-    </form>
-</div>
-```
-
-  
-
-# Emmet 활용하기
-
-Emmet을 활용하면 좀 더 편하게 코드를 작성할 수 있다.
-
-```HTML
-<!-- 기본 html 문서 -->
-! or html
-
-<!-- Child: > -->
-div>ul>li
-
-<!-- Sibling: + -->
-div+p+bq
-
-<!-- Climb-up: ^ -->
-div+div>p>span+em^^^bq
-
-<!-- Multiplication: * -->
-ul>li*5
-
-<!-- Grouping: () -->
-div>(header>ul>li*2>a)+footer>p
-
-<!-- ID: #  & CLASS: . -->
-div\#header+div.page+div\#footer.class1.class2.class3
-
-<!-- Custom attributes: [] -->
-td[title="Hello world!" colspan=3]
-
-<!-- Item numbering: $ -->
-ul>li.item$*5
-
-<!-- Text: {} -->
-a[href="https://taedi.net"]{Click me}
-```
-
-- 문법 상세  
-      
-    [https://docs.emmet.io/abbreviations/syntax/](https://docs.emmet.io/abbreviations/syntax/)
-
-  
-
-  
-
-# id, class, name, value 속성???
-
-### **id 속성**
-
-**고유한** 식별을 목적으로 하는 경우 사용
-
-### **class 속성**
-
-재사용을 목적으로 하는 경우 사용(여러 요소에 동일한 스타일을 적용시킬 경우)
-
-### **name 속성**
-
-form 컨트롤 요소의 값(`value`)을 서버로 전송하기 위해 필요한 속성
-
-  
-
-  
-
-  
-
-  
-
-# 알아봐야할 내용
-
----
-
-- [ ] input
-- [ ] id는 하나하나 고유값을 가져야하고 class는 여러 태그에 붙일 수 있다.
-- [ ] id를 앵커태그에 활용할 수 있다.
-- [ ] box & items
-
-  
-
-  
-
-  
-
-## References
-
----
-
-- w3school
-
-[https://www.w3schools.com](https://www.w3schools.com/)
-
-- MDN
-
-[https://developer.mozilla.org/en-US/](https://developer.mozilla.org/en-US/)
-
-- jsbin
-
-[https://jsbin.com/](https://jsbin.com/)
-
-- Material Design Color Tool(색조합)
-
-[https://material.io/resources/color/#!/?view.left=0&view.right=0](https://material.io/resources/color/#!/?view.left=0&view.right=0)
-
-- html elements & attributes
-
-[https://heropy.blog/2019/05/26/html-elements/](https://heropy.blog/2019/05/26/html-elements/)
+-   <b>MDN Web Docs (Mozilla)</b>: 웹 기술에 대한 가장 신뢰할 수 있는 공식 문서
+    -   [https://developer.mozilla.org/ko/docs/Web/HTML](https://developer.mozilla.org/ko/docs/Web/HTML)
+-   <b>W3Schools</b>: 다양한 예제와 함께 웹 기술을 쉽게 학습할 수 있는 사이트
+    -   [https://www.w3schools.com/html/](https://www.w3schools.com/html/)
+-   <b>Emmet Documentation</b>: Emmet의 모든 문법과 사용법을 확인할 수 있는 공식 문서
+    -   [https://docs.emmet.io/](https://docs.emmet.io/)
