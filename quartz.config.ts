@@ -17,7 +17,7 @@ const config: QuartzConfig = {
     locale: "ko-KR",
     baseUrl: "log.kimfra.com",
     ignorePatterns: ["private", "templates", ".obsidian"],
-    defaultDateType: "modified",
+    defaultDateType: "created",
     theme: {
       fontOrigin: "googleFonts",
       cdnCaching: true,
