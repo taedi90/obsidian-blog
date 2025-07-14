@@ -32,58 +32,58 @@ type: note
 
 ## 목차
 ### 1. 사전조사
-<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Research" WHERE draft = false SORT date ASC -->
-<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Research" WHERE draft = false SORT date ASC -->
+<!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Research" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Research" WHERE draft = false SORT date ASC -->
 
-| 제목                                                                           | 작성일           |
-| ---------------------------------------------------------------------------- | ------------- |
-| [[CI 도구 선정]]       | 2025년 07월 10일 |
-| [[CNI 구현체 선정]]   | 2025년 07월 10일 |
-| [[CSI 구현체 선정]]   | 2025년 07월 10일 |
-| [[배포 도구 선정]]       | 2025년 07월 10일 |
-| [[클러스터링 도구 선정]] | 2025년 07월 10일 |
+| 작성일           | 제목                                                                           |
+| ------------- | ---------------------------------------------------------------------------- |
+| 2025년 07월 10일 | [[CI 도구 선정]]       |
+| 2025년 07월 10일 | [[CNI 구현체 선정]]   |
+| 2025년 07월 10일 | [[CSI 구현체 선정]]   |
+| 2025년 07월 10일 | [[배포 도구 선정]]       |
+| 2025년 07월 10일 | [[클러스터링 도구 선정]] |
 <!-- SerializedQuery END -->
 ### 2. 클러스터링
-<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
-<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
+<!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
 
-| 제목 | 작성일 |
-| -- | --- |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->
 
 ### 3. 네트워크 구성
-<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Network" WHERE draft = false SORT date ASC -->
-<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Network" WHERE draft = false SORT date ASC -->
+<!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Network" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Network" WHERE draft = false SORT date ASC -->
 
-| 제목                                                                                             | 작성일           |
-| ---------------------------------------------------------------------------------------------- | ------------- |
-| [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]] | 2025년 07월 12일 |
+| 작성일           | 제목                                                                                             |
+| ------------- | ---------------------------------------------------------------------------------------------- |
+| 2025년 07월 12일 | [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]] |
 <!-- SerializedQuery END -->
 
 ### 4. 오프라인 설치
-<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
-<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
+<!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
 
-| 제목                                                                                                  | 작성일           |
-| --------------------------------------------------------------------------------------------------- | ------------- |
-| [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]] | 2025년 07월 14일 |
+| 작성일           | 제목                                                                                                  |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| 2025년 07월 14일 | [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]] |
 <!-- SerializedQuery END -->
 
 ### 4. 트러블슈팅
-<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Troubleshooting" WHERE draft = false SORT date ASC -->
-<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Troubleshooting" WHERE draft = false SORT date ASC -->
+<!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Troubleshooting" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Troubleshooting" WHERE draft = false SORT date ASC -->
 
-| 제목                                                                                                                                                              | 작성일           |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | 2025년 07월 10일 |
+| 작성일           | 제목                                                                                                                                                              |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2025년 07월 10일 | [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] |
 <!-- SerializedQuery END -->
  
 ### 6. 기타
-<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/ETC" WHERE draft = false SORT date ASC -->
-<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/ETC" WHERE draft = false SORT date ASC -->
+<!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/ETC" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/ETC" WHERE draft = false SORT date ASC -->
 
-| 제목 | 작성일 |
-| -- | --- |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->
 
 
