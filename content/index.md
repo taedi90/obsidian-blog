@@ -10,6 +10,7 @@ tags:
 
 | Category                                            | Description                      |
 | --------------------------------------------------- | -------------------------------- |
+| [[사내 Kubernetes 클러스터 도입\|K8s Clustering (2025)]]    | 사내 온프레미스 쿠버네티스 클러스터 도입           |
 | [Container](DevOps/Container/Container)             | 컨테이너 환경 (Docker & Kubernetes ..) |
 | [Elasticsearch](DevOps/Elasticsearch/Elasticsearch) | 엘라스틱 서치                          |
 | [MariaDB](DevOps/MariaDB/MariaDB)                   | 마리아디비                            |
