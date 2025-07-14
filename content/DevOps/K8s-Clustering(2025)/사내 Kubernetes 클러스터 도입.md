@@ -1,0 +1,90 @@
+---
+title: 사내 Kubernetes 클러스터 도입기
+date: 2025-07-10
+draft: false
+tags:
+  - kubernetes
+  - on-premise
+  - devops
+  - cluster
+banner:
+cssclasses:
+description: "4개월간 혼자서 온프레미스 쿠버네티스 클러스터를 구축하며 겪은 고민과 해결 과정을 기록한 문서입니다."
+permalink:
+aliases:
+completed: true
+type: note
+---
+## 서론
+드디어 사내 개발 환경을 <b>도커(Docker)</b> 기반에서 <b>온프레미스 쿠버네티스(On-premise Kubernetes)</b> 클러스터로 전환할 기회가 주어졌다. 4개월이라는 기간 동안 혼자서 이 모든 과업을 수행해야 했다. 몇 년 전부터 개발 및 테스트 환경의 [[도입 배경|쿠버네티스 전환을 주장]]해왔지만, 다른 업무에 우선순위가 밀려 계속해서 지연되던 오랜 숙원과 같은 프로젝트였다.
+
+어렵게 얻은 기회인 만큼, 이번 프로젝트의 목표는 명확했다. 바로 <b>구성원 모두가 만족할 수 있는 쉽고 안정적인 클러스터 환경을 구축</b>하여 쿠버네티스를 성공적으로 도입시키는 것이었다.
+
+### 과거의 경험을 넘어
+
+사실 쿠버네티스 클러스터링은 이번이 처음은 아니었다. 3년 전에도, 그리고 그 이후에도 몇 차례 구축해본 경험이 있다. 하지만 코딩이든 인프라 아키텍처든, 시간이 지나고 보면 항상 아쉬움이 남는 법이다. 그래서 이번에는 과거의 아쉬움을 되풀이하지 않고자 했다.
+
+그동안 데브옵스 엔지니어로서 시도해보고 싶었지만 못했던 기술 스택과 구조들을 마음껏 적용해보며 꽤나 즐거운 4개월을 보냈다.
+
+### 기록의 시작
+
+이 시리즈는 그 4개월간의 여정을 담은 기록이다. 클러스터를 설계하며 했던 깊은 고민의 흔적들, 예상치 못한 문제들을 해결했던 과정, 그리고 기술을 선택하며 내렸던 결정의 이유들을 상세히 정리하고자 한다. 이 기록이 비슷한 도전을 하는 다른 누군가에게 작은 도움이 되기를 바란다. (아마 미래의 내가 되겠지만)
+
+## 목차
+### 1. 사전조사
+<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Research" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Research" WHERE draft = false SORT date ASC -->
+
+| 제목                                                                           | 작성일           |
+| ---------------------------------------------------------------------------- | ------------- |
+| [[CI 도구 선정]]       | 2025년 07월 10일 |
+| [[CNI 구현체 선정]]   | 2025년 07월 10일 |
+| [[CSI 구현체 선정]]   | 2025년 07월 10일 |
+| [[배포 도구 선정]]       | 2025년 07월 10일 |
+| [[클러스터링 도구 선정]] | 2025년 07월 10일 |
+<!-- SerializedQuery END -->
+### 2. 클러스터링
+<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
+
+| 제목 | 작성일 |
+| -- | --- |
+<!-- SerializedQuery END -->
+
+### 3. 네트워크 구성
+<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Network" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Network" WHERE draft = false SORT date ASC -->
+
+| 제목                                                                                             | 작성일           |
+| ---------------------------------------------------------------------------------------------- | ------------- |
+| [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]] | 2025년 07월 12일 |
+<!-- SerializedQuery END -->
+
+### 4. 오프라인 설치
+<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
+
+| 제목                                                                                                  | 작성일           |
+| --------------------------------------------------------------------------------------------------- | ------------- |
+| [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]] | 2025년 07월 14일 |
+<!-- SerializedQuery END -->
+
+### 4. 트러블슈팅
+<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Troubleshooting" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/Troubleshooting" WHERE draft = false SORT date ASC -->
+
+| 제목                                                                                                                                                              | 작성일           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | 2025년 07월 10일 |
+<!-- SerializedQuery END -->
+ 
+### 6. 기타
+<!-- dateformat(date, "yyyy년 MM월 dd일") AS 작성일, QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/ETC" WHERE draft = false SORT date ASC -->
+<!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, dateformat(date, "yyyy년 MM월 dd일") AS 작성일 FROM "Publish/DevOps/K8s-Clustering(2025)/ETC" WHERE draft = false SORT date ASC -->
+
+| 제목 | 작성일 |
+| -- | --- |
+<!-- SerializedQuery END -->
+
+
+
