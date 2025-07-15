@@ -7,5 +7,5 @@
 | [[ISA]]                             | Investment | 2024-09-24 |
 | [[연말정산 소득공제 vs 세액공제]] | Investment | 2024-09-24 |
 | [[포트폴리오]]                         | Investment | 2024-09-24 |
-| [[Publish/Life/Investment/재테크.md|재테크를 해보자!]]                       | Investment | 2024-09-20 |
+| [[Publish/Life/Investment/재테크.md\|재테크를 해보자!]]                       | Investment | 2024-09-20 |
 <!-- SerializedQuery END -->
