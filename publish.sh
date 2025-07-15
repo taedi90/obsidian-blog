@@ -15,7 +15,7 @@ if [ -d "${CONTENT_DIR_PATH}" ]; then
     rm -rf "${CONTENT_DIR_PATH}"
 fi
 
-rsync -avz --exclude={'*GEMINI.md', '*.geminiignore', 'copilot-instructions.md'} "${SOURCE_DIR_PATH}/" "${CONTENT_DIR_PATH}"
+rsync -avz --exclude '*GEMINI.md' --exclude '*.geminiignore' --exclude '*copilot-instructions.md' "${SOURCE_DIR_PATH}/" "${CONTENT_DIR_PATH}"
 
 echo sync
 cd "${HERE}"
