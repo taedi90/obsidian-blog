@@ -1,3 +1,22 @@
+---
+title: nfs-subdir-provisioner pvc 삭제 불가 이슈
+date: 2025-07-16
+draft: true
+tags:
+  - nfs
+  - pvc
+  - provisioner
+  - troubleshooting
+banner: 
+cssclasses: 
+description: 
+permalink: 
+aliases: 
+completed: 
+type:
+  - issue
+---
+
 삭제할때 pathpattern 있으면 삭제안됨
 
 https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/issues/347

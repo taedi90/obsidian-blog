@@ -91,7 +91,7 @@ main.c:(.text+0x27): warning: the `gets' function is dangerous and should not be
 <b>함수 포인터(Function Pointer)</b>는 말 그대로 **함수의 시작 주소를 저장하는 포인터 변수**다. 이를 통해 함수를 직접 호출하는 대신, 포인터를 통해 간접적으로 호출할 수 있다.
 
 -   **함수 포인터 선언**: `반환타입 (*포인터이름)(매개변수타입);`
--   **예시 코드**:
+-   **예시 코드**
     ```c
     #include<stdio.h>
 

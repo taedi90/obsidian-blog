@@ -32,7 +32,7 @@ type:
 
 현재 레거시 서버의 Jenkins를 그대로 마이그레이션하는 방법이 가장 빠를 수 있었지만, Jenkins는 다음과 같은 명확한 단점을 가지고 있어 새로운 대안을 찾기로 결정했다.
 
-> [!NOTE] 기존 Jenkins의 문제점
+> [!NOTE] 기존 Jenkins의 문제점 분석
 > - <b>복잡한 파이프라인 설정</b>: `Jenkinsfile`은 Groovy 스크립트 기반으로, 파이프라인이 복잡해질수록 가독성이 떨어지고 유지보수가 어렵다.
 > - <b>플러그인 의존성</b>: 다양한 기능을 플러그인에 크게 의존하며, 플러그인 간의 충돌이나 버전 관리 문제가 발생할 수 있다.
 > - <b>높은 리소스 사용량</b>: Jenkins 자체적으로 사용하는 메모리 및 CPU 리소스가 많아 경량화된 환경에는 부담이 될 수 있다.
@@ -40,7 +40,7 @@ type:
 
 이러한 문제들을 해결하기 위해, 새로운 CI 도구는 다음의 요구사항을 만족해야 한다고 판단했다.
 
-- <b>VCS 연동</b>: <b>사내 표준 버전 관리 시스템(VCS)인 `Bitbucket`을 필수적으로 지원해야 한다는 점이 가장 중요한 전제 조건이었다.</b>
+- <b>VCS 연동</b>: <b>사내 표준 버전 관리 시스템(VCS)인 `Bitbucket`을 필수적으로 지원해야 한다는 점이 가장 중요한 전제 조건이었다.
 - <b>주요 빌드 환경 지원</b>: `Docker container`, `Maven`, `Node.js` 빌드를 원활하게 지원해야 한다.
 - <b>선언적 파이프라인</b>: <b>`YAML` 기반의 선언적 파이프라인(Pipeline as Code)</b>을 지원하여 관리가 용이해야 한다.
 - <b>단순성과 사용성</b>: 개발자들이 쉽게 배우고 사용할 수 있도록 직관적이고 단순한 사용성을 제공해야 한다.
@@ -63,7 +63,7 @@ type:
 여러 후보를 비교 검토한 결과, <b>DroneCI</b>가 우리의 요구사항에 부합하는 도구라고 최종 판단했다. 선정 과정에서 중요하게 고려한 점은 다음과 같다.
 
 1.  <b>Bitbucket 지원이라는 핵심 전제 충족</b>
-    사내 표준 VCS인 <b>Bitbucket을 공식적으로 지원</b>하는 것이 이번 CI 도구 선정의 가장 중요한 기준이었다. 이 기준에 따라 Woodpecker CI 등 일부 유망한 도구들이 초기 후보에서 제외되었고, 선택지를 좁힐 수 있었다.
+    사내 표준 VCS인 <b>Bitbucket을 공식적으로 지원</b>하는 것이 이번 CI 도구 선정의 가장 중요한 기준이었다. 이 기준에 따라 Woodpecker CI 등 일부 유망한 도구를 초기 후보에서 제외했고, 선택지를 좁힐 수 있었다.
 
 2.  <b>단순하고 직관적인 사용성</b>
     Bitbucket을 지원하는 후보군 중에서 DroneCI는 <b>직관적인 UI와 단순한 YAML 기반 파이프라인</b>이 돋보였다. 이는 개발자들이 CI/CD에 대한 학습 곡선을 낮추고 빠르게 적응할 수 있게 하는 핵심적인 장점이라고 판단했다. 복잡한 Jenkinsfile에서 벗어나 누구나 쉽게 파이프라인을 이해하고 작성할 수 있다는 점이 매력적이었다.
@@ -75,5 +75,5 @@ type:
 
 ## 🔗 참고
 
-- <b>DroneCI 공식 문서 (Bitbucket 연동):</b> [https://docs.drone.io/server/provider/bitbucket-cloud/](https://docs.drone.io/server/provider/bitbucket-cloud/)
-- <b>Bitbucket App passwords 설정:</b> [https://bitbucket.org/leevistudio/workspace/settings/api](https://bitbucket.org/leevistudio/workspace/settings/api)
+- <b>DroneCI 공식 문서 (Bitbucket 연동)</b> - [https://docs.drone.io/server/provider/bitbucket-cloud/](https://docs.drone.io/server/provider/bitbucket-cloud/)
+- <b>Bitbucket App passwords 설정</b>: [https://bitbucket.org/leevistudio/workspace/settings/api](https://bitbucket.org/leevistudio/workspace/settings/api)

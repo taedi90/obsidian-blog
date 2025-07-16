@@ -34,9 +34,9 @@ completed:
 선택 후에 기본적인 세팅을 할 수 있는 페이지가 나오는데, 다음 항목들을 선택하였다.
 
 - name: 추후 관리에 용이하도록 식별할 수 있는 이름 지정
-- image: 'Always Free-eligible' 중에 선택하면 되는데 CentOS 8 을 선택했고 특별한 이유는 없음
-- networking: 'Public IP address' 체크 (외부 접속을 위하여 필요)
-- ssh-keys: SSH 접속을 위해 필요하니 반드시 다운로드 하여 안전한 곳에 보관
+- image: 'Always Free-eligible' 중에 선택하면 되는데 CentOS 8을 선택했고 특별한 이유는 없다.
+- networking: 'Public IP address' 체크 (외부 접속을 위해 필요)
+- ssh-keys: SSH 접속을 위해 필요하니 반드시 다운로드하여 안전한 곳에 보관
 - volume: 'Specify a custom boot volume size' 선택 후 50GB 설정
 
 설정을 마친 후에 `create` 를 하면 된다.

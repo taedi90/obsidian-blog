@@ -1,18 +1,34 @@
+---
+title: Agpl-3.0 라이선스 검토
+date: 2025-07-16
+draft: true
+tags: 
+banner: 
+cssclasses: 
+description: 
+permalink: 
+aliases: 
+completed: 
+type:
+  - issue
+  - note
+  - comparison
+---
   
 
-- prometheus : apache-2.0
+- prometheus - apache-2.0
 
-- jaeger : apache-2.0
+- jaeger - apache-2.0
 
-- OpenTelemetry Collector : apache-2.0
+- OpenTelemetry Collector - apache-2.0
 
-- opentelemetry java : apache-2.0
+- opentelemetry java - apache-2.0
 
   
 
-- lgtm : agpl-3.0
+- lgtm - agpl-3.0
 
-- minio :
+- minio -
 
   
   

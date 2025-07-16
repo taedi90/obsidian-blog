@@ -1,3 +1,21 @@
+---
+title: lvm 설정
+date: 2025-07-16
+draft: true
+tags:
+  - lvm
+  - storage
+  - linux
+banner: 
+cssclasses: 
+description: 
+permalink: 
+aliases: 
+completed: 
+type:
+  - note
+---
+
 LVM 도구 설치
 
 `dnf install lvm2`
@@ -76,15 +94,15 @@ pv 생성
 
 ### **디스크 교체 및 복구**
 
-새 디스크를 설치하고 초기화:
+새 디스크를 설치하고 초기화
 
 `bash sudo pvcreate /dev/sdc`
 
-VG에 새 디스크 추가:
+VG에 새 디스크 추가
 
 `bash sudo vgextend myvg /dev/sdc`
 
-파일 시스템 복구 (필요 시):
+파일 시스템 복구 (필요 시)
 
 1. 파일 시스템 검사 및 복구:
     

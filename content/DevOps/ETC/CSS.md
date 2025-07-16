@@ -10,7 +10,7 @@ tags:
   - flexbox
 banner: 
 cssclasses: 
-description: CSS의 기본 문법부터 선택자(Selector), 스타일 적용 우선순위(Specificity), 그리고 최신 레이아웃 기법인 Flexbox의 핵심 개념과 주요 속성을 체계적으로 정리한다.
+description: CSS의 기본 문법, 선택자(Selector), 스타일 적용 우선순위(Specificity), 최신 레이아웃 기법인 Flexbox의 핵심 개념과 주요 속성을 체계적으로 정리한다.
 permalink: 
 aliases: 
 completed: true
@@ -24,7 +24,7 @@ type:
 
 이름에 포함된 <b>캐스케이딩(Cascading)</b>은 '폭포처럼 쏟아지는'이라는 의미를 가지는데, 이는 상위 요소의 스타일 속성이 자식 요소에게 상속되는 특징을 비유한 것이다. 이 상속의 원리와 여러 스타일 규칙이 충돌할 때 어떤 것을 적용할지 결정하는 <b>우선순위(Specificity)</b>를 이해하는 것이 CSS 학습의 핵심이라고 할 수 있다.
 
-이 문서는 CSS의 기본 문법부터 선택자, 우선순위 규칙, 그리고 현대적인 레이아웃 기법인 Flexbox까지 핵심적인 개념들을 체계적으로 정리하는 것을 목표로 한다.
+이 문서는 CSS의 기본 문법, 선택자, 우선순위 규칙, 현대적인 레이아웃 기법인 Flexbox까지 핵심적인 개념들을 체계적으로 정리하는 것을 목표로 한다.
 
 ## 2. CSS 기본 문법
 

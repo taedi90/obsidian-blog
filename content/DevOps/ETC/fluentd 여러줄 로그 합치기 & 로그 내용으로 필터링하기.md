@@ -14,8 +14,8 @@ completed:
 ---
 ## 요약
 
-- 로그 합치기는 ‘fluent-plugin-concat’ 플러그인 사용
-- 로그 예외처리는 ‘grep’ 플러그인 사용
+- 로그 합치기는 ‘fluent-plugin-concat’ 플러그인을 사용한다.
+- 로그 예외처리는 ‘grep’ 플러그인을 사용한다.
 
   
 

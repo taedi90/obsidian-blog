@@ -150,7 +150,7 @@ $ pyenv versions
 ```bash
 Usage: pyenv <command> [<args>]
 
-Some useful pyenv commands are:
+Some useful pyenv commands are
    --version   Display the version of pyenv
    commands    List all available pyenv commands
    exec        Run an executable with the selected Python version
@@ -227,7 +227,7 @@ $ pipenv graph
 ```bash
 Usage: pipenv [OPTIONS] COMMAND [ARGS]...
 
-Options:
+Options
   --where                         Output project home information.
   --venv                          Output virtualenv information.
   --py                            Output Python interpreter information.
@@ -258,7 +258,7 @@ Options:
   -h, --help                      Show this message and exit.
 
 
-Usage Examples:
+Usage Examples
    Create a new project using Python 3.7, specifically:
    $ pipenv --python 3.7
 
@@ -283,7 +283,7 @@ Usage Examples:
    Use a lower-level pip command:
    $ pipenv run pip freeze
 
-Commands:
+Commands
   check      Checks for PyUp Safety security vulnerabilities and against PEP
              508 markers provided in Pipfile.
 

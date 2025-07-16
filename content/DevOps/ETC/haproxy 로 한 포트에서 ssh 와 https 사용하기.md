@@ -112,7 +112,7 @@ backend https
 
   
 
-위에서 눈여겨볼 부분은 `acl client_attempts_ssh payload(0,7) -m bin 5353482d322e30` 으로 구문을 파악해보면
+위에서 눈여겨볼 부분은 `acl client_attempts_ssh payload(0,7) -m bin 5353482d322e30` 구문이다. 이를 파악해보면
 
 - `payload(0,7)` : 페이로드 첫 7바이트를
 - `-m bin` : 16진수 문자열로 취급했을 때

@@ -39,9 +39,9 @@ sudo yum install nmap
 
   
 
-### 사용법
+### 사용 방법
 
-- 전체 tcp 포트 스캔
+- 전체 TCP 포트 스캔
     
     ```bash
     $ nmap 10.10.98.42
@@ -62,7 +62,7 @@ sudo yum install nmap
     50002/tcp open  iiimsf
     ```
     
-- 전체 udp 포트 스캔  
+- 전체 UDP 포트 스캔  
     udp 포트 스캔을 위해서는 sudo 권한이 필요하다.  
     
     ```bash
@@ -84,7 +84,7 @@ sudo yum install nmap
     Nmap done: 1 IP address (1 host up) scanned in 1086.98 seconds
     ```
     
-- 특정 포트만 스캔
+- 특정 포트 스캔
     
     ```bash
     $ nmap 10.10.98.42 -p80

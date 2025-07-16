@@ -17,7 +17,7 @@ completed:
 > mvn clean install -T 1C -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -f pom.xml
 
 ## ⚙️ 환경
-- Java : 1.8
+- Java 1.8
 
 ## 💬 이슈
 프로젝트를 로컬에서 테스트 할 때 마다 generated-sources 변경이나 협업자들의 추가 개발 사항에 맞춰서 빌드를 자주 하게 되는데, 테스트를 스킵해도 매번 2분 이상의 빌드시간이 발생하는 것이 여간 불편하게 느껴지지 않을 수 없었다.  
