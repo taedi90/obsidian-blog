@@ -3,6 +3,6 @@
 
 | Name                                                                                     | Tags           | Date       |
 | ---------------------------------------------------------------------------------------- | -------------- | ---------- |
-| [[ES 인덱스 복제본 수 기본 설정 방법\|Elasticsearch 인덱스 복제본 수 기본 설정]] | #elasticsearch | 2023-02-09 |
-| [[ES 자동 스냅샷 설정\|Elasticsearch 자동 스냅샷 설정]]                | #elasticsearch | 2023-02-08 |
+| [[ES 인덱스 복제본 수 기본 설정 방법|Elasticsearch 인덱스 복제본 수 기본 설정]] | #elasticsearch | 2023-02-09 |
+| [[ES 자동 스냅샷 설정|Elasticsearch 자동 스냅샷 설정]]                | #elasticsearch | 2023-02-08 |
 <!-- SerializedQuery END -->
