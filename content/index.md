@@ -45,8 +45,8 @@ description: DevOps 엔지니어의 기술 블로그
 | [[클러스터링 도구 선정]]                                                                                    | Research             | 2025-07-10 |
 | [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | Troubleshooting      | 2025-07-10 |
 | [[사내 쿠버네티스 클러스터 도입|사내 쿠버네티스 클러스터 도입기]]                                                                                  | K8s-Clustering(2025) | 2025-07-10 |
+| [[관측가능성 스택 선정]]                                                                                    | Research             | 2025-03-16 |
 | [[CRI 구현체 선정|Kubernetes CRI 선정]]                                                                               | Research             | 2025-01-16 |
-| [[관측가능성 스택 선정]]                                                                                    | Research             | 2025-01-16 |
 | [[maven 빌드 속도 최적화|Maven 빌드 속도 최적화]]                                                                                                      | ETC                  | 2024-12-12 |
 | [[Docker Healthcheck 실패 시 컨테이너 재기동 설정]]                                                        | Container            | 2024-12-10 |
 | [[Galera Arbitrator 사용해보기|Galera Arbitrator 컨테이너 생성 & failover 테스트]]                                                                     | ETC                  | 2024-10-10 |
