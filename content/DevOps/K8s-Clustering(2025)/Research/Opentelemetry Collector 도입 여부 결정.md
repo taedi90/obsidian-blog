@@ -1,68 +1,44 @@
 ---
-title: Opentelemetry Collector 도입 여부 결정
+title: Opentelemetry Collector, 불신에서 확신으로
 date: 2025-07-16
 draft: true
-tags: 
+tags:
+  - kubernetes
+  - observability
+  - opentelemetry
+  - signoz
 banner: 
 cssclasses: 
-description: 
+description: 처음에는 불필요하게 느껴졌던 Opentelemetry Collector를 도입하고 나서야 비로소 그 진가를 깨닫게 된 경험을 공유합니다.
 permalink: 
 aliases: 
-completed: 
+completed: true
 type:
-  - issue
   - note
-  - comparison
 ---
 
-## 장점 (왜 써야하는가?)
+> [!SUMMARY]
+> 처음에는 불필요한 중간 계층이라 생각했던 Opentelemetry Collector가, 실제 사용해보니 벤더 종속성을 완벽히 제거하고 관측 가능성 파이프라인의 유연성을 극대화하는 핵심 컴포넌트임을 깨닫게 되었다. 초기 러닝커브는 오히려 장기적인 운영 효율성으로 돌아왔다.
 
-- 데이터 표준화: 다양한 데이터 형식(트레이스, 메트릭, 로그 등)을 하나의 표준(OpenTelemetry 프로토콜)으로 통합 처리할 수 있다.
-    
-- 벤더 중립성: 특정 벤더에 종속되지 않고, 다양한 백엔드(APM, 로그 저장소, 시각화 도구 등)로 데이터를 내보낼 수 있다.
-    
-    - 관측 데이터를 여러 백엔드로 전송하는 것도 가능하다.
-        
-- 컴포넌트 단일화/축소: 여러 개별 수집기(예: Prometheus Exporter, Fluent-bit 등)를 하나로 통합 운영할 수 있어, 관리 복잡도가 크게 줄어든다.
-    
-- 다양한 언어|플랫폼 지원
-    
-    - 벤더 종속적 수집/분석 도구의 스펙에 구애받지 않고 메트릭을 수집, 전송하는데 용이
-        
+## 1. 도입 검토와 초기 우려
+솔직히 말해, 처음에는 Opentelemetry Collector가 왜 필요한지 전혀 이해하지 못했다. 관측 가능성(Observability) 스택을 구성하면서 마주친 Collector는 그저 **데이터 파이프라인 중간에 끼어있는 불필요하고 복잡한 계층**처럼 보였다. 애플리케이션에서 데이터를 바로 APM이나 로그 저장소로 보내면 될 텐데, 왜 굳이 Collector라는 것을 거쳐야 하는지 의문이었다.
 
-## 꼭 써야하는가?
+> [!IMPORTANT]
+> 당시 우리의 생각은 'Collector는 오버헤드만 유발할 뿐' 이라는 불신에 가까웠다. 러닝커브와 관리 포인트만 늘어날 것이라고 예상했다.
 
-- 데이터 표준화 측면: 최근 많은 오픈소스들이 otlp를 지원해서 사실 otel collector를 반드시 도입하지 않아도 향후 컴포넌트 변경이 어렵지 않을 것으로 보인다.
-    
-- 성능 및 학습 측면: 백엔드가 단독으로 처리할 수 있는 것을 불가피하게 레이어가 추가되어 오히려 성능 오버헤드를 가져오거나 러닝커브를 가져올 우려도 있다.
-    
+## 2. 테스트 과정에서 발견한 가치
+우리가 검토하던 `SigNoz`가 Collector를 기본 아키텍처로 채택하고 있었기에, 우리는 마지못해 Collector를 테스트 환경에 구성하게 되었다. 파이프라인의 개념(Receiver, Processor, Exporter)을 익히는 것은 역시나 쉽지 않았다.
 
-## 서비스 구조
+**하지만 진짜 깨달음은 다른 모니터링 스택을 추가로 테스트하는 과정에서 찾아왔다.**
 
-opentelemetry collector 를 사용하기 위해서는 서비스를 구성해야 함
+기존 계획대로라면 새로운 모니터링 도구를 테스트하기 위해 각 애플리케이션의 데이터 전송 로직을 변경하거나, 별도의 에이전트를 또 설치해야 했을 것이다. 하지만 Opentelemetry Collector를 사용하자, 상황이 완전히 달라졌다.
 
-- service(pipeline)
-    
-    - extensions
-        
-    - pipeline
-        
-        - receiver: 외부에서 데이터를 수집 (OTLP, Jaeger, Prometheus 등 다양한 프로토콜 지원)
-            
-        - processor: 데이터 처리 및 변환 (batch, memory_limiter, transform 등)
-            
-        - exporter: 처리된 데이터를 외부 백엔드로 전송 (Jaeger, Prometheus, Zipkin 등)
-            
+**단지 Collector의 `otel-collector-config.yaml` 파일에 새로운 Exporter 설정을 몇 줄 추가하는 것만으로,** 모든 원격 측정 데이터를 새로운 백엔드로 손쉽게 보낼 수 있었다. 애플리케이션은 Collector의 존재조차 모른 채 평소처럼 데이터를 보낼 뿐인데, 운영자는 파이프라인 뒤단에서 데이터의 흐름을 자유자재로 제어할 수 있게 된 것이다.
 
-이후 외부 backend 로 전송
+> [!NOTE]
+> 바로 이 순간, '특정 벤더에 종속되지 않는 유연한 구조'라는 말이 이론이 아닌 현실로 다가왔다. Collector가 제공하는 추상화 계층의 강력함을 온몸으로 체감했다.
 
-## 문제점
+## 3. 최종 도입과 활용
+이 경험을 통해 우리는 Collector에 대한 불신을 완전히 거두고 확신을 갖게 되었다. 즉시 모든 노드에 Collector를 데몬셋(DaemonSet)으로 배포하여 클러스터의 모든 데이터가 Collector를 통해 흐르도록 아키텍처를 표준화했다.
 
-- prometheus 의 경우에 각 메트릭이 정상적인지 UI 로 직관적으로 확인할 수 있지만, Otel Collector 를 경유할 경우 로그를 통해 파악을 하거나 config 를 지나치게 복잡하게 구성해야하는 문제가 있음
-    
-- 성능 오버헤드
-    
-
-## 기타
-
-- 기본버전과 contrib 버전 차이
+초기에 우려했던 러닝커브와 복잡성은, 오히려 **장기적인 관점에서의 비교할 수 없는 유연성과 운영 효율성**으로 되돌아왔다. 지금은 Opentelemetry Collector 없는 관측 가능성 파이프라인은 상상할 수 없을 정도로 매우 만족하며 사용하고 있다.

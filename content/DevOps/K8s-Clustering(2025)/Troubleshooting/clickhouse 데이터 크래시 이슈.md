@@ -18,7 +18,7 @@ type:
 ---
 
 > [!SUMMARY]
-> ClickHouse 파드가 비정상 종료된 후 `max_suspicious_broken_parts` 오류로 재시작에 실패했다. 임시방편으로 파드를 강제 삭제하고 `force_restore_data` 플래그를 생성하여 강제 복구를 진행했지만, 이는 근본적인 해결책이 아니므로 추후 원인 파악이 필요하다.
+> ClickHouse 파드가 비정상 종료된 후 `max_suspicious_broken_parts` 오류로 재시작에 실패했다. 임시방편으로 파드를 강제 삭제하고 `force_restore_data` 플래그를 실행하여 강제 복구를 진행했지만, 이는 근본적인 해결책이 아니므로 추후 원인 파악이 필요하다.
 
 ## 💬 이슈
 

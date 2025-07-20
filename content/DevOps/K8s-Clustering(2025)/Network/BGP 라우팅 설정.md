@@ -27,7 +27,7 @@ type:
 - <b>CNI</b>: Cilium 1.17.4
 - <b>Kubernetes</b>: 1.32.6
 - <b>네트워크 구성</b>
-    - <b>본사</b>: 10.220.96.0/22
+    - <b>본사</b>: 10.224.64.0/22
     - <b>IDC</b>: 172.16.20.0/24
     - <b>Pod CIDR</b>: 10.10.0.0/16
     - <b>Service CIDR</b>: 10.20.0.0/16
@@ -117,7 +117,7 @@ IDC 장비에도 마찬가지로 `to HQ` 터널 인터페이스에 IP `10.100.0.
     config network
         # BGP를 통해 광고할 네트워크 대역
         edit 1
-            set prefix 10.220.96.0 255.255.252.0 # 본사 네트워크
+            set prefix 10.220.96.0 255.255.252.0
         next
     end
     # 다른 라우팅 프로토콜로부터 경로를 가져와 BGP로 재분배
@@ -143,7 +143,7 @@ IDC Fortigate는 본사 Fortigate와 <b>eBGP</b> 관계를, Kubernetes 노드들
     end
     config network
         edit 1
-            set prefix 10.224.64.0 255.255.192.0 # 사무실에서 사용하는 다른 대역
+            set prefix 10.224.64.0 255.255.192.0
         next
     end
     config redistribute "connected"
@@ -261,4 +261,4 @@ iBGP 환경에서 모든 피어들이 Full-Mesh로 연결되지 않은 경우, �
 ## 🔗 참고
 - [Fortigate Cookbook: Adding addresses to the tunnel interfaces](https://docs.fortinet.com/document/fortigate/5.6.0/cookbook/115120/adding-addresses-to-the-tunnel-interfaces)
 - [Fortigate Admin Guide: Basic BGP example](https://docs.fortinet.com/document/fortigate/7.6.2/administration-guide/763341/basic-bgp-example)
-- [Cilium BGP Control Plane](https://docs.cilium.io/en/stable/network/bgp-cp/)
+- [Cilium BGP Control Plane](https://docs.cilium.io/en/latest/network/bgp-control-plane/bgp-control-plane/)
