@@ -1,6 +1,6 @@
 ---
 title: CNI 구현체 선정
-date: 2025-07-10
+date: 2025-04-01
 draft: false
 tags:
   - Kubernetes

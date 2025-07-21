@@ -13,14 +13,14 @@ description: DevOps 엔지니어의 기술 블로그
 
 ## 📂 주요 카테고리
 
-| 🏷️ 카테고리 | 📝 설명 |
-|------------|---------|
-| [[사내 쿠버네티스 클러스터 도입\|🚀 K8s Clustering (2025)]] | 사내 온프레미스 쿠버네티스 클러스터 도입기 |
-| [🐳 Container](DevOps/Container/Container) | 컨테이너 환경 (Docker & Kubernetes) |
-| [🔍 Elasticsearch](DevOps/Elasticsearch/Elasticsearch) | 검색 엔진 및 로그 분석 |
-| [🗄️ MariaDB](DevOps/MariaDB/MariaDB) | 관계형 데이터베이스 |
-| [🖥️ OS](DevOps/OS/OS) | 운영체제 (주로 Linux) |
-| [⚙️ ETC](DevOps/ETC/ETC) | 기타 DevOps 도구들 |
+| 🏷️ 카테고리                                               | 📝 설명                         |
+| ------------------------------------------------------ | ----------------------------- |
+| [[사내 쿠버네티스 클러스터 도입\|🚀 K8s Clustering (2025)]]         | 사내 온프레미스 쿠버네티스 클러스터 도입기       |
+| [🐳 Container](DevOps/Container/Container)             | 컨테이너 환경 (Docker & Kubernetes) |
+| [🔍 Elasticsearch](DevOps/Elasticsearch/Elasticsearch) | 엘라스틱서치                        |
+| [🗄️ MariaDB](DevOps/MariaDB/MariaDB)                  | 마리아디비                         |
+| [🖥️ Linux](Linux.md)                                  | 리눅스                           |
+| [⚙️ ETC](DevOps/ETC/ETC)                               | 미분류                           |
 
 ---
 
@@ -31,11 +31,12 @@ description: DevOps 엔지니어의 기술 블로그
 
 | 제목                                                                                                                                                              | 카테고리                 | 작성일        |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ---------- |
-| [[Ingress VS Gateway-API|Ingress VS Gateway API]]                                                              | Research             | 2025-07-16 |
+| [[Publish/DevOps/K8s-Clustering(2025)/CICD/무제.md|무제]]                                                                                                          | CICD                 | 2025-07-16 |
 | [[Helm 차트 템플릿 선정]]                                                                              | Research             | 2025-07-16 |
+| [[Ingress VS Gateway-API|Ingress VS Gateway API]]                                                              | Research             | 2025-07-16 |
 | [[컨테이너 레지스트리 선정]]                                                                                | Research             | 2025-07-16 |
-| [[clickhouse 데이터 크래시 이슈|ClickHouse 데이터 파손(Crash) 이슈 해결 기록]]                                             | Troubleshooting      | 2025-07-16 |
 | [[lvm 설정|쿠버네티스 클러스터를 위한 LVM 스토리지 구성]]                                                                           | Storage              | 2025-07-16 |
+| [[clickhouse 데이터 크래시 이슈|ClickHouse 데이터 파손(Crash) 이슈 해결 기록]]                                             | Troubleshooting      | 2025-07-16 |
 | [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                                                                  | Network              | 2025-07-12 |
 | [[도입 배경]]                                                                                                         | K8s-Clustering(2025) | 2025-07-12 |
 | [[CI 도구 선정]]                                                                                          | Research             | 2025-07-10 |
@@ -50,7 +51,6 @@ description: DevOps 엔지니어의 기술 블로그
 | [[maven 빌드 속도 최적화|Maven 빌드 속도 최적화]]                                                                                                      | ETC                  | 2024-12-12 |
 | [[Docker Healthcheck 실패 시 컨테이너 재기동 설정]]                                                        | Container            | 2024-12-10 |
 | [[Galera Arbitrator 사용해보기|Galera Arbitrator 컨테이너 생성 & failover 테스트]]                                                                     | ETC                  | 2024-10-10 |
-| [[PESSIMISTIC_WRITE 와 데드락|MariaDB PESSIMISTIC_WRITE 와 데드락(feat. Gap lock)]]                                                          | MariaDB              | 2024-09-28 |
 <!-- SerializedQuery END -->
 
 ---

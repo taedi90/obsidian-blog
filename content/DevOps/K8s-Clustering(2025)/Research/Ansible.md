@@ -1,6 +1,6 @@
 ---
 title: Ansible 구조
-date: 2025-07-16
+date: 2025-04-09
 draft: true
 tags: 
 banner: 

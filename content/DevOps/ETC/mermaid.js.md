@@ -32,4 +32,6 @@ https://icon-sets.iconify.design/ 아이콘 쓸 수 있음
 
 
 
+## 참고
 https://mermaid.js.org/intro/
+https://forum.obsidian.md/t/support-fo-icon-pack-in-mermaid-diagrams-in-obsidian/102517/3

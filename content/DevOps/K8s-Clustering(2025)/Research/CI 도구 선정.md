@@ -1,6 +1,6 @@
 ---
 title: CI 도구 선정
-date: 2025-07-10
+date: 2025-04-16
 draft: false
 tags:
   - Kubernetes
@@ -10,10 +10,10 @@ tags:
   - Jenkins
   - Comparison
   - Bitbucket
-cssclasses: []
-description: "기존 Jenkins의 한계를 분석하고, 쿠버네티스 네이티브 환경에 최적화된 CI 도구를 선정하는 과정을 기록했습니다. 여러 후보를 비교하여 최종적으로 DroneCI를 선택한 이유를 설명합니다."
+cssclasses: 
+description: 기존 Jenkins의 한계를 분석하고, 쿠버네티스 네이티브 환경에 최적화된 CI 도구를 선정하는 과정을 기록했습니다. 여러 후보를 비교하여 최종적으로 DroneCI를 선택한 이유를 설명합니다.
 permalink: ""
-aliases: []
+aliases: 
 completed: true
 type:
   - comparison

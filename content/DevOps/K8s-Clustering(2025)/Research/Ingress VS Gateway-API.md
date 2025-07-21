@@ -1,6 +1,6 @@
 ---
 title: Ingress VS Gateway API
-date: 2025-07-16
+date: 2025-04-05
 draft: false
 tags:
   - kubernetes

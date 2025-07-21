@@ -1,6 +1,6 @@
 ---
 title: Opentelemetry Collector, 불신에서 확신으로
-date: 2025-07-16
+date: 2025-05-13
 draft: true
 tags:
   - kubernetes

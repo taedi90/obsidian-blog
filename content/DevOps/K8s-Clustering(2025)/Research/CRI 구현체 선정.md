@@ -1,6 +1,6 @@
 ---
 title: Kubernetes CRI 선정
-date: 2025-01-16
+date: 2025-03-16
 draft: false
 tags:
   - kubernetes

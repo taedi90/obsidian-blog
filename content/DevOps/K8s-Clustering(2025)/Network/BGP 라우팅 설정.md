@@ -262,3 +262,50 @@ iBGP 환경에서 모든 피어들이 Full-Mesh로 연결되지 않은 경우, �
 - [Fortigate Cookbook: Adding addresses to the tunnel interfaces](https://docs.fortinet.com/document/fortigate/5.6.0/cookbook/115120/adding-addresses-to-the-tunnel-interfaces)
 - [Fortigate Admin Guide: Basic BGP example](https://docs.fortinet.com/document/fortigate/7.6.2/administration-guide/763341/basic-bgp-example)
 - [Cilium BGP Control Plane](https://docs.cilium.io/en/latest/network/bgp-control-plane/bgp-control-plane/)
+
+
+
+```mermaid
+architecture-beta
+    %% Network Infrastructure Groups
+    group office_network(logos:aws-vpc)[Office Network]
+    %% group tunnel_layer(mdi:cloud)[IPsec Tunnel Layer]
+    group idc_network(logos:aws-vpc)[IDC Network]
+    group kubernetes_cluster(logos:kubernetes)[Kubernetes Cluster] in idc_network
+    group kubernetes_nodes(logos:kubernetes)[Kubernetes Nodes] in kubernetes_cluster
+    
+    %% Office Infrastructure
+    service office_fortigate(simple-icons:fortinet)[Fortigate AS64512] in office_network
+    service office_devices(mdi:lan)[Office Subnet 10_224_64_0] in office_network
+    
+    %% Tunnel Infrastructure
+    service tunnel_interface_hq(mdi:tunnel)[Tunnel Interface 10_100_0_2] %%in tunnel_layer
+    service tunnel_interface_idc(mdi:tunnel)[Tunnel Interface 10_100_0_1] %%in tunnel_layer
+    
+    %% IDC Infrastructure
+    service idc_fortigate(simple-icons:fortinet)[Fortigate AS64520] in idc_network
+    service idc_devices(mdi:lan)[IDC Subnet] in idc_network
+    
+    %% Kubernetes Infrastructure
+    %% service k8s_nodes(logos:kubernetes)[Kubernetes Nodes AS64520] in kubernetes_cluster
+    service cilium_bgp(simple-icons:cilium)[Cilium BGP AS64520] in kubernetes_cluster
+    service pod_network(carbon:web-services-container)[Pod Network 10_10_0_0] in kubernetes_nodes
+    service service_network(carbon:container-services)[Service Network 10_20_0_0] in kubernetes_nodes
+    
+    %% Network Connections
+    office_devices:T -- B:office_fortigate
+    office_fortigate:R -- L:tunnel_interface_hq
+    tunnel_interface_hq:R <--> L:tunnel_interface_idc
+    tunnel_interface_idc:R -- L:idc_fortigate
+    idc_fortigate:R -- L:idc_devices
+
+    %% BGP Peering Connections
+    %% tunnel_interface_hq:B --> T:tunnel_interface_idc
+    idc_fortigate:B -- T:cilium_bgp
+    
+    %% Kubernetes Internal Connections
+    %% k8s_nodes:B -- T:cilium_bgp
+    cilium_bgp:B -- T:pod_network
+    cilium_bgp:B -- T:service_network
+```
+
