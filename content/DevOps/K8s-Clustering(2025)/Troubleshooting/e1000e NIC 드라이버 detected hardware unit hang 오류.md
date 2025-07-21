@@ -1,6 +1,6 @@
 ---
 title: e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정
-date: 2025-07-10
+date: 2025-04-08
 draft: false
 tags:
   - Kubernetes

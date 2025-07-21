@@ -1,6 +1,6 @@
 ---
 title: 쿠버네티스 클러스터를 위한 LVM 스토리지 구성
-date: 2025-07-16
+date: 2025-03-30
 draft: false
 tags:
   - lvm

@@ -1,6 +1,6 @@
 ---
 title: 노드 Failover 이후 complete 파드 처리
-date: 2025-07-17
+date: 2025-07-02
 draft: true
 tags: 
 banner: 

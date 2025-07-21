@@ -1,6 +1,6 @@
 ---
 title: ClickHouse 데이터 파손(Crash) 이슈 해결 기록
-date: 2025-07-16
+date: 2025-06-27
 draft: false
 tags:
   - clickhouse
@@ -9,7 +9,7 @@ tags:
   - troubleshooting
   - kubernetes
   - signoz
-description: "ClickHouse가 비정상 종료 후 'max_suspicious_broken_parts' 오류를 내며 재시작에 실패하는 이슈에 대한 임시 해결 과정과 근본적인 원인 파악의 필요성을 기록한다."
+description: ClickHouse가 비정상 종료 후 'max_suspicious_broken_parts' 오류를 내며 재시작에 실패하는 이슈에 대한 임시 해결 과정과 근본적인 원인 파악의 필요성을 기록한다.
 permalink: 
 aliases: 
 completed: 
