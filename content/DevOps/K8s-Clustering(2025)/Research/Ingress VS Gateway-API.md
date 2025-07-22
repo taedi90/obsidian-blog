@@ -30,15 +30,15 @@ type:
 하지만 솔직히 말하면, 이러한 기술적인 아쉬움보다는 <b>Gateway API가 쿠버네티스의 새로운 표준이라는 점</b> 때문에 사용해보고 싶었던 마음이 가장 컸다. 새로운 기술에 대한 호기심과 표준을 따라가고 싶은 마음이 이번 기술 검토의 주된 동기였다고 할 수 있다.
 
 ## 📊 비교
-| 기능 | Ingress (ingress-nginx) | Gateway API (Cilium) |
-| :--- | :--- | :--- |
-| **표준** | De-facto 표준 | 공식 표준 (차세대) |
-| **라우팅** | HTTP/HTTPS 중심 | HTTP, HTTPS, TCP, UDP, gRPC 등 |
-| **설정 방식** | Annotation, ConfigMap | 선언적 API (Gateway, HTTPRoute, TCPRoute 등) |
-| **TCP/UDP** | ConfigMap 수정 및 컨트롤러 재기동 필요 | `TCPRoute`, `UDPRoute` 리소스로 선언적 관리 |
-| **역할 분리** | 어려움 (클러스터 관리자와 앱 개발자 권한 혼재) | 명확함 (Gateway, Route 리소스 분리) |
-| **생태계 지원** | 매우 높음 (대부분의 Helm 차트 지원) | 성장 중 (아직 지원하지 않는 경우 많음) |
-| **관측성** | 제한적 | Cilium Hubble 연동 시 L4-L7 가시성 확보 |
+| 기능          | Ingress (ingress-nginx)     | Gateway API (Cilium)                     |
+| :---------- | :-------------------------- | :--------------------------------------- |
+| **표준 여부**   | 사실상 표준                      | 공식 표준 (차세대)                              |
+| **라우팅**     | HTTP/HTTPS 중심               | HTTP, HTTPS, TCP, UDP, gRPC 등            |
+| **설정 방식**   | Annotation, ConfigMap       | 선언적 API (Gateway, HTTPRoute, TCPRoute 등) |
+| **TCP/UDP** | ConfigMap 수정 및 컨트롤러 재기동 필요  | `TCPRoute`, `UDPRoute` 리소스로 선언적 관리       |
+| **역할 분리**   | 어려움 (클러스터 관리자와 앱 개발자 권한 혼재) | 명확함 (Gateway, Route 리소스 분리)              |
+| **생태계 지원**  | 매우 높음 (대부분의 Helm 차트 지원)     | 성장 중 (아직 지원하지 않는 경우 많음)                  |
+| **관측성**     | 제한적                         | Cilium Hubble 연동 시 L4-L7 가시성 확보          |
 
 ## ✅ 선정 사유
 사내 클러스터에는 <b>Cilium Gateway API</b>를 도입하기로 결정했다. 가장 큰 이유는 Gateway API가 쿠버네티스의 새로운 표준이라는 점과, `TCPRoute`와 `UDPRoute`를 통해 L4 트래픽을 선언적으로 관리할 수 있다는 편리함 때문이었다. 또한, CNI로 Cilium을 사용하고 있었기에, Gateway API를 함께 사용하면 Hubble UI에서 L7 트래픽까지 관측할 수 있다는 점도 큰 장점으로 다가왔다. 현재까지 특별한 이슈 없이 안정적으로 사용하고 있다.
