@@ -28,10 +28,13 @@ type:
 
 ## 2. 클러스터 장애 감지 및 복구 시간 최적화
 
-Kubernetes는 노드에 장애가 발생했을 때, 기본적으로 약 5~6분의 유예 시간을 가진 후 해당 노드의 파드를 제거하고 다른 노드에 재생성하기 시작한다. 이는 곧 <b>최대 6분 이상의 서비스 다운타임</b>이 발생할 수 있음을 의미한다. 이 시간을 단축하기 위해 Kubelet, Kube-Controller, API-Server의 장애 감지 관련 파라미터를 조정했다.
+Kubernetes는 노드에 장애가 발생했을 때, 기본적으로 약 5~6분의 유예 시간을 가진 후 해당 노드의 파드를 제거하고 다른 노드에 재생성하기 시작한다. 이는 곧 <b>최대 6분 이상의 서비스 다운타임</b>이 발생할 수 있음을 의미한다. 이 시간을 단축하기 위해 Kubelet, Kube-Controller-Manager, Kube-API-Server의 장애 감지 관련 파라미터를 조정했다.
+
+![](https://i.imgur.com/aPVPxGQ.png)
+
 
 -   <b>kubelet</b>: 각 노드에서 자신의 상태(Heartbeat)를 API 서버로 보고하는 역할
--   <b>kube-controller-manager</b>: 노드 상태를 모니터링하다가 응답이 없으면 비정상(Unhealthy)으로 판단하고 파드 축출(Eviction)을 결정
+-   <b>Kube-Controller-Manager</b>: 노드 상태를 모니터링하다가 응답이 없으면 비정상(Unhealthy)으로 판단하고 파드 축출(Eviction)을 결정
 
 아래는 다운타임을 약 30초 내외로 줄이기 위해 수정한 핵심 옵션들이다.
 
@@ -39,20 +42,20 @@ Kubernetes는 노드에 장애가 발생했을 때, 기본적으로 약 5~6분�
 
 -   <b>kubelet</b>
     -   `--node-status-update-frequency=5s` (기본값 10s): 노드 상태 보고 주기. 짧을수록 장애를 빨리 전파할 수 있다.
--   <b>kube-controller-manager</b>
+-   <b>Kube-Controller-Manager</b>
     -   `--node-monitor-period=5s` (기본값 5s): 노드 상태 모니터링 주기.
     -   `--node-monitor-grace-period=20s` (기본값 40s): 노드 응답이 없을 때, Unhealthy 상태로 전환하기까지 대기하는 시간.
--   <b>kube-apiserver</b>
+-   <b>Kube-API-Server</b>
     -   `--default-not-ready-toleration-seconds=5` (기본값 5m): NotReady 상태인 노드의 파드를 Toleration(용인)하는 시간.
     -   `--default-unreachable-toleration-seconds=5` (기본값 5m): Unreachable 상태인 노드의 파드를 Toleration하는 시간.
 
 > [!IMPORTANT]
-> 과거에는 `kube-controller-manager`의 `--pod-eviction-timeout` 옵션을 사용했지만, 현재는 `kube-apiserver`의 `TolerationSeconds` 관련 옵션으로 기능이 대체되었다.
+> 과거에는 `Kube-Controller-Manager`의 `--pod-eviction-timeout` 옵션을 사용했지만, 현재는 `Kube-API-Server`의 `TolerationSeconds` 관련 옵션으로 기능이 대체되었다.
 
 ### 2-2. 옵션 적용 방법
 
--   <b>kube-apiserver 수정</b>
-    마스터 노드의 `/etc/kubernetes/manifests/kube-apiserver.yaml` 파일에 아래 내용을 추가한다.
+-   <b>Kube-API-Server 수정</b>
+    마스터 노드의 `/etc/kubernetes/manifests/Kube-API-Server.yaml` 파일에 아래 내용을 추가한다.
     ```yaml
     # spec.containers.command 에 아래 옵션 추가
     - --enable-admission-plugins=DefaultTolerationSeconds
@@ -61,8 +64,8 @@ Kubernetes는 노드에 장애가 발생했을 때, 기본적으로 약 5~6분�
     ```
     이 설정은 Static Pod로 관리되므로, 파일을 저장하면 자동으로 반영된다.
 
--   <b>kube-controller-manager 수정</b>
-    마스터 노드의 `/etc/kubernetes/manifests/kube-controller-manager.yaml` 파일에 아래 내용을 추가한다.
+-   <b>Kube-Controller-Manager 수정</b>
+    마스터 노드의 `/etc/kubernetes/manifests/Kube-Controller-Manager.yaml` 파일에 아래 내용을 추가한다.
     ```yaml
     # spec.containers.command 에 아래 옵션 추가
     - --node-monitor-period=5s
