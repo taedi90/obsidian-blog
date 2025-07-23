@@ -17,8 +17,9 @@ completed: true
 ---
 ## 🚀 요약
 > [!SUMMARY]
-> InnoDB 엔진에서 비고유(Non-unique) 인덱스를 조건으로 <b>PESSIMISTIC_WRITE</b>를 사용하면 <b>레코드 락(Record Lock)</b>뿐만 아니라 <b>갭 락(Gap Lock)</b>이 함께 동작할 수 있으며, 이는 의도치 않은 데드락을 유발하는 원인이 될 수 있다. 
+> InnoDB 엔진에서 비인덱스 컬럼을 WHERE 조건으로 <b>PESSIMISTIC_WRITE</b>를 사용하면 <b>레코드 락(Record Lock)</b>뿐만 아니라 <b>갭 락(Gap Lock)</b>이 함께 동작할 수 있으며, 이는 의도치 않은 데드락을 유발하는 원인이 될 수 있다. 
 > - 공식문서는 **REPEATABLE READ** 격리 수준 이상에서 Gap Lock 이 발생하는 경우를 설명하지만 READ_COMMITTED 와 READ_UNCOMMITTED 격리 수준에서도 Gap Lock 이 발생했다.
+> - 비교유(Non-Unique) 인덱스를 WHERE 조건으로 사용해도 동일하게 데드락이 발생할 것이라 생각했지만 의외로 데드락이 발생하지 않았다.
 > - 데드락을 피하기 위해서는 상황에 따라 아래 방법 등을 고민해볼 수 있다.
 > 	- 비유니크 인덱스 조건을 **`WHERE PK IN (A, B)`**와 같이 기본 키(PK)를 이용한 조건으로 변경
 > 	- 비관적 락이 아닌 낙관적 락으로 로직 변경 
@@ -178,21 +179,75 @@ public class DeadLockTest extends IntegrationTest {
 }
 ```
 
+#### 서비스 클래스
+```java
+@Service  
+@Slf4j  
+@RequiredArgsConstructor  
+public class DeadLockTestService {  
+    private final RdbService rdbService;  
+  
+    private List<TargetTable> findEntityListWithLock(int col1) {  
+        return rdbService.getQueryFactory()  
+                .selectFrom(QTargetTable.targetTable)  
+                .where(QTargetTable.targetTable.col1.eq(col1))  
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .fetch();  
+    }  
+  
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void process(int threadId) {  
+        // 현재 시간  
+        LocalTime now = LocalTime.now();  
+        // 다음 분의 00초 000밀리초까지 남은 시간 계산  
+        LocalTime nextMinute = now.plusMinutes(1).truncatedTo(ChronoUnit.MINUTES);  
+        long millisUntilNextMinute = ChronoUnit.MILLIS.between(now, nextMinute);   
+        try {  
+            // 다음 00초 000밀리초까지 대기  
+            Thread.sleep(millisUntilNextMinute);  
+  
+            log.info("비관적 락 시도 - 조건 : col1={}", threadId * 10);  
+            List<TargetTable> list = findEntityListWithLock(threadId * 10);  
+            log.info("비관적 락 획득 완료 - {}", list.size());  
+            list = findEntityListWithLock(threadId * 10);  
+  
+            Thread.sleep(10000);  
+        } catch (InterruptedException e) {  
+            throw new RuntimeException(e);  
+        } catch (OptimisticLockException e) {  
+            e.printStackTrace();  
+            log.info("잡았다!");  
+        } catch (PessimisticLockException e) {  
+            e.printStackTrace();  
+            log.info("정상적인 경우");  
+        }    }  
+}
+```
+
+#### 테스트 진행
+위 코드를 베이스로 다음과 같은 케이스로 테스트를 진행했고, 아래 결과를 얻었다.
+
+| 케이스                                                         | 데드락 발생 여부    |
+| ----------------------------------------------------------- | ------------ |
+| WHERE 조건에 PK 를 사용하는 경우                                      | 발생 안함        |
+| 격리수준을 `REPEATABLE_READ` 나 `SERIALIZABLE` 로 설정하는 경우          | 발생 안함        |
+| 한 트랜젝션에 `FOR UPDATE` 쿼리를 1번씩만 호출하는 경우                       | 발생 안함        |
+| 비고유(Non-unique)인덱스로 등록한 컬럼을 WHERE 조건으로 사용하는 경우              | <u>발생 안함</u> |
+| `setHint("javax.persistence.lock.timeout", 5000)` 로 설정하는 경우 | 무관하게 발생      |
+
+
+> [!IMPORTANT]
+> 비고유(Non-unique) 인덱스를 WHERE 조건으로 사용해도 동일하게 데드락이 발생할 것이라 생각했지만 의외로 데드락이 발생하지 않았다. 이 부분에 대해서는 추가적으로 파악해보지 못했다.
+
 ### 데드락 발생 조건 분석
-여러 테스트를 통해 데드락이 발생하는 특정 조건을 종합해볼 수 있었다.
+여러 테스트를 통해 데드락이 발생하는 특정 조건을 종합해볼 수 있었다. 
 
-- where 조건에 pk 로 조회하는건 오류가 발생하지 않는가?
-	- 발생 안함
-- repeatable_read 나 serializable 에서는 오류가 발생하지 않는가?
-	- 발생 안함
-- 한 트랜젝션에 for update 를 1번만 호출하면 오류가 발생하는가?
-	- 발생 안함
-- non-unique index 로 등록한 컬럼으로 조회하면 어떻게 될까?
-	- 발생... 안함?
-- setHint("javax.persistence.lock.timeout", 5000) 에서는 오류가 발생하지 않는가?
-	- 무관하게 발생
+- 서로 다른 트랜젝션이 거의 동시에 락을 획득하려 했다.
+- 격리 레벨은 READ_COMMITTED 와 READ_UNCOMMITTED 일 경우에만 발생했다.
+- 인덱스가 아닌 컬럼을 조건으로 사용했다.
+- 1개 트랜젝션에서 for update 를 두 번 호출했다. 
 
-문제는 <b>`READ_COMMITTED` 또는 `READ_UNCOMMITTED` 격리 수준</b>에서, <b>인덱스가 없는 컬럼</b>을 `WHERE` 조건으로 사용하여, <b>하나의 트랜잭션에서 `FOR UPDATE`를 두 번 이상 호출</b>하며, <b>여러 트랜잭션이 거의 동시에 락을 획득하려 할 때</b> 발생했다.
+종합하면 <b>`READ_COMMITTED` 또는 `READ_UNCOMMITTED` 격리 수준</b>에서, <b>인덱스가 없는 컬럼</b>을 `WHERE` 조건으로 사용하여, <b>하나의 트랜잭션에서 `FOR UPDATE`를 두 번 이상 호출</b>하며, <b>여러 트랜잭션이 거의 동시에 락을 획득하려 할 때</b> 발생했다.
 
 > [!IMPORTANT]
 > 공식 문서에서는 `REPEATABLE READ` 격리 수준 이상에서 `Gap Lock`이 발생한다고 설명하지만, 진행한 테스트에서는 `READ_COMMITTED`와 `READ_UNCOMMITTED` 격리 수준에서도 `Gap Lock`으로 인한 데드락이 발생했다. MariaDB 버전의 이슈나 특정 상황에 따라 동작이 다를 수 있는지에 대해서는 파악하지 못했다.
