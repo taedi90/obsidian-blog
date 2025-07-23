@@ -14,9 +14,9 @@
 | [[gitlab container registry API 인증 없이 사용하기|Gitlab-ce Container registry API 인증 없이 사용하기]] | #gitlab                                  | 2023-01-09 |
 | [[Ubuntu 22.04 에 microk8s 설치하기|Ubuntu 22.04 에 microk8s 설치]]                              | #microk8s #k8s #linux                    | 2022-11-28 |
 | [[maven 외부 라이브러리 추가 (systemPath)|Maven 외부 라이브러리 추가 (systemPath)]]                        | #maven #springboot                       | 2022-11-22 |
+| [[HTML|HTML 기본 구조]]                                                                      | #html #web #frontend #semantic-web       | 2022-09-05 |
 | [[CSS|CSS 기본 개념 정리 (선택자, 우선순위, Flexbox)]]                                                | #css #frontend #web #selector #flexbox   | 2022-09-05 |
 | [[Git|Git 기본 개념과 명령어]]                                                                   | #git #vcs #devops #cli                   | 2022-09-05 |
-| [[HTML|HTML 기본 구조]]                                                                      | #html #web #frontend #semantic-web       | 2022-09-05 |
 | [[Vanilla JS Ajax 함수 모듈화]]                                        | #javascript                              | 2021-12-05 |
 | [[Vanilla JS 모달 알림창 만들어보기]]                                      | #javascript                              | 2021-12-05 |
 | [[oracle cloud CentOS 8 설치 및 세팅하기|Oracle cloud CentOS 8 세팅]]                             | #infra                                   | 2021-12-01 |

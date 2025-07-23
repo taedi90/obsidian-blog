@@ -29,28 +29,28 @@ description: DevOps 엔지니어의 기술 블로그
 <!-- QueryToSerialize: TABLE WITHOUT ID link(file.link, title) AS 제목, regexreplace(file.folder, ".*\/([^\/]+)$", "$1") AS 카테고리, dateformat(date, "yyyy-MM-dd") AS 작성일 FROM "Publish/DevOps" WHERE draft = false SORT date DESC LIMIT 20 -->
 <!-- SerializedQuery: TABLE WITHOUT ID link(file.link, title) AS 제목, regexreplace(file.folder, ".*\/([^\/]+)$", "$1") AS 카테고리, dateformat(date, "yyyy-MM-dd") AS 작성일 FROM "Publish/DevOps" WHERE draft = false SORT date DESC LIMIT 20 -->
 
-| 제목                                                                                                                                                              | 카테고리                 | 작성일        |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ---------- |
-| [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]]                                                             | Offline-Install      | 2025-07-14 |
-| [[도입 배경|쿠버네티스가 필요했던 이유]]                                                                                                | K8s-Clustering(2025) | 2025-07-12 |
-| [[internal-kubernetes-cluster|사내 쿠버네티스 클러스터 도입기]]                                                                       | K8s-Clustering(2025) | 2025-07-10 |
-| [[관측가능성 스택 선정]]                                                                                    | Research             | 2025-06-30 |
-| [[clickhouse 데이터 크래시 이슈|ClickHouse 데이터 파손(Crash) 이슈 해결 기록]]                                             | Troubleshooting      | 2025-06-27 |
-| [[Helm 차트 템플릿 선정]]                                                                              | Research             | 2025-04-25 |
-| [[CI 도구 선정]]                                                                                          | Research             | 2025-04-16 |
-| [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                                                                  | Network              | 2025-04-09 |
-| [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | Troubleshooting      | 2025-04-08 |
-| [[배포 도구 선정]]                                                                                          | Research             | 2025-04-07 |
-| [[Ingress VS Gateway-API|Ingress VS Gateway API]]                                                              | Research             | 2025-04-05 |
-| [[CSI 구현체 선정]]                                                                                      | Research             | 2025-04-03 |
-| [[컨테이너 레지스트리 선정]]                                                                                | Research             | 2025-04-03 |
-| [[CNI 구현체 선정]]                                                                                      | Research             | 2025-04-01 |
-| [[클러스터링 도구 선정]]                                                                                    | Research             | 2025-03-30 |
-| [[lvm 설정|쿠버네티스 클러스터를 위한 LVM 스토리지 구성]]                                                                           | Storage              | 2025-03-30 |
-| [[CRI 구현체 선정|Kubernetes CRI 선정]]                                                                               | Research             | 2025-03-16 |
-| [[maven 빌드 속도 최적화|Maven 빌드 속도 최적화]]                                                                                                      | ETC                  | 2024-12-12 |
-| [[Docker Healthcheck 실패 시 컨테이너 재기동 설정]]                                                        | Container            | 2024-12-10 |
-| [[Galera Arbitrator 사용해보기|Galera Arbitrator 컨테이너 생성 & failover 테스트]]                                                                     | ETC                  | 2024-10-10 |
+| 제목                                                                 | 카테고리                                                   | 작성일                  |            |
+| ------------------------------------------------------------------ | ------------------------------------------------------ | -------------------- | ---------- |
+| [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md | kubevirt 를 활용한 오프라인 테스트 환경 구성]]                        | Offline-Install      | 2025-07-14 |
+| [[도입 배경                                                            | 쿠버네티스가 필요했던 이유]]                                       | K8s-Clustering(2025) | 2025-07-12 |
+| [[internal-kubernetes-cluster                                      | 사내 쿠버네티스 클러스터 도입기]]                                    | K8s-Clustering(2025) | 2025-07-10 |
+| [[관측가능성 스택 선정]]                                                    | Research                                               | 2025-06-30           |            |
+| [[clickhouse 데이터 크래시 이슈                                            | ClickHouse 데이터 파손(Crash) 이슈 해결 기록]]                    | Troubleshooting      | 2025-06-27 |
+| [[Helm 차트 템플릿 선정]]                                                 | Research                                               | 2025-04-25           |            |
+| [[CI 도구 선정]]                                                       | Research                                               | 2025-04-16           |            |
+| [[BGP 라우팅 설정                                                       | BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                      | Network              | 2025-04-09 |
+| [[e1000e NIC 드라이버 detected hardware unit hang 오류                   | e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | Troubleshooting      | 2025-04-08 |
+| [[배포 도구 선정]]                                                       | Research                                               | 2025-04-07           |            |
+| [[Ingress VS Gateway-API                                           | Ingress VS Gateway API]]                               | Research             | 2025-04-05 |
+| [[CSI 구현체 선정]]                                                     | Research                                               | 2025-04-03           |            |
+| [[컨테이너 레지스트리 선정]]                                                  | Research                                               | 2025-04-03           |            |
+| [[CNI 구현체 선정]]                                                     | Research                                               | 2025-04-01           |            |
+| [[클러스터링 도구 선정]]                                                    | Research                                               | 2025-03-30           |            |
+| [[lvm 설정                                                           | 쿠버네티스 클러스터를 위한 LVM 스토리지 구성]]                           | Storage              | 2025-03-30 |
+| [[CRI 구현체 선정                                                       | Kubernetes CRI 선정]]                                    | Research             | 2025-03-16 |
+| [[maven 빌드 속도 최적화                                                  | Maven 빌드 속도 최적화]]                                      | ETC                  | 2024-12-12 |
+| [[Docker Healthcheck 실패 시 컨테이너 재기동 설정]]                            | Container                                              | 2024-12-10           |            |
+| [[Galera Arbitrator 사용해보기                                          | Galera Arbitrator 컨테이너 생성 & failover 테스트]]             | ETC                  | 2024-10-10 |
 <!-- SerializedQuery END -->
 
 ---

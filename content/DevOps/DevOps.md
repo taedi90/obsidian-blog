@@ -3,27 +3,27 @@
 
 | Name                                                                                                                                                            | Category             | Date       |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ---------- |
-| [[Publish/DevOps/K8s-Clustering(2025)/CICD/무제.md|무제]]                                                                                                          | CICD                 | 2025-07-16 |
-| [[lvm 설정|쿠버네티스 클러스터를 위한 LVM 스토리지 구성]]                                                                           | Storage              | 2025-07-16 |
-| [[clickhouse 데이터 크래시 이슈|ClickHouse 데이터 파손(Crash) 이슈 해결 기록]]                                             | Troubleshooting      | 2025-07-16 |
-| [[도입 배경]]                                                                                                         | K8s-Clustering(2025) | 2025-07-12 |
-| [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                                                                  | Network              | 2025-07-12 |
-| [[사내 쿠버네티스 클러스터 도입|사내 쿠버네티스 클러스터 도입기]]                                                                                  | K8s-Clustering(2025) | 2025-07-10 |
-| [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | Troubleshooting      | 2025-07-10 |
+| [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]]                                                             | Offline-Install      | 2025-07-14 |
+| [[도입 배경|쿠버네티스가 필요했던 이유]]                                                                                                | K8s-Clustering(2025) | 2025-07-12 |
+| [[internal-kubernetes-cluster|사내 쿠버네티스 클러스터 도입기]]                                                                       | K8s-Clustering(2025) | 2025-07-10 |
 | [[관측가능성 스택 선정]]                                                                                    | Research             | 2025-06-30 |
+| [[clickhouse 데이터 크래시 이슈|ClickHouse 데이터 파손(Crash) 이슈 해결 기록]]                                             | Troubleshooting      | 2025-06-27 |
 | [[Helm 차트 템플릿 선정]]                                                                              | Research             | 2025-04-25 |
 | [[CI 도구 선정]]                                                                                          | Research             | 2025-04-16 |
+| [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                                                                  | Network              | 2025-04-09 |
+| [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | Troubleshooting      | 2025-04-08 |
 | [[배포 도구 선정]]                                                                                          | Research             | 2025-04-07 |
 | [[Ingress VS Gateway-API|Ingress VS Gateway API]]                                                              | Research             | 2025-04-05 |
 | [[CSI 구현체 선정]]                                                                                      | Research             | 2025-04-03 |
 | [[컨테이너 레지스트리 선정]]                                                                                | Research             | 2025-04-03 |
 | [[CNI 구현체 선정]]                                                                                      | Research             | 2025-04-01 |
 | [[클러스터링 도구 선정]]                                                                                    | Research             | 2025-03-30 |
+| [[lvm 설정|쿠버네티스 클러스터를 위한 LVM 스토리지 구성]]                                                                           | Storage              | 2025-03-30 |
 | [[CRI 구현체 선정|Kubernetes CRI 선정]]                                                                               | Research             | 2025-03-16 |
 | [[maven 빌드 속도 최적화|Maven 빌드 속도 최적화]]                                                                                                      | ETC                  | 2024-12-12 |
 | [[Docker Healthcheck 실패 시 컨테이너 재기동 설정]]                                                        | Container            | 2024-12-10 |
 | [[Galera Arbitrator 사용해보기|Galera Arbitrator 컨테이너 생성 & failover 테스트]]                                                                     | ETC                  | 2024-10-10 |
-| [[PESSIMISTIC_WRITE 와 데드락|MariaDB PESSIMISTIC_WRITE 와 데드락(feat. Gap lock)]]                                                          | MariaDB              | 2024-09-28 |
+| [[pessimisticwrite-and-deadlock|MariaDB PESSIMISTIC_WRITE 와 데드락(feat. Gap lock)]]                                                    | MariaDB              | 2024-09-28 |
 | [[MariaDB 데드락 로그 확인|MariaDB 데드락 로그 확인 방법]]                                                                                           | MariaDB              | 2024-09-27 |
 | [[c언어 함수 포인터와 gets() 알아보기|C언어 전역 변수와 포인터의 함정 (함수 포인터와 gets 바로 알기)]]                                                                      | ETC                  | 2023-07-22 |
 | [[git bad object 오류 해결하기|Git bad object 오류 해결하기]]                                                                                        | ETC                  | 2023-07-21 |
@@ -45,12 +45,12 @@
 | [[linux 특정 소유자 폴더 찾기|Linux 특정 소유자 폴더 찾기]]                                                                                              | Linux                | 2022-12-19 |
 | [[Ubuntu 22.04 에 microk8s 설치하기|Ubuntu 22.04 에 microk8s 설치]]                                                                              | ETC                  | 2022-11-28 |
 | [[linux 사용자 비밀번호 변경|Linux 사용자 비밀번호 변경]]                                                                                                | Linux                | 2022-11-28 |
-| [[HA 와 Failover|Kubernetes 2-Node 클러스터에서 고가용성(HA) 및 장애 복구(Failover) 구성하기]]                                                         | Container            | 2022-11-23 |
+| [[2node-cluster-ha-and-failover|Kubernetes 2-Node 클러스터에서 고가용성(HA) 및 장애 복구(Failover) 구성하기]]                                         | Container            | 2022-11-23 |
 | [[컨테이너 타임존 설정|Container Timezone 설정]]                                                                                              | Container            | 2022-11-22 |
 | [[maven 외부 라이브러리 추가 (systemPath)|Maven 외부 라이브러리 추가 (systemPath)]]                                                                        | ETC                  | 2022-11-22 |
+| [[HTML|HTML 기본 구조]]                                                                                                                      | ETC                  | 2022-09-05 |
 | [[CSS|CSS 기본 개념 정리 (선택자, 우선순위, Flexbox)]]                                                                                                | ETC                  | 2022-09-05 |
 | [[Git|Git 기본 개념과 명령어]]                                                                                                                   | ETC                  | 2022-09-05 |
-| [[HTML|HTML 기본 구조]]                                                                                                                      | ETC                  | 2022-09-05 |
 | [[Vanilla JS Ajax 함수 모듈화]]                                                                                        | ETC                  | 2021-12-05 |
 | [[Vanilla JS 모달 알림창 만들어보기]]                                                                                      | ETC                  | 2021-12-05 |
 | [[oracle cloud CentOS 8 설치 및 세팅하기|Oracle cloud CentOS 8 세팅]]                                                                             | ETC                  | 2021-12-01 |

@@ -1,7 +1,7 @@
 ---
-title: CICD 구성
+title: CICD 구성 (작성중)
 date: 2025-07-16
-draft: true
+draft: false
 tags: 
 banner: 
 cssclasses: 

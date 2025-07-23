@@ -11,6 +11,6 @@
 | [[k8s 데몬셋(daemonset) 파드를 scale 하는 방법|K8s 파드 scale]]                                          | #k8s                                                | 2023-01-30 |
 | [[k8s 클러스터 외부 애플리케이션 ingress 와 service 연결하기|K8s 외부 애플리케이션 ingress 와 service 연결]]             | #k8s                                                | 2023-01-30 |
 | [[kubernetes Statefulset 에서 storageClassName 업데이트 하기|K8s Statefulset storageClassName 업데이트]] | #k8s                                                | 2023-01-30 |
-| [[HA 와 Failover|Kubernetes 2-Node 클러스터에서 고가용성(HA) 및 장애 복구(Failover) 구성하기]]                   | #kubernetes #ha #failover #longhorn #infrastructure | 2022-11-23 |
+| [[2node-cluster-ha-and-failover|Kubernetes 2-Node 클러스터에서 고가용성(HA) 및 장애 복구(Failover) 구성하기]]   | #kubernetes #ha #failover #longhorn #infrastructure | 2022-11-23 |
 | [[컨테이너 타임존 설정|Container Timezone 설정]]                                                        | #infra #docker                                      | 2022-11-22 |
 <!-- SerializedQuery END -->
