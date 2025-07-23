@@ -15,7 +15,7 @@ description: DevOps 엔지니어의 기술 블로그
 
 | 🏷️ 카테고리                                               | 📝 설명                         |
 | ------------------------------------------------------ | ----------------------------- |
-| [[사내 쿠버네티스 클러스터 도입\|🚀 K8s Clustering (2025)]]         | 사내 온프레미스 쿠버네티스 클러스터 도입기       |
+| [[internal-kubernetes-cluster\|🚀 K8s Clustering (2025)]]         | 사내 온프레미스 쿠버네티스 클러스터 도입기       |
 | [🐳 Container](DevOps/Container/Container)             | 컨테이너 환경 (Docker & Kubernetes) |
 | [🔍 Elasticsearch](DevOps/Elasticsearch/Elasticsearch) | 엘라스틱서치                        |
 | [🗄️ MariaDB](DevOps/MariaDB/MariaDB)                  | 마리아디비                         |
@@ -31,14 +31,14 @@ description: DevOps 엔지니어의 기술 블로그
 
 | 제목                                                                                                                                                              | 카테고리                 | 작성일        |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ---------- |
-| [[Publish/DevOps/K8s-Clustering(2025)/CICD/무제.md|무제]]                                                                                                          | CICD                 | 2025-07-16 |
-| [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                                                                  | Network              | 2025-07-12 |
-| [[도입 배경]]                                                                                                         | K8s-Clustering(2025) | 2025-07-12 |
-| [[사내 쿠버네티스 클러스터 도입|사내 쿠버네티스 클러스터 도입기]]                                                                                  | K8s-Clustering(2025) | 2025-07-10 |
+| [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]]                                                             | Offline-Install      | 2025-07-14 |
+| [[도입 배경|쿠버네티스가 필요했던 이유]]                                                                                                | K8s-Clustering(2025) | 2025-07-12 |
+| [[internal-kubernetes-cluster|사내 쿠버네티스 클러스터 도입기]]                                                                       | K8s-Clustering(2025) | 2025-07-10 |
 | [[관측가능성 스택 선정]]                                                                                    | Research             | 2025-06-30 |
 | [[clickhouse 데이터 크래시 이슈|ClickHouse 데이터 파손(Crash) 이슈 해결 기록]]                                             | Troubleshooting      | 2025-06-27 |
 | [[Helm 차트 템플릿 선정]]                                                                              | Research             | 2025-04-25 |
 | [[CI 도구 선정]]                                                                                          | Research             | 2025-04-16 |
+| [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                                                                  | Network              | 2025-04-09 |
 | [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | Troubleshooting      | 2025-04-08 |
 | [[배포 도구 선정]]                                                                                          | Research             | 2025-04-07 |
 | [[Ingress VS Gateway-API|Ingress VS Gateway API]]                                                              | Research             | 2025-04-05 |

@@ -66,7 +66,7 @@ type:
 
 | 작성일           | 제목                                                                                             |
 | ------------- | ---------------------------------------------------------------------------------------------- |
-| 2025년 07월 12일 | [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]] |
+| 2025년 04월 09일 | [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]] |
 <!-- SerializedQuery END -->
 
 ### 4. 스토리지
@@ -106,8 +106,9 @@ type:
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
 
-| 작성일 | 제목 |
-| --- | -- |
+| 작성일           | 제목                                                                                                  |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| 2025년 07월 14일 | [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]] |
 <!-- SerializedQuery END -->
 
 ### 0. 트러블슈팅
