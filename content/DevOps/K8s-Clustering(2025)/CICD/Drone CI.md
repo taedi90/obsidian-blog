@@ -1,6 +1,6 @@
 ---
-title: <% tp.file.title %>
-date: <% tp.date.now("YYYY-MM-DD") %>
+title: Drone CI
+date: 2025-07-23
 draft: true
 tags: 
 banner: 
@@ -14,3 +14,6 @@ type:
   - note
   - comparison
 ---
+- 차트 구성
+- 변수 사용 방식
+- yml 구조

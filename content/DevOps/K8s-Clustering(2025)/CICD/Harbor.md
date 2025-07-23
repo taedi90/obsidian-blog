@@ -1,11 +1,8 @@
 ---
-title: 서비스 메시
-date: 2025-07-16
+title: Untitled
+date: 2025-07-23
 draft: true
-tags:
-  - service-mesh
-  - kubernetes
-  - istio
+tags: 
 banner: 
 cssclasses: 
 description: 
@@ -13,5 +10,9 @@ permalink:
 aliases: 
 completed: 
 type:
+  - issue
   - note
+  - comparison
 ---
+- 차트 구성
+- OIDC
