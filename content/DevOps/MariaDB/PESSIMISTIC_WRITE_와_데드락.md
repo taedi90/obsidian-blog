@@ -256,9 +256,9 @@ public class DeadLockTestService {
 > Gap locking is not needed for statements that lock rows using a unique index to search for a unique row.
 > \- MariaDB 공식 문서
 
-원인이 `Gap Lock`에 있다는 것을 파악한 후, 서비스 로직을 수정하기로 했다. 공식 문서의 설명처럼, 고유 인덱스(Unique Index)를 사용해 단일 레코드를 조회하면 `Gap Lock`이 발생하지 않는다.
+원인이 `Gap Lock`에 있다는 것을 파악한 후, 서비스 로직을 수정하기로 했다. 따라서 기존 `FOR UPDATE` 쿼리의 `WHERE` 절에서 비 인덱스 컬럼 조건을 사용하는 대신, <b>`WHERE id IN (...)`과 같이 PK 기반으로 레코드를 조회하도록 로직을 변경</b>하여 문제를 해결했다.
 
-따라서 기존 `FOR UPDATE` 쿼리의 `WHERE` 절에서 비고유 인덱스(Non-unique Index) 조건을 사용하는 대신, <b>`WHERE id IN (...)`과 같이 PK 기반으로 레코드를 조회하도록 로직을 변경</b>하여 문제를 해결했다.
+![](https://i.imgur.com/5rP6v2p.png)
 
 추가적으로, 데드락이 아니더라도 발생할 수 있는 타임아웃(`PessimisticLockException`)에 대비하여 트랜잭션 오류 시 비즈니스 로직을 재시도하는 로직을 더한다면 더욱 안정적인 서비스를 만들 수 있을 것이라 생각한다. 이는 트랜잭션 외부에서 처리하거나 별도의 스케줄링 로직으로 구현하는 것이 어떨까 싶다.
 
