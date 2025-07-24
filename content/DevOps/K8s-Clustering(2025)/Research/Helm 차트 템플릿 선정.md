@@ -16,6 +16,7 @@ type:
 
 > [!SUMMARY]
 > MSA 환경에서 표준화된 배포를 위해 Helm 차트 템플릿을 비교 분석한 결과, Helmet 라이브러리 차트를 기반으로 한 래퍼 차트 구조를 선택했다. Bitnami 대비 간결한 설정과 라이선스 자유도가 결정적 요인이었다.
+> - 차트는 [https://github.com/taedi90/helmet-extended](https://github.com/taedi90/helmet-extended) 에서 전체 구조를 확인할 수 있다.
 
 ## 💡 개요
 

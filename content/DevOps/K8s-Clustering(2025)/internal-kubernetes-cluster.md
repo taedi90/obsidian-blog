@@ -56,8 +56,9 @@ type:
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
 
-| 작성일 | 제목 |
-| --- | -- |
+| 작성일           | 제목                                                                           |
+| ------------- | ---------------------------------------------------------------------------- |
+| 2025년 07월 22일 | [[클러스터 구조|클러스터 구조 (작성중)]] |
 <!-- SerializedQuery END -->
 
 ### 3. 네트워크 구성
@@ -82,17 +83,20 @@ type:
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/CICD" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/CICD" WHERE draft = false SORT date ASC -->
 
-| 작성일 | 제목 |
-| --- | -- |
+| 작성일           | 제목                                                                     |
+| ------------- | ---------------------------------------------------------------------- |
+| 2025년 07월 16일 | [[CICD 구성|CICD 구성 (작성중)]] |
 <!-- SerializedQuery END -->
 
 ### 6. 관측가능성
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Observability" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Observability" WHERE draft = false SORT date ASC -->
 
-| 작성일 | 제목 |
-| --- | -- |
+| 작성일           | 제목                                                                                        |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| 2025년 07월 16일 | [[관측가능성 시스템 구조|관측가능성 시스템 구조 (작성중)]] |
 <!-- SerializedQuery END -->
+
 
 ### 7. 인증 & 인가
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Auth" WHERE draft = false SORT date ASC -->
@@ -106,10 +110,11 @@ type:
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Offline-Install" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                                                  |
-| ------------- | --------------------------------------------------------------------------------------------------- |
-| 2025년 07월 14일 | [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]] |
+| 작성일           | 제목                                                                                                         |
+| ------------- | ---------------------------------------------------------------------------------------------------------- |
+| 2025년 07월 14일 | [[kubevirt-setting|kubevirt 를 활용한 오프라인 테스트 환경 구성]] |
 <!-- SerializedQuery END -->
+
 
 ### 0. 트러블슈팅
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Troubleshooting" WHERE draft = false SORT date ASC -->

@@ -3,7 +3,9 @@
 
 | Name                                                                                                                                                            | Category             | Date       |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ---------- |
-| [[Publish/DevOps/K8s-Clustering(2025)/Offline-Install/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]]                                                             | Offline-Install      | 2025-07-14 |
+| [[클러스터 구조|클러스터 구조 (작성중)]]                                                                                    | Clustering           | 2025-07-22 |
+| [[CICD 구성|CICD 구성 (작성중)]]                                                                                          | CICD                 | 2025-07-16 |
+| [[Publish/DevOps/K8s-Clustering(2025)/Observability/테스트 환경 구성.md|kubevirt 를 활용한 오프라인 테스트 환경 구성]]                                                               | Observability        | 2025-07-14 |
 | [[도입 배경|쿠버네티스가 필요했던 이유]]                                                                                                | K8s-Clustering(2025) | 2025-07-12 |
 | [[internal-kubernetes-cluster|사내 쿠버네티스 클러스터 도입기]]                                                                       | K8s-Clustering(2025) | 2025-07-10 |
 | [[관측가능성 스택 선정]]                                                                                    | Research             | 2025-06-30 |
@@ -38,8 +40,8 @@
 | [[haproxy 로 한 포트에서 ssh 와 https 사용하기|Haproxy 한 포트로 ssh 와 https 동시에 사용하기]]                                                                 | ETC                  | 2023-02-02 |
 | [[k8s api-server 인증서에 SAN 추가하기|K8s API 서버 인증서에 SAN 추가]]                                                                            | Container            | 2023-01-30 |
 | [[k8s 네임스페이스 강제 삭제 방법|K8s 네임스페이스 강제 삭제]]                                                                                           | Container            | 2023-01-30 |
-| [[k8s 데몬셋(daemonset) 파드를 scale 하는 방법|K8s 파드 scale]]                                                                                | Container            | 2023-01-30 |
 | [[k8s 클러스터 외부 애플리케이션 ingress 와 service 연결하기|K8s 외부 애플리케이션 ingress 와 service 연결]]                                                   | Container            | 2023-01-30 |
+| [[k8s 데몬셋(daemonset) 파드를 scale 하는 방법|K8s 파드 scale]]                                                                                | Container            | 2023-01-30 |
 | [[kubernetes Statefulset 에서 storageClassName 업데이트 하기|K8s Statefulset storageClassName 업데이트]]                                       | Container            | 2023-01-30 |
 | [[gitlab container registry API 인증 없이 사용하기|Gitlab-ce Container registry API 인증 없이 사용하기]]                                                 | ETC                  | 2023-01-09 |
 | [[linux 특정 소유자 폴더 찾기|Linux 특정 소유자 폴더 찾기]]                                                                                              | Linux                | 2022-12-19 |
@@ -48,9 +50,9 @@
 | [[2node-cluster-ha-and-failover|Kubernetes 2-Node 클러스터에서 고가용성(HA) 및 장애 복구(Failover) 구성하기]]                                         | Container            | 2022-11-23 |
 | [[컨테이너 타임존 설정|Container Timezone 설정]]                                                                                              | Container            | 2022-11-22 |
 | [[maven 외부 라이브러리 추가 (systemPath)|Maven 외부 라이브러리 추가 (systemPath)]]                                                                        | ETC                  | 2022-11-22 |
-| [[HTML|HTML 기본 구조]]                                                                                                                      | ETC                  | 2022-09-05 |
 | [[CSS|CSS 기본 개념 정리 (선택자, 우선순위, Flexbox)]]                                                                                                | ETC                  | 2022-09-05 |
 | [[Git|Git 기본 개념과 명령어]]                                                                                                                   | ETC                  | 2022-09-05 |
+| [[HTML|HTML 기본 구조]]                                                                                                                      | ETC                  | 2022-09-05 |
 | [[Vanilla JS Ajax 함수 모듈화]]                                                                                        | ETC                  | 2021-12-05 |
 | [[Vanilla JS 모달 알림창 만들어보기]]                                                                                      | ETC                  | 2021-12-05 |
 | [[oracle cloud CentOS 8 설치 및 세팅하기|Oracle cloud CentOS 8 세팅]]                                                                             | ETC                  | 2021-12-01 |
