@@ -39,6 +39,7 @@ description: DevOps 엔지니어의 기술 블로그
 | [[internal-kubernetes-cluster|사내 쿠버네티스 클러스터 도입기]]                                                                       | K8s-Clustering(2025) | 2025-07-10 |
 | [[관측가능성 스택 선정]]                                                                                    | Research             | 2025-06-30 |
 | [[clickhouse 데이터 크래시 이슈|ClickHouse 데이터 파손(Crash) 이슈 해결 기록]]                                             | Troubleshooting      | 2025-06-27 |
+| [[자바 로그 설정|자바 로그 수집 설정]]                                                                             | Logs                 | 2025-04-29 |
 | [[오퍼레이터 패턴|오퍼레이터 패턴 알아보기]]                                                                                     | Research             | 2025-04-25 |
 | [[Helm 차트 템플릿 선정]]                                                                              | Research             | 2025-04-25 |
 | [[CI 도구 선정]]                                                                                          | Research             | 2025-04-16 |
@@ -50,7 +51,6 @@ description: DevOps 엔지니어의 기술 블로그
 | [[컨테이너 레지스트리 선정]]                                                                                | Research             | 2025-04-03 |
 | [[CNI 구현체 선정]]                                                                                      | Research             | 2025-04-01 |
 | [[클러스터링 도구 선정]]                                                                                    | Research             | 2025-03-30 |
-| [[lvm 설정|쿠버네티스 클러스터를 위한 LVM 스토리지 구성]]                                                                           | Storage              | 2025-03-30 |
 <!-- SerializedQuery END -->
 
 
