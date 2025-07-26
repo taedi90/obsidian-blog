@@ -49,6 +49,7 @@ type:
 | 2025년 04월 05일 | [[Ingress VS Gateway-API|Ingress VS Gateway API]] |
 | 2025년 04월 07일 | [[배포 도구 선정]]                             |
 | 2025년 04월 16일 | [[CI 도구 선정]]                             |
+| 2025년 04월 25일 | [[오퍼레이터 패턴|오퍼레이터 패턴 알아보기]]                        |
 | 2025년 04월 25일 | [[Helm 차트 템플릿 선정]]                 |
 | 2025년 06월 30일 | [[관측가능성 스택 선정]]                       |
 <!-- SerializedQuery END -->
@@ -56,9 +57,9 @@ type:
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Clustering" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                           |
-| ------------- | ---------------------------------------------------------------------------- |
-| 2025년 07월 22일 | [[클러스터 구조|클러스터 구조 (작성중)]] |
+| 작성일           | 제목                                                                     |
+| ------------- | ---------------------------------------------------------------------- |
+| 2025년 07월 22일 | [[클러스터 구조]] |
 <!-- SerializedQuery END -->
 
 ### 3. 네트워크 구성
@@ -83,18 +84,18 @@ type:
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/CICD" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/CICD" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                     |
-| ------------- | ---------------------------------------------------------------------- |
-| 2025년 07월 16일 | [[CICD 구성|CICD 구성 (작성중)]] |
+| 작성일           | 제목                                                                |
+| ------------- | ----------------------------------------------------------------- |
+| 2025년 07월 16일 | [[CICD 구성|CICD 순서도]] |
 <!-- SerializedQuery END -->
 
 ### 6. 관측가능성
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Observability" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  link(file.link, title) AS 제목 FROM "Publish/DevOps/K8s-Clustering(2025)/Observability" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                                        |
-| ------------- | ----------------------------------------------------------------------------------------- |
-| 2025년 07월 16일 | [[관측가능성 시스템 구조|관측가능성 시스템 구조 (작성중)]] |
+| 작성일           | 제목                                                                                  |
+| ------------- | ----------------------------------------------------------------------------------- |
+| 2025년 07월 16일 | [[관측가능성 시스템 구조]] |
 <!-- SerializedQuery END -->
 
 
