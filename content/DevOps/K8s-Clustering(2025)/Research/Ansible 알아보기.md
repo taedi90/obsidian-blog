@@ -33,7 +33,7 @@ Ansible을 도입하면서 처음에 엄청 난항을 겪었다. 폴더 구조�
 
 ### 2-1. 최종 폴더 구성
 
-```
+```bash
 /infra-automation/
 │── .venv/             # Python 가상환경 (git으로 관리하지 않음)
 │── inventory/         # 인벤토리 파일들
