@@ -37,20 +37,20 @@ description: DevOps 엔지니어의 기술 블로그
 | [[kubevirt-setting|kubevirt 를 활용한 오프라인 테스트 환경 구성]]                                                      | Offline-Install      | 2025-07-14 |
 | [[도입 배경|쿠버네티스가 필요했던 이유]]                                                                                                | K8s-Clustering(2025) | 2025-07-12 |
 | [[internal-kubernetes-cluster|사내 쿠버네티스 클러스터 도입기]]                                                                       | K8s-Clustering(2025) | 2025-07-10 |
+| [[nfs-subdir-provisioner pvc 삭제 불가 이슈|nfs-subdir-provisioner PVC 삭제시 실제 디렉토리는 그대로 남아있는 이슈]]             | Troubleshooting      | 2025-07-01 |
 | [[관측가능성 스택 선정]]                                                                                    | Research             | 2025-06-30 |
 | [[clickhouse 데이터 크래시 이슈|ClickHouse 데이터 파손(Crash) 이슈 해결 기록]]                                             | Troubleshooting      | 2025-06-27 |
+| [[longhorn 볼륨 용량이 줄어들지 않는 이슈]]                                               | Troubleshooting      | 2025-06-23 |
 | [[자바 로그 설정|자바 로그 수집 설정]]                                                                             | Logs                 | 2025-04-29 |
 | [[오퍼레이터 패턴|오퍼레이터 패턴 알아보기]]                                                                                     | Research             | 2025-04-25 |
 | [[Helm 차트 템플릿 선정]]                                                                              | Research             | 2025-04-25 |
 | [[CI 도구 선정]]                                                                                          | Research             | 2025-04-16 |
+| [[etcd 백업 설정]]                                                                               | Troubleshooting      | 2025-04-12 |
 | [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                                                                  | Network              | 2025-04-09 |
+| [[Ansible|Ansible 기본 알아보기]]                                                                                    | Research             | 2025-04-09 |
 | [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | Troubleshooting      | 2025-04-08 |
 | [[배포 도구 선정]]                                                                                          | Research             | 2025-04-07 |
 | [[Ingress VS Gateway-API|Ingress VS Gateway API]]                                                              | Research             | 2025-04-05 |
-| [[CSI 구현체 선정]]                                                                                      | Research             | 2025-04-03 |
-| [[컨테이너 레지스트리 선정]]                                                                                | Research             | 2025-04-03 |
-| [[CNI 구현체 선정]]                                                                                      | Research             | 2025-04-01 |
-| [[클러스터링 도구 선정]]                                                                                    | Research             | 2025-03-30 |
 <!-- SerializedQuery END -->
 
 
