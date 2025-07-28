@@ -46,8 +46,8 @@ description: DevOps 엔지니어의 기술 블로그
 | [[Helm 차트 템플릿 선정]]                                                                              | Research             | 2025-04-25 |
 | [[CI 도구 선정]]                                                                                          | Research             | 2025-04-16 |
 | [[etcd 백업 설정]]                                                                               | Troubleshooting      | 2025-04-12 |
+| [[Ansible 알아보기|Ansible 기본 알아보기]]                                                                               | Research             | 2025-04-09 |
 | [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                                                                  | Network              | 2025-04-09 |
-| [[Ansible|Ansible 기본 알아보기]]                                                                                    | Research             | 2025-04-09 |
 | [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | Troubleshooting      | 2025-04-08 |
 | [[배포 도구 선정]]                                                                                          | Research             | 2025-04-07 |
 | [[Ingress VS Gateway-API|Ingress VS Gateway API]]                                                              | Research             | 2025-04-05 |

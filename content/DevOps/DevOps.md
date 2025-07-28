@@ -19,7 +19,7 @@
 | [[CI 도구 선정]]                                                                                          | Research             | 2025-04-16 |
 | [[etcd 백업 설정]]                                                                               | Troubleshooting      | 2025-04-12 |
 | [[BGP 라우팅 설정|BGP 라우팅 설정으로 쿠버네티스 네트워크 외부 연동하기]]                                                                  | Network              | 2025-04-09 |
-| [[Ansible|Ansible 기본 알아보기]]                                                                                    | Research             | 2025-04-09 |
+| [[Ansible 알아보기|Ansible 기본 알아보기]]                                                                               | Research             | 2025-04-09 |
 | [[e1000e NIC 드라이버 detected hardware unit hang 오류|e1000e NIC 드라이버 detected hardware unit hang 오류 해결 과정]] | Troubleshooting      | 2025-04-08 |
 | [[배포 도구 선정]]                                                                                          | Research             | 2025-04-07 |
 | [[Ingress VS Gateway-API|Ingress VS Gateway API]]                                                              | Research             | 2025-04-05 |
@@ -58,8 +58,8 @@
 | [[컨테이너 타임존 설정|Container Timezone 설정]]                                                                                              | Container            | 2022-11-22 |
 | [[maven 외부 라이브러리 추가 (systemPath)|Maven 외부 라이브러리 추가 (systemPath)]]                                                                        | ETC                  | 2022-11-22 |
 | [[Git|Git 기본 개념과 명령어]]                                                                                                                   | ETC                  | 2022-09-05 |
-| [[HTML|HTML 기본 구조]]                                                                                                                      | ETC                  | 2022-09-05 |
 | [[CSS|CSS 기본 개념 정리 (선택자, 우선순위, Flexbox)]]                                                                                                | ETC                  | 2022-09-05 |
+| [[HTML|HTML 기본 구조]]                                                                                                                      | ETC                  | 2022-09-05 |
 | [[Vanilla JS Ajax 함수 모듈화]]                                                                                        | ETC                  | 2021-12-05 |
 | [[Vanilla JS 모달 알림창 만들어보기]]                                                                                      | ETC                  | 2021-12-05 |
 | [[oracle cloud CentOS 8 설치 및 세팅하기|Oracle cloud CentOS 8 세팅]]                                                                             | ETC                  | 2021-12-01 |
