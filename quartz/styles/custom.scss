@@ -1,3 +1,7 @@
 @use "./base.scss";
 
-// put your custom CSS here!
+// 폴더/태그 목록 페이지의 자동 PageList가 글마다 뿌리는 태그 pill 벽 숨김.
+// RecentNotes(.recent-ul)·CategoryOverview(.category-featured)에는 영향 없음.
+.section-ul .tags {
+  display: none;
+}

@@ -1,0 +1,91 @@
+.category-overview {
+  margin: 1rem 0 2rem;
+
+  & > .category-grid {
+    display: grid;
+    grid-template-columns: 1fr; // 한 줄에 카드 하나(단일 컬럼)
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .category-card {
+    position: relative;
+    border: 1px solid var(--lightgray);
+    border-radius: 8px;
+    padding: 1rem;
+    background: var(--light);
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      border-color: var(--secondary);
+      transform: translateY(-2px);
+    }
+  }
+
+  // 카드 전체를 클릭 가능하게 (stretched link). 카테고리 폴더 페이지로 이동.
+  .category-link {
+    color: var(--dark);
+    background: none;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+    }
+  }
+
+  // 제목은 항상 한 줄. 우측 상단 개수 배지 공간 확보(padding-right).
+  .category-title {
+    display: block;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 3rem;
+  }
+
+  .category-count {
+    position: absolute;
+    top: 0.9rem;
+    right: 1rem;
+    font-size: 0.75rem;
+    color: var(--gray);
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  .category-desc {
+    margin: 0.4rem 0 0.6rem;
+    font-size: 0.85rem;
+    color: var(--darkgray);
+  }
+
+  // featured 링크는 stretched link 위에서 개별 클릭 가능해야 하므로 z-index 상향.
+  .category-featured {
+    position: relative;
+    z-index: 1;
+    list-style: none;
+    padding: 0.5rem 0 0;
+    margin: 0;
+    border-top: 1px solid var(--lightgray);
+
+    & > li {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      margin: 0.25rem 0;
+    }
+
+    & .featured-date {
+      color: var(--gray);
+      white-space: nowrap;
+      font-size: 0.75rem;
+    }
+  }
+}
