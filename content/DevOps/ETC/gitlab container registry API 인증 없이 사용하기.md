@@ -1,5 +1,5 @@
 ---
-title: Gitlab-ce Container registry API 인증 없이 사용하기
+title: GitLab Container Registry API 인증 없이 사용하기
 date: 2023-01-09
 draft: false
 tags:

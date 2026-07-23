@@ -1,7 +1,7 @@
 ---
-title: 이클립스(eclipse), Dbeaver 맥에서 한글 짤림문제 해결
+title: 이클립스(Eclipse)·DBeaver 맥에서 한글 짤림 문제 해결
 date: 2021-10-16
-draft: false
+draft: true
 tags: 
 banner: 
 cssclasses: 

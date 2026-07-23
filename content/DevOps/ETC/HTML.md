@@ -1,7 +1,7 @@
 ---
 title: HTML 기본 구조
 date: 2022-09-05
-draft: false
+draft: true
 tags:
   - html
   - web

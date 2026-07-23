@@ -1,7 +1,7 @@
 ---
 title: Vanilla JS Ajax 함수 모듈화
 date: 2021-12-05
-draft: false
+draft: true
 tags:
   - javascript
 banner: 

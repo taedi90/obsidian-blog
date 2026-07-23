@@ -1,7 +1,7 @@
 ---
 title: Git 기본 개념과 명령어
 date: 2022-09-05
-draft: false
+draft: true
 tags:
   - git
   - vcs

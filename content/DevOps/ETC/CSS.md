@@ -1,7 +1,7 @@
 ---
 title: CSS 기본 개념 정리 (선택자, 우선순위, Flexbox)
 date: 2022-09-05
-draft: false
+draft: true
 tags:
   - css
   - frontend

@@ -1,5 +1,5 @@
 ---
-title: "Fluentd 로그\b병합 & 필터링"
+title: "Fluentd 로그 병합 & 필터링"
 date: 2023-02-02
 draft: false
 tags:

@@ -1,5 +1,5 @@
 ---
-title: Haproxy 한 포트로 ssh 와 https 동시에 사용하기
+title: HAProxy 한 포트로 ssh 와 https 동시에 사용하기
 date: 2023-02-02
 draft: false
 tags:
