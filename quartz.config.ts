@@ -22,8 +22,8 @@ const config: QuartzConfig = {
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
-        header: "Nanum Gothic",
-        body: "Nanum Gothic",
+        header: "Noto Sans KR",
+        body: "Noto Sans KR",
         code: "Nanum Gothic Coding",
       },
       colors: {

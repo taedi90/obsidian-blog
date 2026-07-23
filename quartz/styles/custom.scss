@@ -5,3 +5,21 @@
 .section-ul .tags {
   display: none;
 }
+
+// 한글 본문 가독성 개선: 넉넉한 행간 + 단어 단위 줄바꿈 + 문단 간격
+article {
+  p,
+  li {
+    line-height: 1.8; // 고정 1.6rem → 넉넉한 배수 행간
+    word-break: keep-all; // 한글 단어가 줄 끝에서 어색하게 끊기지 않게
+    overflow-wrap: break-word; // 긴 URL·영문은 필요 시 줄바꿈
+  }
+
+  p {
+    margin: 0.9rem 0; // 문단 사이 숨 쉴 공간
+  }
+
+  li {
+    margin: 0.3rem 0;
+  }
+}
