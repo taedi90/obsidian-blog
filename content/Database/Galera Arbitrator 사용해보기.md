@@ -10,7 +10,6 @@ cssclasses:
 description: 
 permalink: 
 aliases:
-  - DevOps/ETC/Galera Arbitrator 사용해보기
 completed:
 ---
 

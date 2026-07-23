@@ -9,7 +9,6 @@ cssclasses:
 description: 셀렉터가 없는 서비스를 생성하고 endpoints 를 수동으로 생성하여 클러스터 외부의 애플리케이션을 등록하는 방법을 알아본다.
 permalink: 
 aliases:
-  - DevOps/Container/k8s 클러스터 외부 애플리케이션 ingress 와 service 연결하기
 completed:
 ---
 ## 이슈

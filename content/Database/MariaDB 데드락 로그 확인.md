@@ -9,7 +9,6 @@ cssclasses:
 description: 
 permalink: 
 aliases:
-  - DevOps/MariaDB/MariaDB 데드락 로그 확인
 completed:
 ---
 

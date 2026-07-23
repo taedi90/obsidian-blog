@@ -13,7 +13,6 @@ cssclasses:
 description: "InnoDB 엔진에서 PESSIMISTIC_WRITE 사용 시 비고유 인덱스 조건으로 인해 발생하는 Gap Lock과 데드락 문제의 원인을 분석하고, 해결 과정을 공유합니다."
 permalink: 
 aliases:
-  - DevOps/MariaDB/pessimisticwrite-and-deadlock
 completed: true
 ---
 ## 🚀 요약

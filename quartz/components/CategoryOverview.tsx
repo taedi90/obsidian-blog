@@ -13,16 +13,16 @@ type Category = {
 }
 
 const CATEGORIES: Category[] = [
-  { folder: "DevOps/Kubernetes", emoji: "☸️", label: "Kubernetes", desc: "운영·트러블슈팅·네트워크·KubeVirt" },
-  { folder: "DevOps/CICD", emoji: "🔀", label: "CICD", desc: "Jenkins·ArgoCD·GitOps·배포 자동화" },
-  { folder: "DevOps/Database", emoji: "🗄️", label: "Database", desc: "MariaDB/Galera·Redis·RabbitMQ·Elasticsearch·Weaviate" },
-  { folder: "DevOps/Infra", emoji: "🏗️", label: "Infra", desc: "GPU·스토리지(NFS)·네트워크·서버 하드웨어" },
-  { folder: "DevOps/Migration", emoji: "📦", label: "Migration", desc: "폐쇄망 이관·Helmfile·형상관리·SOPS" },
-  { folder: "DevOps/Container", emoji: "🐳", label: "Container", desc: "도커 컨테이너 기초" },
-  { folder: "DevOps/Tooling", emoji: "🧰", label: "Tooling", desc: "자체 IaC 도구·AI 에이전트·지식관리" },
-  { folder: "DevOps/K8s-Clustering-2025", emoji: "🚀", label: "K8s Clustering (2025)", desc: "사내 온프레미스 쿠버네티스 클러스터 도입기" },
-  { folder: "DevOps/Linux", emoji: "🖥️", label: "Linux", desc: "리눅스" },
-  { folder: "DevOps/ETC", emoji: "⚙️", label: "ETC", desc: "미분류" },
+  { folder: "Kubernetes", emoji: "☸️", label: "Kubernetes", desc: "운영·트러블슈팅·네트워크·KubeVirt" },
+  { folder: "CICD", emoji: "🔀", label: "CICD", desc: "Jenkins·ArgoCD·GitOps·배포 자동화" },
+  { folder: "Database", emoji: "🗄️", label: "Database", desc: "MariaDB/Galera·Redis·RabbitMQ·Elasticsearch·Weaviate" },
+  { folder: "Infra", emoji: "🏗️", label: "Infra", desc: "GPU·스토리지(NFS)·네트워크·서버 하드웨어" },
+  { folder: "Migration", emoji: "📦", label: "Migration", desc: "폐쇄망 이관·Helmfile·형상관리·SOPS" },
+  { folder: "Container", emoji: "🐳", label: "Container", desc: "도커 컨테이너 기초" },
+  { folder: "Tooling", emoji: "🧰", label: "Tooling", desc: "자체 IaC 도구·AI 에이전트·지식관리" },
+  { folder: "K8s-Clustering-2025", emoji: "🚀", label: "K8s Clustering (2025)", desc: "사내 온프레미스 쿠버네티스 클러스터 도입기" },
+  { folder: "Linux", emoji: "🖥️", label: "Linux", desc: "리눅스" },
+  { folder: "ETC", emoji: "⚙️", label: "ETC", desc: "미분류" },
 ]
 
 const FEATURED_LIMIT = 3

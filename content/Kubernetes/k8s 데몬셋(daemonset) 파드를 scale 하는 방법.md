@@ -9,7 +9,6 @@ cssclasses:
 description: 데몬셋(daemonset) 레플리카 수를 0 으로 변경하는 방법을 알아본다.
 permalink: 
 aliases:
-  - DevOps/Container/k8s 데몬셋(daemonset) 파드를 scale 하는 방법
 completed:
 ---
 ## 요약

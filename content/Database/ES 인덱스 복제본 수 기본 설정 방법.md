@@ -9,7 +9,6 @@ cssclasses:
 description: 엘라스틱서치 index 를 생성할 때 replica 수를 자동으로 지정하는 방법을 알아보았습니다.
 permalink: 
 aliases:
-  - DevOps/Elasticsearch/ES 인덱스 복제본 수 기본 설정 방법
 completed:
 ---
 ## 요약

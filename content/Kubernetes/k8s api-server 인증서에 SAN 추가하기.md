@@ -9,7 +9,6 @@ cssclasses:
 description: 
 permalink: 
 aliases:
-  - DevOps/Container/k8s api-server 인증서에 SAN 추가하기
 completed:
 ---
 

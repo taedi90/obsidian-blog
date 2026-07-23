@@ -10,7 +10,6 @@ cssclasses:
 description: 쿠버네티스 파드에서 GPU 를 사용할 때 발생하는 오류 해결 방법을 알아보았다.
 permalink: 
 aliases:
-  - DevOps/Container/K8s CUDAFailed to initialize NVML- Unknown Error 오류
 completed:
 ---
 ## 요약

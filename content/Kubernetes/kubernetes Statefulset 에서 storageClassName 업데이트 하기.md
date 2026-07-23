@@ -9,7 +9,6 @@ cssclasses:
 description: 
 permalink: 
 aliases:
-  - DevOps/Container/kubernetes Statefulset 에서 storageClassName 업데이트 하기
 completed:
 ---
 ## 이슈

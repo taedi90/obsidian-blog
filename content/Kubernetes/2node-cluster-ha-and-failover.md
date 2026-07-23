@@ -13,7 +13,6 @@ cssclasses:
 description: 물리적으로 2대의 워커 노드만으로 구성된 Kubernetes 클러스터 환경에서, 노드 장애 발생 시 서비스 중단을 최소화하고 고가용성을 확보하기 위해 클러스터 상태 관리, 파드 스케줄링, 스토리지 설정을 최적화한 과정을 기록한다.
 permalink: 
 aliases:
-  - DevOps/Container/2node-cluster-ha-and-failover
 completed: true
 type:
   - note

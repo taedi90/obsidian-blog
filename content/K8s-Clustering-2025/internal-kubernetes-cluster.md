@@ -40,65 +40,47 @@ featured: true
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Research" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Research" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                                                |
-| ------------- | ------------------------------------------------------------------------------------------------- |
-| 2025년 03월 16일 | [[CRI 구현체 선정]]                         |
-| 2025년 03월 30일 | [[클러스터링 도구 선정]]                       |
-| 2025년 04월 01일 | [[CNI 구현체 선정]]                         |
-| 2025년 04월 03일 | [[CSI 구현체 선정]]                         |
-| 2025년 04월 03일 | [[컨테이너 레지스트리 선정]]                   |
-| 2025년 04월 05일 | [[Ingress VS Gateway-API]] |
-| 2025년 04월 07일 | [[배포 도구 선정]]                             |
-| 2025년 04월 09일 | [[Ansible 알아보기]]                     |
-| 2025년 04월 16일 | [[CI 도구 선정]]                             |
-| 2025년 04월 25일 | [[Helm 차트 템플릿 선정]]                 |
-| 2025년 04월 25일 | [[오퍼레이터 패턴]]                             |
-| 2025년 06월 30일 | [[관측가능성 스택 선정]]                       |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->
 ### 2. 클러스터링
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Clustering" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Clustering" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                    |
-| ------------- | --------------------------------------------------------------------- |
-| 2025년 07월 22일 | [[클러스터 구조]] |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->
 
 ### 3. 네트워크 구성
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Network" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Network" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                       |
-| ------------- | ------------------------------------------------------------------------ |
-| 2025년 04월 09일 | [[BGP 라우팅 설정]] |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->
 
 ### 4. 스토리지
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Storage" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Storage" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                               |
-| ------------- | ---------------------------------------------------------------- |
-| 2025년 03월 30일 | [[lvm 설정]] |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->
 
 ### 5. 지속적 통합 & 배포
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/CICD" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/CICD" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                              |
-| ------------- | --------------------------------------------------------------- |
-| 2025년 07월 16일 | [[CICD 구성]] |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->
 
 ### 6. 관측가능성
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Observability" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Observability" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                                 |
-| ------------- | ---------------------------------------------------------------------------------- |
-| 2025년 04월 29일 | [[자바 로그 설정]]    |
-| 2025년 07월 16일 | [[관측가능성 시스템 구조]] |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->
 
 
@@ -114,9 +96,8 @@ featured: true
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Offline-Install" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Offline-Install" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                                           |
-| ------------- | -------------------------------------------------------------------------------------------- |
-| 2025년 07월 14일 | [[kubevirt-setting]] |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->
 
 
@@ -124,11 +105,6 @@ featured: true
 <!-- QueryToSerialize: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Troubleshooting" WHERE draft = false SORT date ASC -->
 <!-- SerializedQuery: TABLE WITHOUT ID dateformat(date, "yyyy년 MM월 dd일") AS 작성일,  file.link AS 제목 FROM "Publish/DevOps/K8s-Clustering-2025/Troubleshooting" WHERE draft = false SORT date ASC -->
 
-| 작성일           | 제목                                                                                                                                                       |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2025년 04월 08일 | [[e1000e NIC 드라이버 detected hardware unit hang 오류]] |
-| 2025년 04월 12일 | [[etcd 백업 설정]]                                                                         |
-| 2025년 06월 23일 | [[longhorn 볼륨 용량이 줄어들지 않는 이슈]]                                         |
-| 2025년 06월 27일 | [[clickhouse 데이터 크래시 이슈]]                                                   |
-| 2025년 07월 01일 | [[nfs-subdir-provisioner pvc 삭제 불가 이슈]]                       |
+| 작성일 | 제목 |
+| --- | -- |
 <!-- SerializedQuery END -->

@@ -9,7 +9,6 @@ cssclasses:
 description: 쿠버네티스 네임스페이스가 Terminating 상태에서 삭제되지 않는 현상을 해결한다.
 permalink: 
 aliases:
-  - DevOps/Container/k8s 네임스페이스 강제 삭제 방법
 completed:
 ---
 ## 요약

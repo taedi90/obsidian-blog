@@ -9,7 +9,6 @@ cssclasses:
 description: 엘라스틱 서치 스냅샷 설정 방법을 알아 보았습니다.
 permalink: 
 aliases:
-  - DevOps/Elasticsearch/ES 자동 스냅샷 설정
 completed:
 ---
 ## 이슈
