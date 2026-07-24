@@ -169,4 +169,4 @@ if !Verify(secret, body, sig) {
 - [Managing personal access tokens (GitHub)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
 - [Verifying requests from Slack (HMAC)](https://api.slack.com/authentication/verifying-requests-from-slack)
 - [OWASP Threat Modeling](https://owasp.org/www-community/Threat_Modeling)
-- [[레거시 Python 배포 봇을 Go로 재작성해 CICD를 Slack 한 창구로 일원화하기|이 자격증명이 몰려 있던 배포 봇을 재작성한 이야기]]
+- [[따로 놀던 Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기|이 자격증명이 몰려 있던 배포 봇 이야기]]

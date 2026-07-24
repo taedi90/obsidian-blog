@@ -201,7 +201,7 @@ make deploy  CLUSTER=prod              # common → site_custom 순차 적용
 
 <b>외부 CI가 클러스터 내부 DB에 어떻게 붙나.</b> DB는 외부 노출 없는 ClusterIP였다. 외부 Jenkins가 apiserver 터널 기반 `kubectl port-forward`로 접속하고(readiness 폴링 + 종료 시 cleanup), 접근 권한은 클러스터당 서비스 계정 하나에 최소 권한만 준 토큰으로 위임했다. 이 접근 방식의 배관은 따로 정리했다 → [[외부 노출 없는 ClusterIP-only DB에 CD 마이그레이션 붙이기]].
 
-<b>마이그레이션과 배포의 타이밍을 어떻게 맞추나.</b> 스키마를 먼저 적용해야 하는데, 사람 승인도 받아야 했다. 그래서 배포 봇이 <b>AtlasApply → 이미지 Push</b> 순으로 승인 게이트를 노출하고, 게이트별로 중단의 의미(스키마 미적용 = 진짜 실패 vs GitOps 커밋은 이미 됨 = 무해)를 구분하게 했다 → [[레거시 Python 배포 봇을 Go로 재작성해 CICD를 Slack 한 창구로 일원화하기]].
+<b>마이그레이션과 배포의 타이밍을 어떻게 맞추나.</b> 스키마를 먼저 적용해야 하는데, 사람 승인도 받아야 했다. 그래서 배포 봇이 <b>AtlasApply → 이미지 Push</b> 순으로 승인 게이트를 노출하고, 게이트별로 중단의 의미(스키마 미적용 = 진짜 실패 vs GitOps 커밋은 이미 됨 = 무해)를 구분하게 했다 → [[따로 놀던 Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기]].
 
 온보딩은 opt-in으로 뒀다. Atlas 스테이지는 온보딩된 클러스터에서만 돌고, 아직 편입 안 한 타깃은 자동으로 건너뛴다(SKIP). 기존 배포를 안 깨면서 클러스터를 하나씩 편입하려는 안전장치였다.
 
@@ -221,4 +221,4 @@ make deploy  CLUSTER=prod              # common → site_custom 순차 적용
 - [Atlas — migrate lint](https://atlasgo.io/versioned/lint)
 - [Atlas — baseline migration](https://atlasgo.io/versioned/apply#baseline-migration)
 - [[외부 노출 없는 ClusterIP-only DB에 CD 마이그레이션 붙이기]]
-- [[레거시 Python 배포 봇을 Go로 재작성해 CICD를 Slack 한 창구로 일원화하기]]
+- [[따로 놀던 Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기]]

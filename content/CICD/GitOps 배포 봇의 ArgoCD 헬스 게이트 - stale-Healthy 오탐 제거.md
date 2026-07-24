@@ -167,4 +167,4 @@ cases := []struct {
 - [ArgoCD API Docs](https://argo-cd.readthedocs.io/en/stable/developer-guide/api-docs/)
 - [ArgoCD Multiple Sources for an Application](https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/)
 - [GitHub REST: Merge a pull request](https://docs.github.com/en/rest/pulls/pulls#merge-a-pull-request)
-- [[레거시 Python 배포 봇을 Go로 재작성해 CICD를 Slack 한 창구로 일원화하기|이 헬스 게이트가 사는 배포 봇 이야기]]
+- [[따로 놀던 Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기|이 헬스 게이트가 사는 배포 봇 이야기]]
