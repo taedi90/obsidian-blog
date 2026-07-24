@@ -2,6 +2,7 @@
 title: 배포 봇 한 곳에 몰린 admin 자격증명을 위협 모델로 정리하기
 date: 2026-06-11
 draft: false
+featured: true
 tags:
   - cicd
   - security

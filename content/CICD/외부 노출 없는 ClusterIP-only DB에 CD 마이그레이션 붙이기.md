@@ -193,3 +193,4 @@ done
 - [ServiceAccounts](https://kubernetes.io/docs/concepts/security/service-accounts/)
 - [Manually create a long-lived API token for a ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#manually-create-a-long-lived-api-token-for-a-serviceaccount)
 - [Atlas — Applying Migrations](https://atlasgo.io/versioned/apply)
+- [[수작업 SQL 관리를 Atlas 버전드 마이그레이션으로 전환하기|이 마이그레이션을 돌리는 Atlas 도입 전체 이야기]]

@@ -12,6 +12,7 @@
 
   .category-card {
     position: relative;
+    isolation: isolate; // 내부 z-index(stretched-link용)를 카드 안에 가둬 검색/메뉴 모달 위로 새지 않게
     border: 1px solid var(--lightgray);
     border-radius: 8px;
     padding: 1rem;

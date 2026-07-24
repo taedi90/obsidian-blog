@@ -1,19 +1,18 @@
 ---
 title: 신형 Blackwell GPU가 안 잡힐 때 OS·드라이버 조합 매트릭스로 뚫기
-date: 2026-01-26
+date: 2025-07-30
 draft: false
-featured: true
 tags:
   - nvidia
   - gpu
   - driver
   - troubleshooting
   - offline-install
-banner: 
-cssclasses: 
+banner:
+cssclasses:
 description: 레퍼런스가 거의 없는 신형 GPU 드라이버가 안 잡히던 걸, OS와 드라이버를 조합해 표로 실험해 동작 조합을 찾고 오프라인 플레이북으로 굳힌 기록.
-permalink: 
-aliases: 
+permalink:
+aliases:
 completed: true
 type:
   - issue

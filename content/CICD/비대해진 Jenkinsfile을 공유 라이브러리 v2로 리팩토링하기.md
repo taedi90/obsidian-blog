@@ -2,7 +2,6 @@
 title: 비대해진 Jenkinsfile을 공유 라이브러리 v2로 리팩토링하기
 date: 2026-06-11
 draft: false
-featured: true
 tags:
   - jenkins
   - ci-cd

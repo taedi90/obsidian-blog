@@ -2,7 +2,6 @@
 title: OSS 차트 버전업 후 ArgoCD sync가 멈춘 이유 — CRD 스키마 지연과 server-side apply
 date: 2026-06-09
 draft: false
-featured: true
 tags:
   - argocd
   - gitops

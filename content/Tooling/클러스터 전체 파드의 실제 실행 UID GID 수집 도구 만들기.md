@@ -195,3 +195,4 @@ kubectl delete -f manifests/node-process-inspector-daemonset.yaml
 - [Configure a Security Context for a Pod or Container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
 - [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
 - [proc(5) — Linux manual page](https://man7.org/linux/man-pages/man5/proc.5.html)
+- [[컨테이너 이미지 재빌드 없이 임의 UID로 실행하기|이 UID/GID 종속을 이미지 차원에서 없앤 이야기]]

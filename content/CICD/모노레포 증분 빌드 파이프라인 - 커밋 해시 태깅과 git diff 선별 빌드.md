@@ -2,6 +2,7 @@
 title: 모노레포 증분 빌드 파이프라인 - 커밋 해시 태깅과 git diff 선별 빌드, GitOps PR 자동화
 date: 2026-01-09
 draft: false
+featured: true
 tags:
   - ci-cd
   - jenkins

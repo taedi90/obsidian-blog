@@ -2,6 +2,7 @@
 title: 유휴 서버를 K8s 자원 풀로 재편하고 클라우드 워크로드를 역이전하기
 date: 2025-02-14
 draft: false
+featured: true
 tags:
   - kubernetes
   - on-premise

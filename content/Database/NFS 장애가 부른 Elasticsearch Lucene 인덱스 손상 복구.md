@@ -2,7 +2,6 @@
 title: NFS 장애가 부른 Elasticsearch Lucene 인덱스 손상 복구
 date: 2025-10-16
 draft: false
-featured: true
 tags:
   - elasticsearch
   - lucene

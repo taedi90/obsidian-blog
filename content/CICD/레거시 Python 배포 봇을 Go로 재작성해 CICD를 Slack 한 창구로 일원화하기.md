@@ -295,3 +295,4 @@ false-success와 상태 소실은 둘 다 봇이 자기 기억을 진실로 믿�
 - [Jenkins Remote Access API](https://www.jenkins.io/doc/book/using/remote-access-api/)
 - [argocd account (로컬 계정·토큰)](https://argo-cd.readthedocs.io/en/stable/user-guide/commands/argocd_account/)
 - [Atlas — versioned migrations apply](https://atlasgo.io/versioned/apply)
+- [[수작업 SQL 관리를 Atlas 버전드 마이그레이션으로 전환하기|이 파이프라인이 적용하는 마이그레이션의 Atlas 도입 이야기]]

@@ -10,14 +10,14 @@ tags:
   - innodb
 banner: 
 cssclasses: 
-description: "InnoDB 엔진에서 PESSIMISTIC_WRITE 사용 시 비고유 인덱스 조건으로 인해 발생하는 Gap Lock과 데드락 문제의 원인을 분석하고, 해결 과정을 공유합니다."
+description: InnoDB에서 인덱스 없는 컬럼을 WHERE 조건으로 PESSIMISTIC_WRITE를 걸었더니 Gap Lock까지 잡히며 데드락이 나던 문제를, 원인을 파고들어 PK 기반 조회로 푼 기록.
 permalink: 
 aliases:
 completed: true
 ---
 ## 🚀 요약
 > [!SUMMARY]
-> InnoDB 엔진에서 비인덱스 컬럼을 WHERE 조건으로 <b>PESSIMISTIC_WRITE</b>를 사용하면 <b>레코드 락(Record Lock)</b>뿐만 아니라 <b>갭 락(Gap Lock)</b>이 함께 동작할 수 있으며, 이는 의도치 않은 데드락을 유발하는 원인이 될 수 있다. 
+> InnoDB에서 인덱스 없는 컬럼을 WHERE 조건으로 <b>PESSIMISTIC_WRITE</b>를 걸면 <b>레코드 락(Record Lock)</b>뿐 아니라 <b>갭 락(Gap Lock)</b>까지 함께 걸릴 수 있고, 이게 의도치 않은 데드락으로 이어진다.
 > - 공식문서는 <b>REPEATABLE READ</b> 격리 수준 이상에서 Gap Lock 이 발생하는 경우를 설명하지만 READ_COMMITTED 와 READ_UNCOMMITTED 격리 수준에서도 Gap Lock 이 발생했다.
 > - 비교유(Non-Unique) 인덱스를 WHERE 조건으로 사용해도 동일하게 데드락이 발생할 것이라 생각했지만 의외로 데드락이 발생하지 않았다.
 > - 데드락을 피하기 위해서는 상황에 따라 아래 방법 등을 고민해볼 수 있다.
@@ -109,7 +109,7 @@ RECORD LOCKS space id 218104 page no 3 n bits 8 index PRIMARY of table `test`.`t
 
 여기서 새로운 의문이 생겼다. 두 트랜잭션은 서로 다른 레코드를 대상으로 락을 시도했는데 왜 교착 상태가 발생했으며, 생소한 `Gap Lock`이란 대체 무엇일까? 일반적으로 `FOR UPDATE` 쿼리는 레코드(Row) 단위로 락을 획득하므로, 서로 다른 레코드를 대상으로 할 때는 경합이 발생하지 않아야 한다고 생각했다. 하지만 여기에는 한 가지 중요한 조건이 숨어있었다.
 
-### 오류 재연
+### 오류 재현
 정확한 원인을 파악하기 위해 데드락이 발생하는 상황을 직접 재현해보았다.
 
 #### 테이블 세팅
@@ -225,15 +225,15 @@ public class DeadLockTestService {
 ```
 
 #### 테스트 진행
-위 코드를 베이스로 다음과 같은 케이스로 테스트를 진행했고, 아래 결과를 얻었다.
+이 코드를 바탕으로 여러 케이스를 돌려봤고, 결과는 다음과 같았다.
 
 | 케이스                                                         | 데드락 발생 여부    |
 | ----------------------------------------------------------- | ------------ |
 | WHERE 조건에 PK 를 사용하는 경우                                      | 발생 안함        |
 | 격리수준을 `REPEATABLE_READ` 나 `SERIALIZABLE` 로 설정하는 경우          | 발생 안함        |
 | 한 트랜젝션에 `FOR UPDATE` 쿼리를 1번씩만 호출하는 경우                       | 발생 안함        |
-| 비고유(Non-unique)인덱스로 등록한 컬럼을 WHERE 조건으로 사용하는 경우              | <u>발생 안함</u> |
-| `setHint("javax.persistence.lock.timeout", 5000)` 로 설정하는 경우 | 무관하게 발생      |
+| 비고유(Non-unique) 인덱스로 등록한 컬럼을 WHERE 조건으로 사용하는 경우              | <u>발생 안함</u> |
+| `setHint("javax.persistence.lock.timeout", 5000)` 로 설정하는 경우 | 설정과 무관하게 발생  |
 
 
 > [!IMPORTANT]
@@ -256,7 +256,7 @@ public class DeadLockTestService {
 > Gap locking is not needed for statements that lock rows using a unique index to search for a unique row.
 > \- MariaDB 공식 문서
 
-원인이 `Gap Lock`에 있다는 것을 파악한 후, 서비스 로직을 수정하기로 했다. 따라서 기존 `FOR UPDATE` 쿼리의 `WHERE` 절에서 비 인덱스 컬럼 조건을 사용하는 대신, <b>`WHERE id IN (...)`과 같이 PK 기반으로 레코드를 조회하도록 로직을 변경</b>하여 문제를 해결했다.
+원인이 `Gap Lock`이라는 걸 파악하고 로직을 손봤다. 기존엔 `FOR UPDATE` 쿼리의 `WHERE`에 인덱스 없는 컬럼 조건을 썼는데, 이걸 <b>`WHERE id IN (...)`처럼 PK로 레코드를 집도록</b> 바꿨다. 위 인용대로 유니크 인덱스로 특정 행을 집을 땐 Gap Lock이 걸리지 않으니, 데드락이 사라졌다.
 
 ![](https://i.imgur.com/wjlZyNz.png)
 

@@ -2,6 +2,7 @@
 title: "온프레미스 3서버 납품 환경의 HA/Failover 대안 검토: Restart Policy·Healthcheck의 한계와 Docker Swarm"
 date: 2023-12-05
 draft: false
+featured: true
 tags:
   - docker
   - docker-swarm
