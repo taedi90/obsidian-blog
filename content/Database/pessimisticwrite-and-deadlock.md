@@ -14,6 +14,7 @@ description: InnoDB에서 인덱스 없는 컬럼을 WHERE 조건으로 PESSIMIS
 permalink: 
 aliases:
 completed: true
+featured: true
 ---
 ## 🚀 요약
 > [!SUMMARY]
