@@ -2,7 +2,6 @@
 title: MariaDB Galera 한 노드가 깨졌을 때 무손실로 되살리기
 date: 2026-06-09
 draft: false
-featured: true
 tags:
   - mariadb
   - galera
