@@ -7,7 +7,7 @@ tags:
   - network
 banner: 
 cssclasses: 
-description: 특정 호스트의 모든 port 를 scan 하는 방법을 알아보았습니다.
+description: 특정 호스트의 모든 포트를 스캔하는 방법.
 permalink: 
 aliases: 
 completed:

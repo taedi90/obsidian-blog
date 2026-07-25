@@ -10,7 +10,7 @@ tags:
   - vpa
 banner: 
 cssclasses: 
-description: HPA는 파드 개수를, VPA는 파드 리소스를 조절한다. 둘의 차이와 함께 쓸 때 조심할 점을 정리했다.
+description: HPA는 파드 개수를, VPA는 파드 리소스를 조절한다. 둘의 차이와 함께 쓸 때 조심할 점.
 permalink: 
 aliases: 
 completed: true

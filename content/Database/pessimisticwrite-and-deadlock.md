@@ -85,7 +85,7 @@ Caused by: javax.persistence.OptimisticLockException: org.hibernate.exception.Lo
 TRANSACTION 28480029, ACTIVE 0 sec starting index read  
 mysql tables in use 1, locked 1  
 LOCK WAIT 3 lock struct(s), heap size 1128, 2 row lock(s)  
-MariaDB thread id 901455, OS thread handle 140215975606016, query id 53815334 172.19.0.1 root Sending data  
+MariaDB thread id 901455, OS thread handle 140215975606016, query id 53815334 10.0.0.1 root Sending data  
 select targettabl0_.id as id1_184_, targettabl0_.col1 as col2_184_ from test.target_table targettabl0_ where targettabl0_.col1=50 for update  
 *** WAITING FOR THIS LOCK TO BE GRANTED:  
 RECORD LOCKS space id 218104 page no 3 n bits 8 index PRIMARY of table `test`.`target_table` trx id 28480029 lock_mode X locks rec but not gap waiting  
@@ -94,7 +94,7 @@ RECORD LOCKS space id 218104 page no 3 n bits 8 index PRIMARY of table `test`.`t
 TRANSACTION 28480030, ACTIVE 0 sec fetching rows  
 mysql tables in use 1, locked 1  
 LOCK WAIT 3 lock struct(s), heap size 1128, 4 row lock(s)  
-MariaDB thread id 901452, OS thread handle 140215980521216, query id 53815330 172.19.0.1 root Sending data  
+MariaDB thread id 901452, OS thread handle 140215980521216, query id 53815330 10.0.0.1 root Sending data  
 select targettabl0_.id as id1_184_, targettabl0_.col1 as col2_184_ from test.target_table targettabl0_ where targettabl0_.col1=20 for update  
 *** WAITING FOR THIS LOCK TO BE GRANTED:  
 RECORD LOCKS space id 218104 page no 3 n bits 8 index PRIMARY of table `test`.`target_table` trx id 28480030 lock_mode X locks rec but not gap waiting  

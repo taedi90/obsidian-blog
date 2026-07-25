@@ -139,7 +139,7 @@ Application Chart → Helmet Wrapper Chart → Helmet → (Bitnami Common Chart)
 
 ## ✅ 선정 사유
 
-이 구조로 간 이유를 정리하면 이렇다.
+이 구조로 간 이유는 이렇다.
 
 1. <b>간결성</b>: values.yaml에 필요한 것만 담아 짧아진다.
 2. <b>선택적 리소스 생성</b>: 정의 안 한 리소스는 안 만들어진다.

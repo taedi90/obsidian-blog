@@ -6,7 +6,7 @@ tags:
   - gitlab
 banner: 
 cssclasses: 
-description: gitllab registry init 단계에서 인증문제로 api 호출이 불가능한 상황에 대한 임시대응 방법을 알아본다.
+description: GitLab registry init 단계에서 인증 문제로 API 호출이 안 되는 상황의 임시 대응.
 permalink: 
 aliases: 
 completed:

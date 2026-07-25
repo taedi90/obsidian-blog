@@ -22,7 +22,7 @@ type:
 ## 🚀 요약
 
 > [!SUMMARY]
-> 배포 전 이미지 존재 검증에서 48개는 멀쩡한데 딱 1개 ref가 일시적 Docker Hub 오류를 내면 스테이지 전체가 abort됐다. rate limit인 줄 알았는데 재현 실험으로 아님을 확인하고, 검증 헬퍼의 예외를 <b>missing(확정 없음)</b>과 <b>indeterminate(허브 flake)</b>로 분류했다. indeterminate만 잠깐 쉬었다 재검증하고, 확정 missing은 빌드 잡을 자동 트리거해 self-heal하도록 바꿔 간헐 장애를 흘려보낸다.
+> 배포 전 이미지 검증에서 1개 ref가 일시적 Docker Hub 오류를 내면 스테이지 전체가 abort됐다. 이걸 <b>missing(확정 없음)</b>과 <b>indeterminate(허브 flake)</b>로 분류해, flake는 재검증하고 진짜 없는 건 빌드 잡을 트리거해 self-heal하게 바꿨다.
 
 ## ⚙️ 환경
 

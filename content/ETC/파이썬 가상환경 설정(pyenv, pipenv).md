@@ -6,7 +6,7 @@ tags:
   - python
 banner: 
 cssclasses: 
-description: 파이썬 가상환경 설정을 위해 pyenv, pipenv 사용법을 알아보았습니다.
+description: 파이썬 가상환경 설정을 위한 pyenv, pipenv 사용법.
 permalink: 
 aliases: 
 completed:

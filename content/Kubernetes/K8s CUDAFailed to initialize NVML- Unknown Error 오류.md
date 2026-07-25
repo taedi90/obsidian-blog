@@ -7,7 +7,7 @@ tags:
   - cuda
 banner: 
 cssclasses: 
-description: 쿠버네티스 파드에서 GPU 를 사용할 때 발생하는 오류 해결 방법을 알아보았다.
+description: 쿠버네티스 파드에서 GPU를 사용할 때 발생하는 `CUDAFailed to initialize NVML` 오류 해결.
 permalink: 
 aliases:
 completed:

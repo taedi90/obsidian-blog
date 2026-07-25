@@ -1,7 +1,7 @@
 ---
 title: Opentelemetry Collector 를 도입해야 할까?
 date: 2025-05-13
-draft: true
+draft: false
 tags:
   - kubernetes
   - observability

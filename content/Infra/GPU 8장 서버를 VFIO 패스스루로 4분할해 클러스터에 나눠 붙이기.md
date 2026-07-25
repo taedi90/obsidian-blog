@@ -32,7 +32,7 @@ type:
 - VM 게스트: Rocky Linux 9, VM당 GPU 2장씩 총 4대
 - Kubernetes: v1.30.5 (kubeadm), containerd 1.6.21, NVIDIA Driver 535
 - Terraform: `dmacvicar/libvirt` v0.9.2 / Ansible
-- 네트워크: 호스트·VM 공용 대역 `172.16.20.0/24` (호스트 `172.16.20.10`, VM `172.16.20.21~24`)
+- 네트워크: 호스트·VM 공용 대역 `10.0.20.0/24` (호스트 `10.0.20.10`, VM `10.0.20.21~24`)
 
 ## 1. 왜 서버 한 대를 4분할했나
 
@@ -184,7 +184,7 @@ provider 연결은 로컬이 아니라 원격 호스트다. `qemu+ssh`로 붙되
 
 ```hcl
 # 원격 libvirt 데몬에 qemu+ssh 로 접속 (키는 파일 경로로만 참조)
-uri = "qemu+ssh://<user>@172.16.20.10/system?keyfile=../ssh/id_ed25519"
+uri = "qemu+ssh://<user>@10.0.20.10/system?keyfile=../ssh/id_ed25519"
 ```
 
 ### 4-2. VM 디스크·cloud-init·도메인 (02-vms)
@@ -239,9 +239,9 @@ VM별로 어떤 GPU를 물릴지는 `vms` 변수에 PCI 주소(domain/bus/slot/f
 
 ```hcl
 vms = {
-  "gpu-vm-01" = { ip = "172.16.20.21", os = "rocky9",
+  "gpu-vm-01" = { ip = "10.0.20.21", os = "rocky9",
     gpus = [ {domain=0,bus=0x41,slot=0,function=0}, {domain=0,bus=0x42,slot=0,function=0} ] }
-  "gpu-vm-02" = { ip = "172.16.20.22", os = "rocky9",
+  "gpu-vm-02" = { ip = "10.0.20.22", os = "rocky9",
     gpus = [ {domain=0,bus=0x81,slot=0,function=0}, {domain=0,bus=0x82,slot=0,function=0} ] }
   # gpu-vm-03, gpu-vm-04 동일 패턴
 }
@@ -275,7 +275,7 @@ kubeadm token create --print-join-command
 
 배선에서 두 번 걸렸다. 둘 다 "붙긴 붙는데 통신이 안 되는" 종류라 더 성가셨다.
 
-<b>첫째, macvtap.</b> VM 네트워크를 처음엔 macvtap(direct) 방식으로, 호스트와 같은 대역(`172.16.20.21~24`)을 쓰게 잡았다. 외부·다른 노드와는 잘 통신하는데, <b>정작 호스트 자신과 VM 사이가 안 됐다.</b> macvtap의 알려진 특성으로, 같은 물리 인터페이스에 붙은 호스트와 게스트는 서로를 못 본다. 호스트를 경유하는 통신이 필요하면 macvtap 대신 호스트에 브릿지를 만들어야 한다. 이번엔 워커가 호스트를 거칠 일이 없어 macvtap을 유지했지만, 코드에는 브릿지 모드로 갈아탈 자리를 주석으로 남겨뒀다.
+<b>첫째, macvtap.</b> VM 네트워크를 처음엔 macvtap(direct) 방식으로, 호스트와 같은 대역(`10.0.20.21~24`)을 쓰게 잡았다. 외부·다른 노드와는 잘 통신하는데, <b>정작 호스트 자신과 VM 사이가 안 됐다.</b> macvtap의 알려진 특성으로, 같은 물리 인터페이스에 붙은 호스트와 게스트는 서로를 못 본다. 호스트를 경유하는 통신이 필요하면 macvtap 대신 호스트에 브릿지를 만들어야 한다. 이번엔 워커가 호스트를 거칠 일이 없어 macvtap을 유지했지만, 코드에는 브릿지 모드로 갈아탈 자리를 주석으로 남겨뒀다.
 
 ```hcl
 # macvtap(direct) — 호스트↔게스트 직접 통신은 불가
@@ -283,7 +283,7 @@ source = { direct = { dev = var.network.host_dev, mode = "bridge" } }
 # 호스트 경유가 필요하면 브릿지로: source = { bridge = { bridge = "br0" } }
 ```
 
-<b>둘째, 파드 CIDR 충돌.</b> 개발 클러스터 join은 순조로웠는데, 검증 클러스터에서 막혔다. 검증 클러스터의 파드 CIDR이 `172.16.0.0/16`이었는데, 이게 VM 노드가 쓰는 대역 `172.16.20.0/24`를 통째로 삼키고 있었다. 노드 IP와 파드 IP 대역이 겹치니 라우팅이 꼬여 통신이 안 되는 게 당연했다.
+<b>둘째, 파드 CIDR 충돌.</b> 개발 클러스터 join은 순조로웠는데, 검증 클러스터에서 막혔다. 검증 클러스터의 파드 CIDR이 `10.0.0.0/16`이었는데, 이게 VM 노드가 쓰는 대역 `10.0.20.0/24`를 통째로 삼키고 있었다. 노드 IP와 파드 IP 대역이 겹치니 라우팅이 꼬여 통신이 안 되는 게 당연했다.
 
 결국 검증 클러스터의 파드 CIDR을 노드 대역과 안 겹치는 `10.244.0.0/16`으로 옮겼다. 이미 돌아가는 클러스터의 CIDR을 바꾸는 건 간단하지 않아서, 순서대로 손봤다.
 

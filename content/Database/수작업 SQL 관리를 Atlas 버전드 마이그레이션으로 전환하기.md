@@ -41,7 +41,7 @@ DB 스키마는 안 건드리면 조용하지만, 한 번 어긋나면 원인 �
 
 발목을 잡은 건 1절의 레거시였다. Alembic은 마이그레이션을 <b>Python 스크립트로 관리</b>해서 <b>`.sql` 파일 유지가 약하다</b>. 그런데 우리는 이미 `.sql`을 손으로 관리·배포하는 형태가 굳어 있어 그 파일 형태를 버릴 수가 없었다. "Python이니 Alembic"이라는 관성이 여기서 딱 막혔다. 그래서 도구를 언어가 아니라 <b>레거시가 요구하는 것</b>을 기준으로 다시 봤다.
 
-레거시가 요구하는 걸 정리하면 이렇다.
+레거시가 요구하는 건 이랬다.
 
 - 버전 기반으로 <b>변경 이력</b>을 관리할 것
 - <b>`.sql` 파일 형태를 유지</b>할 것 (레거시·수동 반영 사이트 호환)
@@ -201,7 +201,7 @@ make deploy  CLUSTER=prod              # common → site_custom 순차 적용
 
 <b>외부 CI가 클러스터 내부 DB에 어떻게 붙나.</b> DB는 외부 노출 없는 ClusterIP였다. 외부 Jenkins가 apiserver 터널 기반 `kubectl port-forward`로 접속하고(readiness 폴링 + 종료 시 cleanup), 접근 권한은 클러스터당 서비스 계정 하나에 최소 권한만 준 토큰으로 위임했다. 이 접근 방식의 배관은 따로 정리했다 → [[외부 노출 없는 ClusterIP-only DB에 CD 마이그레이션 붙이기]].
 
-<b>마이그레이션과 배포의 타이밍을 어떻게 맞추나.</b> 스키마를 먼저 적용해야 하는데, 사람 승인도 받아야 했다. 그래서 배포 봇이 <b>AtlasApply → 이미지 Push</b> 순으로 승인 게이트를 노출하고, 게이트별로 중단의 의미(스키마 미적용 = 진짜 실패 vs GitOps 커밋은 이미 됨 = 무해)를 구분하게 했다 → [[따로 놀던 Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기]].
+<b>마이그레이션과 배포의 타이밍을 어떻게 맞추나.</b> 스키마를 먼저 적용해야 하는데, 사람 승인도 받아야 했다. 그래서 배포 봇이 <b>AtlasApply → 이미지 Push</b> 순으로 승인 게이트를 노출하고, 게이트별로 중단의 의미(스키마 미적용 = 진짜 실패 vs GitOps 커밋은 이미 됨 = 무해)를 구분하게 했다 → [[Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기]].
 
 온보딩은 opt-in으로 뒀다. Atlas 스테이지는 온보딩된 클러스터에서만 돌고, 아직 편입 안 한 타깃은 자동으로 건너뛴다(SKIP). 기존 배포를 안 깨면서 클러스터를 하나씩 편입하려는 안전장치였다.
 
@@ -221,4 +221,4 @@ make deploy  CLUSTER=prod              # common → site_custom 순차 적용
 - [Atlas — migrate lint](https://atlasgo.io/versioned/lint)
 - [Atlas — baseline migration](https://atlasgo.io/versioned/apply#baseline-migration)
 - [[외부 노출 없는 ClusterIP-only DB에 CD 마이그레이션 붙이기]]
-- [[따로 놀던 Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기]]
+- [[Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기]]

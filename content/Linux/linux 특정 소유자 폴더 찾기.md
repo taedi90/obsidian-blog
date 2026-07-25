@@ -6,7 +6,7 @@ tags:
   - linux
 banner: 
 cssclasses: 
-description: find 명령어를 사용해 특정 user 와 group  소유의 파일을 찾는 방법을 알아본다.
+description: find 명령어로 특정 user와 group 소유 파일 찾기.
 permalink: 
 aliases: 
 completed:

@@ -12,7 +12,7 @@ tags:
   - automation
 banner: 
 cssclasses: 
-description: Kubernetes 클러스터의 etcd 데이터를 자동으로 백업하는 CronJob 설정과 구성 방법
+description: Kubernetes 클러스터의 etcd 데이터를 자동으로 백업하는 CronJob 설정과 구성.
 permalink: 
 aliases:
 completed: 
@@ -80,7 +80,7 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - kdev-master-a-04  # 특정 마스터 노드 선호
+                - master-01  # 특정 마스터 노드 선호
             weight: 100
 ```
 
@@ -185,7 +185,7 @@ items:
                     - key: kubernetes.io/hostname
                       operator: In
                       values:
-                      - kdev-master-a-04
+                      - master-01
                   weight: 100
             containers:
             - command:

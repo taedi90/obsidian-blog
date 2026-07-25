@@ -13,7 +13,7 @@ tags:
   - pathpattern
 banner: 
 cssclasses: 
-description: nfs-subdir-provisioner에서 reclaimPolicy Delete 설정에도 불구하고 PVC 삭제 시 NFS 디렉토리가 남아있는 문제 해결 과정
+description: nfs-subdir-provisioner에서 reclaimPolicy Delete 설정에도 불구하고 PVC 삭제 시 NFS 디렉토리가 남아있는 문제 해결.
 permalink: 
 aliases:
 completed: 

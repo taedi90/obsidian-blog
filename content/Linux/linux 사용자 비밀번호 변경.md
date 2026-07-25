@@ -6,7 +6,7 @@ tags:
   - linux
 banner: 
 cssclasses: 
-description: 리눅스 사용자 비밀번호 변경 방법을 알아본다.
+description: 리눅스 사용자 비밀번호 변경.
 permalink: 
 aliases: 
 completed:

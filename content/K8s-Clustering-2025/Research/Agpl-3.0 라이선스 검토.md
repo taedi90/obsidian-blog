@@ -1,7 +1,7 @@
 ---
 title: Agpl-3.0 라이선스 검토
 date: 2025-06-25
-draft: true
+draft: false
 tags: 
 banner: 
 cssclasses: 

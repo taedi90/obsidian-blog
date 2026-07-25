@@ -7,7 +7,7 @@ tags:
   - springboot
 banner: 
 cssclasses: 
-description: 메이븐 공식 리포지토리에 존재하지 않는 ‘*.jar’ 형식의 라이브러리를 프로젝트에 추가하는 방법을 알아본다.
+description: 메이븐 공식 리포지토리에 없는 *.jar 라이브러리를 systemPath로 추가.
 permalink: 
 aliases: 
 completed:

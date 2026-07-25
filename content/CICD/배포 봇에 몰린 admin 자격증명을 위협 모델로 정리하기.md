@@ -21,7 +21,7 @@ type:
 ---
 
 > [!SUMMARY]
-> Slack에서 배포를 일원화한 봇이 편하긴 했는데, 그 편의의 대가로 CD admin·git merge·CI admin 자격증명이 컨테이너 한 곳에 다 몰려 있었다. 무기한 admin JWT가 평문으로 커밋돼 있었고, 허용 사용자 목록은 비어 있으면 전원 통과(fail-open)였고, 승인 버튼엔 권한 체크가 없었고, 웹훅은 서명 검증이 없었다. 이걸 "봇 역할이 과하다" 같은 감이 아니라 blast-radius 관점의 위협 모델로 정리한 뒤, 토큰 rotate + 히스토리 정리·fail-closed 전환·HMAC 웹훅 검증·스코프 서비스계정 위임으로 하나씩 닫았다.
+> Slack 배포 봇 하나에 CD·git·CI admin 자격증명이 다 몰려 있던 걸 위협 모델로 뜯어봤다. 평문 토큰·fail-open 인가·무검증 웹훅을 rotate·fail-closed·HMAC·스코프 서비스계정으로 하나씩 닫았다.
 
 배포 봇 이야기다. Jenkins에서 빌드하고, gitops 리포에 PR을 올리고, 그걸 merge하면 ArgoCD가 클러스터에 반영하고, 마지막에 k9s로 확인하는 흐름을 Slack 채널 하나로 묶어둔 봇이었다. 개발자가 도구 네 개를 다 이해할 필요도 없고, VPN 안쪽 인가 PC에서만 열리는 콘솔들을 QA가 붙잡고 씨름할 필요도 없다. 접근성 하나는 확실히 좋았다.
 
@@ -169,4 +169,4 @@ if !Verify(secret, body, sig) {
 - [Managing personal access tokens (GitHub)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
 - [Verifying requests from Slack (HMAC)](https://api.slack.com/authentication/verifying-requests-from-slack)
 - [OWASP Threat Modeling](https://owasp.org/www-community/Threat_Modeling)
-- [[따로 놀던 Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기|이 자격증명이 몰려 있던 배포 봇 이야기]]
+- [[Jenkins·GitOps·ArgoCD 배포를 Slack 봇 하나로 묶기|이 자격증명이 몰려 있던 배포 봇 이야기]]

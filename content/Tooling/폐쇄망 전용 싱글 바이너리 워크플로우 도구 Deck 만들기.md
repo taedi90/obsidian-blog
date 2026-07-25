@@ -37,11 +37,11 @@ type:
 
 이런 환경에 쿠버네티스를 설치하는 업무가 자주 발생했다.
 
-### 1세대 — kubeadm + 직접 짠 셸 스크립트
+### 1세대: kubeadm + 직접 짠 셸 스크립트
 
 처음엔 `kubeadm`을 단독으로 쓰면서, OS 설정부터 k8s 부트스트랩, 차트 설치까지의 과정을 셸 스크립트로 직접 엮었다. 돌아가긴 했다. 문제는 <b>k8s 버전이나 OS 버전이 바뀔 때</b>였다. 버전 간 차이를 스크립트에 반영하고 분기를 쌓다 보니 관리 복잡도가 급격히 불어났고, 검증도 재실행도 리뷰도 어려운 셸의 한계를 그대로 맞았다.
 
-### 2세대 — kubespray + kubespray-offline
+### 2세대: kubespray + kubespray-offline
 
 그래서 [kubespray](https://github.com/kubernetes-sigs/kubespray)와 kubespray-offline으로 전환했다. 다양한 버전·환경에 대응하기가 한결 수월해졌지만, 이것도 마냥 좋지만은 않았다.
 

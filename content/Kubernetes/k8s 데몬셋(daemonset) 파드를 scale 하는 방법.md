@@ -6,7 +6,7 @@ tags:
   - k8s
 banner: 
 cssclasses: 
-description: 데몬셋(daemonset) 레플리카 수를 0 으로 변경하는 방법을 알아본다.
+description: 데몬셋(daemonset) 레플리카 수를 0으로 변경.
 permalink: 
 aliases:
 completed:

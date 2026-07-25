@@ -1,7 +1,7 @@
 ---
 title: OIDC(EntraID) 를 이용한 개인별 인증인가 구성
 date: 2025-07-16
-draft: true
+draft: false
 tags:
   - oidc
   - entraid
@@ -38,7 +38,7 @@ type:
 ### 작업
 - entra ID 연동
 - OIDC 지원 애플리케이션들에는 설정을, 미지원 애플리케이션은 oAuth2proxy 적용
-- clusterRole, role 은 helm chart 로 관리
+- clusterRole, role 은 helm chart 로 관리 → [[oidc-role 차트 구성|Helmfile 차트로 RBAC 관리하기]]
 
 
 ### 앱등록

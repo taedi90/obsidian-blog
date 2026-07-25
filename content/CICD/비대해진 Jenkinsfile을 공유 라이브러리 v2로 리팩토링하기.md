@@ -22,7 +22,7 @@ type:
 ## 🚀 요약
 
 > [!SUMMARY]
-> 5개 Jenkinsfile이 파일당 수백 줄로 불어나고 `ModuleConfig` 같은 핵심 클래스가 여러 파일에 복제되면서, 그중 하나가 stale 버전으로 남아 test/prod drift가 이미 발생 중이었다. 공통 로직을 released 태그로 핀한 Global Shared Library로 추출하고 Jenkinsfile을 위임형으로 얇게 다시 썼다. JenkinsPipelineUnit 단위테스트로 로직을 박제하고, `DRY_RUN` 섀도우 런으로 v1과 v2의 계획 산출물을 diff 하고, 배포 시 이미지가 없으면 빌드 잡을 자동 트리거(self-heal)하도록 만든 뒤, 기존 잡을 건드리지 않고 새 잡을 나란히 세워 무중단으로 컷오버했다.
+> 5개 Jenkinsfile이 파일당 수백 줄로 불어나고 핵심 클래스가 여러 파일에 복제되면서, 그중 하나가 stale 버전으로 남아 test/prod drift가 이미 진행 중이었다. 공통 로직을 태그로 핀한 공유 라이브러리로 추출해 Jenkinsfile을 얇게 다시 쓰고, 단위테스트·섀도우 diff·self-heal을 얹은 뒤 기존 잡을 건드리지 않고 무중단으로 컷오버했다.
 
 ## 1. 왜 손대야 했나
 
@@ -186,11 +186,11 @@ if (missing) {
 
 이 토대가 깔리고 나니 원래 얹고 싶었던 멀티브랜치 watch 같은 기능은 `vars/` 스텝 하나 추가로 끝나는 일이 됐다. 카탈로그·빌드 플래너·PR 발행이 라이브러리 한 곳에 모여 있기 때문이다. 기능을 급하게 얹지 않고 방법론부터 세운 판단이 여기서 이자를 돌려줬다.
 
-한 가지 솔직하게 덧붙이면, 이런 리팩토링은 "성능이 몇 배 좋아졌다" 같은 극적인 수치로 자랑하기 어렵다. 얻은 건 대체로 <b>안 보이는 것</b>이다. 갈라질 수 없게 된 구조, 바꿔도 회귀를 잡아주는 테스트, 되돌릴 수 있는 전환. 그래도 test/prod가 다른 모듈 모델을 쓰고 있었다는 걸 발견했을 때를 생각하면, 이 안 보이는 것들이 결국 제일 비싼 것이었다 싶다.
+한 가지 솔직히 덧붙이면, 이런 리팩토링은 "성능이 몇 배 좋아졌다" 같은 극적인 수치로 자랑하기 어렵다. 얻은 건 대체로 안 보이는 것 — 갈라질 수 없게 된 구조, 바꿔도 회귀를 잡아주는 테스트, 되돌릴 수 있는 전환이다.
 
 ## 🔗 참고
 
 - [Jenkins — Shared Libraries](https://www.jenkins.io/doc/book/pipeline/shared-libraries/)
 - [Jenkins — Pipeline Best Practices](https://www.jenkins.io/doc/book/pipeline/pipeline-best-practices/)
 - [JenkinsPipelineUnit](https://github.com/jenkinsci/JenkinsPipelineUnit)
-- [Martin Fowler — Strangler Fig Application](https://martinfowler.com/bliki/StranglerFigApplication.html)
+test/prod가 다른 모듈 모델을 쓰고 있었다는 걸 발견한 걸 생각하면, 그 안 보이는 것들이 결국 제일 비싼 셈이다.

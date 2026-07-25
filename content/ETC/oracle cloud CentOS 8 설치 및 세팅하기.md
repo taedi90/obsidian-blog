@@ -6,7 +6,7 @@ tags:
   - infra
 banner: 
 cssclasses: 
-description: 오라클 클라우드에 CentOS를 설치하고 docker환경에서 tomcat, nginx, jenkins, MySQL 까지 세팅해보기
+description: 오라클 클라우드에 CentOS 설치 후 docker 환경에서 tomcat, nginx, jenkins, MySQL 세팅.
 permalink: 
 aliases: 
 completed:

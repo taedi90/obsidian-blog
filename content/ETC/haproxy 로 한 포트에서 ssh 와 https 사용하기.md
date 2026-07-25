@@ -7,7 +7,7 @@ tags:
   - haproxy
 banner: 
 cssclasses: 
-description: 동일한 포트로 https 프로토콜과 ssh 프로토콜을 함께 사용하는 방법을 알아본다.
+description: 동일한 포트로 https와 ssh 프로토콜을 함께 사용.
 permalink: 
 aliases: 
 completed:

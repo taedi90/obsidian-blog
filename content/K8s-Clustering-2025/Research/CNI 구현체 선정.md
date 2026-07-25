@@ -59,7 +59,7 @@ Cilium은 리눅스 커널의 eBPF(extended Berkeley Packet Filter)를 활용하
 
 ## ✅ 선정 사유
 
-결국 Cilium을 골랐다. 결정에 크게 작용한 지점들을 정리하면 이렇다.
+결국 Cilium을 골랐다. 결정에 크게 작용한 지점들은 이렇다.
 
 ### 1. eBPF 기반 패킷 처리
 

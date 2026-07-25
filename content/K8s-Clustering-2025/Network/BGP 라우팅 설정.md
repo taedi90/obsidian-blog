@@ -27,8 +27,8 @@ type:
 - <b>CNI</b>: Cilium 1.17.4
 - <b>Kubernetes</b>: 1.32.6
 - <b>네트워크 구성</b>
-    - <b>본사</b>: 10.224.64.0/22
-    - <b>IDC</b>: 172.16.20.0/24
+    - <b>본사</b>: 10.0.0.0/22
+    - <b>IDC</b>: 10.0.20.0/24
     - <b>Pod CIDR</b>: 10.10.0.0/16
     - <b>Service CIDR</b>: 10.20.0.0/16
 
@@ -110,14 +110,14 @@ IDC 장비에도 똑같이 `to HQ` 터널 인터페이스에 IP `10.100.0.2`를 
     config neighbor-range
         # Kubernetes 노드 대역을 neighbor-group 으로 묶어 한번에 처리
         edit 1
-            set prefix 172.16.20.0 255.255.255.0
+            set prefix 10.0.20.0 255.255.255.0
             set neighbor-group "sf-peers"
         next
     end
     config network
         # BGP를 통해 광고할 네트워크 대역 (IDC 로컬 LAN)
         edit 1
-            set prefix 172.16.20.0 255.255.255.0
+            set prefix 10.0.20.0 255.255.255.0
         next
     end
     # 다른 라우팅 프로토콜로부터 경로를 가져와 BGP로 재분배
@@ -143,7 +143,7 @@ IDC Fortigate는 본사 Fortigate와 <b>eBGP</b>, Kubernetes 노드들과는 <b>
     end
     config network
         edit 1
-            set prefix 10.224.64.0 255.255.252.0
+            set prefix 10.0.0.0 255.255.252.0
         next
     end
     config redistribute "connected"
@@ -170,13 +170,13 @@ spec:
     peers:
     - name: peer-64520-fortigate
       peerASN: 64520
-      peerAddress: 172.16.20.1 # IDC Fortigate의 내부 IP
+      peerAddress: 10.0.20.1 # IDC Fortigate의 내부 IP
       peerConfigRef:
         group: cilium.io
         kind: CiliumBGPPeerConfig
         name: cilium-peer
 ```
-클러스터의 `localASN`을 `64520`으로 두고, 같은 AS인 IDC Fortigate(`172.16.20.1`)를 iBGP 피어로 등록했다.
+클러스터의 `localASN`을 `64520`으로 두고, 같은 AS인 IDC Fortigate(`10.0.20.1`)를 iBGP 피어로 등록했다.
 
 - <b>CiliumBGPPeerConfig</b> — BGP 피어의 상세 옵션을 설정한다.
 ```yaml

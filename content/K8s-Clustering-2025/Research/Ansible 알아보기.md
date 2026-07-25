@@ -13,7 +13,7 @@ tags:
   - inventory
 banner: 
 cssclasses: 
-description: Ansible을 처음 도입하면서 겪은 어려움과 폴더 구조, 변수 우선순위, 기본 사용법 정리
+description: Ansible을 처음 도입하면서 겪은 어려움과 폴더 구조, 변수 우선순위, 기본 사용법 정리.
 permalink: 
 aliases:
 completed: 

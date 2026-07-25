@@ -6,7 +6,7 @@ tags:
   - elasticsearch
 banner: 
 cssclasses: 
-description: 엘라스틱서치 index 를 생성할 때 replica 수를 자동으로 지정하는 방법을 알아보았습니다.
+description: 엘라스틱서치 인덱스를 생성할 때 replica 수를 자동으로 지정하는 방법.
 permalink: 
 aliases:
 completed:

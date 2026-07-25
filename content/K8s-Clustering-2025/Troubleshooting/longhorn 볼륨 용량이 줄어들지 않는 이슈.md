@@ -14,7 +14,7 @@ tags:
   - clickhouse
 banner: 
 cssclasses: 
-description: Longhorn에서 데이터 삭제 후에도 볼륨 용량이 줄어들지 않는 현상의 원인과 fstrim을 통한 해결 방법
+description: Longhorn에서 데이터 삭제 후에도 볼륨 용량이 줄어들지 않는 현상의 원인과 fstrim을 통한 해결.
 permalink: 
 aliases:
 completed: 

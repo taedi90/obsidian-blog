@@ -22,7 +22,7 @@ type:
 ## 🚀 요약
 
 > [!SUMMARY]
-> LLM 트레이싱을 <b>Langfuse</b>로 붙이려는데, 채팅 본문과 LLM 응답이 OTLP 페이로드 한계에 걸려 trace가 잘렸다. 그래서 256KB를 넘는 페이로드는 <b>Media API</b>로 S3/MinIO에 오프로드하고 나머지는 OTLP 경로로 보내도록 두 경로를 나눴고, 저장 부하를 감안해 <b>ClickHouse를 별도로 분리</b>했다. 시각화 도구는 라이선스와 `clickhouseexporter` 스키마 호환성으로 후보를 비교해 Grafana + ClickHouse 조합으로 정했다.
+> LLM 트레이싱을 <b>Langfuse</b>로 붙이려는데, 채팅 본문과 LLM 응답이 OTLP 페이로드 한계에 걸려 trace가 잘렸다. 그래서 256KB를 넘는 페이로드는 <b>Media API</b>로 S3/MinIO에 오프로드하고 나머지는 OTLP로 보내는 두 경로로 나눴고, 저장 부하를 감안해 <b>ClickHouse</b>도 따로 뗐다.
 
 ## 💡 개요
 
@@ -30,7 +30,7 @@ type:
 
 LLM 트레이싱은 일반 분산추적과 보는 각도가 다르다. 인프라 관측성이 "어느 서비스에서 몇 ms 걸렸나"를 본다면, LLM 트레이싱은 "이 요청에 어떤 프롬프트가 들어갔고, 모델이 뭐라고 답했고, 그 답이 얼마나 괜찮았나(score)"를 본다. 프롬프트·응답 본문 자체가 관측 대상이라는 게 결정적으로 다르다. 그래서 LLM 전용 도구인 Langfuse를 따로 두기로 했다.
 
-Langfuse를 고른 이유는 단순하다. OTel 기반으로 붙일 수 있어 벤더에 덜 묶이고(계약상으로도 OpenAPI·OCI·OpenTelemetry·MLflow 같은 개방형 표준으로 벤더 종속을 최소화하라는 조항이 있었다), 프롬프트 관리와 LLM-as-a-judge 같은 후처리가 한 도구에 들어 있었다. 문제는 붙이자마자 나왔다.
+Langfuse를 고른 이유는 단순하다. OTel 기반으로 붙일 수 있어 벤더에 덜 묶이고(계약상으로도 OpenAPI·OCI·OpenTelemetry·MLflow 같은 개방형 표준으로 벤더 종속을 최소화하라는 조항이 있었다), 프롬프트 관리와 LLM-as-a-judge 같은 후처리가 한 도구에 들어 있었다. 문제는 붙이자마자 나왔다. (처음엔 OTLP 하나로 다 보내려 했는데, 이게 벽이더라.)
 
 ## 📋 OTLP 페이로드 한계
 
@@ -72,7 +72,7 @@ Langfuse를 고른 이유는 단순하다. OTel 기반으로 붙일 수 있어 �
 
 모든 모듈에 Media API를 켤 필요는 없다. 판단 기준은 하나였다. <b>사용자 페이로드(채팅·LLM 응답·분석 결과)를 trace에 실어 보내느냐</b>. 실어 보내면 256KB를 넘길 수 있으니 필요하고, trace를 안 만들거나 읽기 전용이면 불필요하다.
 
-역할별로 정리하면 이렇다(내부 서비스명은 역할로 일반화했다).
+역할별로 보면 이렇다(내부 서비스명은 역할로 일반화했다).
 
 | 서비스 역할 | 연결 방식 | Media API | 비고 |
 | --- | --- | --- | --- |
@@ -100,7 +100,7 @@ Langfuse는 본문을 ClickHouse에 넣는다. 사내 관측성 스택(SigNoz)�
 - OTel Collector의 큐(버퍼)
 - Langfuse가 내부적으로 쓰는 Redis 큐(BullMQ)가 죽으면 큐가 통째로 날아갈 수 있으니, Redis persistence를 켜서 그 구멍을 막는다
 
-완벽한 무손실을 노린 게 아니라, 어디서 어떻게 새는지를 알고 감당 가능한 선까지 막아두는 게 목표였다. (Kafka까지 앞단에 두는 안도 검토했는데, 지금 트래픽에선 과했다.)
+어디서 어떻게 새는지를 알고 감당 가능한 선까지 막아두는 걸로 충분했다. (Kafka까지 앞단에 두는 안도 검토했는데, 지금 트래픽에선 과했다.)
 
 ## 📊 시각화 도구 비교
 
@@ -108,10 +108,10 @@ Langfuse UI는 LLM 디버깅·프롬프트 관리엔 좋지만, 그 옆에서 Cl
 
 | 도구 | OSS 라이선스 | `clickhouseexporter` 스키마 호환 | 강점 | 약점 |
 | --- | --- | --- | --- | --- |
-| HyperDX (ClickStack) | MIT(UI) + Apache 2.0 | ⚠️ schema-agnostic 옵션으로 가능, ClickStack 자체 스키마 권장 | 세션 리플레이, Lucene+SQL, ClickHouse 본가 지원 | 비교적 신생, 메트릭 기능이 Grafana 대비 약함 |
-| Grafana + ClickHouse plugin | AGPLv3 / Apache 2.0 | ✅ 완전 호환 | 성숙, 패널 임베드, 풍부한 생태계 | 관측성 전용 UX는 아님, 세션 리플레이 없음 |
-| Uptrace | AGPLv3 | ❌ 자체 스키마, OTLP 직접 수신 | 50+ 자동 대시보드, SQL+PromQL | contrib exporter 데이터 재사용 어려움 |
-| SigNoz | MIT | ❌ 자체 스키마 | OTel-native APM 화면이 강력 | 스키마 종속, 임베드 제약 |
+| HyperDX (ClickStack) | MIT(UI) + Apache 2.0 | ⚠️ schema-agnostic 옵션, 자체 스키마 권장 | 세션 리플레이, ClickHouse 본가 지원 | 신생이라 아직 판단이 안 됨, MongoDB를 얹어야 |
+| Grafana + ClickHouse plugin | AGPLv3 / Apache 2.0 | ✅ 완전 호환 | 성숙, 패널 임베드, 생태계 | 관측성 전용 UX는 아님 |
+| Uptrace | AGPLv3 | ❌ 자체 스키마 | 자동 대시보드 | contrib exporter 데이터 재사용이 안 됨 |
+| SigNoz | MIT | ❌ 자체 스키마 | APM 화면 강력 | 임베드가 안 되고 스키마 종속 |
 
 Uptrace와 SigNoz는 자체 스키마를 써서, `clickhouseexporter`로 넣어둔 데이터를 그대로 못 읽는다. 특히 프론트 임베드가 요건이었는데, SigNoz는 패널 단위 iframe 임베드를 지원하지 않고 대시보드 단위 공유만 됐다(이미 사내 인프라 관측성용으로 SigNoz를 쓰고 있었지만, 임베드 요건은 별개 문제였다). HyperDX는 매력적이지만 신생이고, 무엇보다 별도로 MongoDB를 요구했다.
 
@@ -125,7 +125,7 @@ Uptrace와 SigNoz는 자체 스키마를 써서, `clickhouseexporter`로 넣어�
 
 HyperDX 도입은 미뤘다. 세션 리플레이 같은 건 탐났지만 MongoDB를 새로 얹어야 하고, 지금은 Grafana로 요건이 덮인다. 대신 Grafana는 ClickHouse 플러그인 때문에 <b>별도 이미지</b>가 필요하다는 점은 감수한다. 메트릭 쪽은 기존 Prometheus를 그대로 유지한다.
 
-AGPLv3인 Grafana 플러그인이 나중에 패키징에서 걸릴 여지는 남아 있어서, 이건 계속 지켜볼 생각이다.
+AGPLv3 플러그인이라 나중에 패키징에서 걸릴 여지는 남는다. 일단 Grafana로 가고, 문제가 생기면 그때 본다.
 
 ## 🔗 참고
 

@@ -6,7 +6,7 @@ tags:
   - k8s
 banner: 
 cssclasses: 
-description: 쿠버네티스 네임스페이스가 Terminating 상태에서 삭제되지 않는 현상을 해결한다.
+description: 쿠버네티스 네임스페이스가 Terminating 상태에서 삭제되지 않는 현상 해결.
 permalink: 
 aliases:
 completed:
