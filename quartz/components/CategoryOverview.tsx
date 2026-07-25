@@ -87,16 +87,11 @@ export default (() => {
                 {shown.length > 0 && (
                   <ul class="category-featured">
                     {shown.map((page) => (
-                      <li>
+                      <li class={featuredSlugs.has(page.slug) ? "featured" : undefined}>
                         <a
                           href={resolveRelative(fileData.slug!, page.slug!)}
                           class="internal"
                         >
-                          {featuredSlugs.has(page.slug) && (
-                            <span class="featured-star" title="featured">
-                              ★
-                            </span>
-                          )}
                           {page.frontmatter?.title}
                         </a>
                         {page.dates && (

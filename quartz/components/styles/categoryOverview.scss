@@ -81,20 +81,21 @@
       gap: 0.5rem;
       font-size: 0.85rem;
       margin: 0.25rem 0;
+      padding: 0.1rem 0.4rem;
+      border-left: 2px solid transparent; // featured 아닌 행도 같은 들여쓰기 유지
+      border-radius: 3px;
+    }
+
+    // featured 글: 아이콘 대신 라인 배경 틴트 + 좌측 액센트 바로 구분.
+    & > li.featured {
+      background: color-mix(in srgb, var(--secondary) 9%, transparent);
+      border-left-color: var(--secondary);
     }
 
     & .featured-date {
       color: var(--gray);
       white-space: nowrap;
       font-size: 0.75rem;
-    }
-
-    // featured 글 표시 별표. 최신 글과 한 목록에 섞이므로 시각적으로 구분.
-    & .featured-star {
-      color: var(--secondary);
-      font-size: 0.7rem;
-      margin-right: 0.3rem;
-      vertical-align: 1px;
     }
   }
 }
