@@ -20,12 +20,14 @@ const CATEGORIES: Category[] = [
   { folder: "Migration", emoji: "📦", label: "Migration", desc: "폐쇄망 이관·Helmfile·형상관리·SOPS" },
   { folder: "Container", emoji: "🐳", label: "Container", desc: "도커 컨테이너 기초" },
   { folder: "Tooling", emoji: "🧰", label: "Tooling", desc: "자체 IaC 도구·AI 에이전트·지식관리" },
+  { folder: "Study", emoji: "📚", label: "Study", desc: "Go/Java·Cobra·Docusaurus·goreleaser·GitHub Actions·Terraform·취약점·AI 파이프라인·OpenBao·Istio" },
   { folder: "K8s-Clustering-2025", emoji: "🚀", label: "K8s Clustering (2025)", desc: "사내 온프레미스 쿠버네티스 클러스터 도입기" },
   { folder: "Linux", emoji: "🖥️", label: "Linux", desc: "리눅스" },
   { folder: "ETC", emoji: "⚙️", label: "ETC", desc: "미분류" },
 ]
 
-const FEATURED_LIMIT = 3
+// 카드마다 노출할 글 최대 개수. featured(상단 고정) + 최신 글로 채운다.
+const LIST_LIMIT = 10
 
 // 폴더 노트(폴더명과 동일한 파일) 및 index 는 글 개수에서 제외
 function isFolderNote(slug: string): boolean {
@@ -56,12 +58,17 @@ export default (() => {
         <ul class="category-grid">
           {CATEGORIES.map((cat) => {
             const articles = articlesIn(allFiles, cat.folder)
+            const byDateDesc = (a: QuartzPluginData, b: QuartzPluginData) =>
+              (getDate(cfg, b)?.getTime() ?? 0) - (getDate(cfg, a)?.getTime() ?? 0)
+            // featured 를 날짜순으로 위에 고정하고, 나머지는 최신순으로 채워 최대 LIST_LIMIT 개.
             const featured = articles
               .filter((f) => f.frontmatter?.featured === true)
-              .sort(
-                (a, b) => (getDate(cfg, b)?.getTime() ?? 0) - (getDate(cfg, a)?.getTime() ?? 0),
-              )
-              .slice(0, FEATURED_LIMIT)
+              .sort(byDateDesc)
+            const rest = articles
+              .filter((f) => f.frontmatter?.featured !== true)
+              .sort(byDateDesc)
+            const shown = [...featured, ...rest].slice(0, LIST_LIMIT)
+            const featuredSlugs = new Set(featured.map((f) => f.slug))
 
             const folderHref = resolveRelative(
               fileData.slug!,
@@ -77,14 +84,19 @@ export default (() => {
                   </span>
                 </a>
                 <p class="category-desc">{cat.desc}</p>
-                {featured.length > 0 && (
+                {shown.length > 0 && (
                   <ul class="category-featured">
-                    {featured.map((page) => (
+                    {shown.map((page) => (
                       <li>
                         <a
                           href={resolveRelative(fileData.slug!, page.slug!)}
                           class="internal"
                         >
+                          {featuredSlugs.has(page.slug) && (
+                            <span class="featured-star" title="featured">
+                              ★
+                            </span>
+                          )}
                           {page.frontmatter?.title}
                         </a>
                         {page.dates && (

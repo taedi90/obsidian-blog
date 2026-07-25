@@ -88,5 +88,13 @@
       white-space: nowrap;
       font-size: 0.75rem;
     }
+
+    // featured 글 표시 별표. 최신 글과 한 목록에 섞이므로 시각적으로 구분.
+    & .featured-star {
+      color: var(--secondary);
+      font-size: 0.7rem;
+      margin-right: 0.3rem;
+      vertical-align: 1px;
+    }
   }
 }
