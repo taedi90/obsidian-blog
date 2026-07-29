@@ -21,9 +21,7 @@ type:
 ## 🚀 요약
 
 > [!SUMMARY]
-> 운영 클러스터가 Istio로 해결하던 것들(서비스 간 mTLS·경로 라우팅·인가 위임·타임아웃/재시도)을 그동안 "그냥 되는 것"으로만 알았다. 그래서 OCI 단일 노드 k3s에 Istio를 직접 올려 실제 서비스가 쓰는 기능을 하나씩 재현하고, 운영 레벨(egress·관측·day-2·Ambient)까지 확장해봤다. 서비스 메시의 요지는 앱이 떠안던 네트워크 로직(암호화·라우팅·인가·복원력·관측)을 사이드카(Envoy)가 트래픽을 가로채 앱 밖에서 처리하는 것이다.
-
-"그냥 되는 것"을 직접 올려보니, 어디까지가 앱 책임이고 어디부터 메시 책임인지 선이 보였다.
+> 운영 클러스터가 Istio로 해결하던 것들(서비스 간 mTLS·경로 라우팅·인가 위임·타임아웃/재시도)을 그동안 제대로 살펴보지 못했다. 그래서 OCI 단일 노드 k3s에 Istio를 직접 올려 실제 서비스가 쓰는 기능을 하나씩 재현하고, 운영 레벨(egress·관측·day-2·Ambient)까지 확장해봤다. 서비스 메시의 요지는 앱이 떠안던 네트워크 로직(암호화·라우팅·인가·복원력·관측)을 사이드카(Envoy)가 트래픽을 가로채 앱 밖에서 처리하는 것이다.
 
 ## 1. 데이터플레인: 사이드카는 어떻게 끼어드나
 
@@ -34,7 +32,7 @@ Istio는 base(CRD) → istiod(컨트롤 플레인) → gateway 순으로 helm �
 - <b>init-container 모드(기본)</b> — 주입된 Pod에 `istio-init` 컨테이너가 `NET_ADMIN` 권한으로 iptables 리다이렉트를 건다.
 - <b>CNI 모드</b> — `istio-cni-node` DaemonSet이 노드 CNI 체인에 끼어 Pod 네트워크 셋업 때 iptables를 설정한다. Pod에 `istio-init`·`NET_ADMIN`이 불필요해 권한을 줄일 수 있다(운영 클러스터가 쓰는 방식).
 
-CNI를 k3s에 붙이며 이틀 치 삽질을 압축하면 두 가지다.
+CNI를 k3s에 붙이며 겪은 이슈는 두 가지다.
 
 - <b>CNI 바이너리 경로.</b> `cni.cniBinDir`이 `/opt/cni/bin`이 아니라 <b>`/var/lib/rancher/k3s/data/cni`</b>다. k3s containerd가 실제로 찾는 경로가 여기라, 잘못 주면 신규 Pod가 `failed to find plugin "istio-cni"`로 무한 `Init`에 빠진다. (에러 메시지의 검색 경로가 정답을 알려준다.)
 - <b>CNI를 켜는 값.</b> istiod에서 CNI 주입을 켜는 건 `istio_cni.enabled`가 아니라 <b>`pilot.cni.enabled: true`</b>다. 엉뚱한 값을 주면 `helm get values`론 들어간 듯 보여도 injector가 실제로 읽는 configmap엔 `False`로 남아 여전히 `istio-init`이 주입된다. <b>injector가 진짜 읽는 값</b>(`istio-sidecar-injector` configmap)을 확인해야 한다.

@@ -13,6 +13,7 @@ type Category = {
 }
 
 const CATEGORIES: Category[] = [
+  { folder: "Study", emoji: "📚", label: "Study", desc: "Go/Java·Cobra·Docusaurus·goreleaser·GitHub Actions·Terraform·취약점·AI 파이프라인·OpenBao·Istio" },
   { folder: "Kubernetes", emoji: "☸️", label: "Kubernetes", desc: "운영·트러블슈팅·네트워크·KubeVirt" },
   { folder: "CICD", emoji: "🔀", label: "CICD", desc: "Jenkins·ArgoCD·GitOps·배포 자동화" },
   { folder: "Database", emoji: "🗄️", label: "Database", desc: "MariaDB/Galera·Redis·RabbitMQ·Elasticsearch·Weaviate" },
@@ -20,7 +21,6 @@ const CATEGORIES: Category[] = [
   { folder: "Migration", emoji: "📦", label: "Migration", desc: "폐쇄망 이관·Helmfile·형상관리·SOPS" },
   { folder: "Container", emoji: "🐳", label: "Container", desc: "도커 컨테이너 기초" },
   { folder: "Tooling", emoji: "🧰", label: "Tooling", desc: "자체 IaC 도구·AI 에이전트·지식관리" },
-  { folder: "Study", emoji: "📚", label: "Study", desc: "Go/Java·Cobra·Docusaurus·goreleaser·GitHub Actions·Terraform·취약점·AI 파이프라인·OpenBao·Istio" },
   { folder: "K8s-Clustering-2025", emoji: "🚀", label: "K8s Clustering (2025)", desc: "사내 온프레미스 쿠버네티스 클러스터 도입기" },
   { folder: "Linux", emoji: "🖥️", label: "Linux", desc: "리눅스" },
   { folder: "ETC", emoji: "⚙️", label: "ETC", desc: "미분류" },
