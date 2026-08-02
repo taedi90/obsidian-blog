@@ -18,14 +18,14 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 운영 클러스터가 Istio로 해결하던 것들(서비스 간 mTLS·경로 라우팅·인가 위임·타임아웃/재시도)을 그동안 제대로 살펴보지 못했다. 그래서 OCI 단일 노드 k3s에 Istio를 직접 올려 실제 서비스가 쓰는 기능을 하나씩 재현하고, 운영 레벨(egress·관측·day-2·Ambient)까지 확장해봤다. 서비스 메시의 요지는 앱이 떠안던 네트워크 로직(암호화·라우팅·인가·복원력·관측)을 사이드카(Envoy)가 트래픽을 가로채 앱 밖에서 처리하는 것이다.
 
 ## 1. 데이터플레인: 사이드카는 어떻게 끼어드나
 
-Istio는 base(CRD) → istiod(컨트롤 플레인) → gateway 순으로 helm 세 차트로 깔린다. 핵심은 <b>istiod가 Mutating Webhook으로 Pod에 `istio-proxy`(Envoy)를 주입</b>하고, 그 프록시가 iptables로 파드 트래픽을 전부 가로채는 것이다. 트리거는 네임스페이스 라벨(`istio-injection=enabled`)이다.
+Istio는 base(CRD) → istiod(컨트롤 플레인) → gateway 순으로 helm 세 차트로 깔린다. <b>istiod가 Mutating Webhook으로 Pod에 `istio-proxy`(Envoy)를 주입</b>하고, 그 프록시가 iptables로 파드 트래픽을 전부 가로채는 것이다. 트리거는 네임스페이스 라벨(`istio-injection=enabled`)이다.
 
 주입에는 두 방식이 있는데, 여기서 k3s 특유의 함정을 제대로 밟았다.
 
@@ -95,11 +95,11 @@ apply 때 뜨는 `IST0133`("EnvoyFilter는 내부 구현을 노출, 업그레이
 
 마지막으로 <b>Ambient 모드</b>를 켜봤다. 사이드카를 파드마다 심는 대신, L4는 노드당 <b>ztunnel</b>(DaemonSet)이 mTLS로 처리하고 L7은 필요한 곳에만 <b>waypoint</b> 프록시를 둔다. `istio.io/dataplane-mode: ambient` 라벨만으로 <b>사이드카 0개(앱 수정·재시작 없이)</b> 워크로드가 메시에 편입됐고, ztunnel이 파드 간 트래픽을 HBONE(HTTP/2 CONNECT mTLS 터널)로 암호화했다. L7 정책이 필요할 때만 waypoint를 붙여(실측: waypoint로 `/deny-me`→403을 사이드카 0개로 집행) <b>비용을 계층적으로</b> 지불한다. 사이드카 메시와 공존(additive)해서 ns별로 고를 수 있다. 지금 운영은 사이드카+CNI라 Ambient를 안 쓰지만, 사이드카 오버헤드가 부담인 신규·대규모에는 확실한 대안으로 보였다.
 
-## 남은 것
+## 10. 한계
 
 mTLS·재시도·인가·egress 통제·관측이 전부 앱 밖 선언으로 내려오니 앱엔 비즈니스 로직만 남는다. 대신 데이터플레인이라는 새 레이어의 복잡도(주입·리비전·정책 전파 지연·EnvoyFilter)를 떠안고, 그걸 다루는 도구가 `istioctl`이라는 것도 이번에 손에 익었다. 다음은 tracing 백엔드(Jaeger) 연동과 Ambient를 실환경에 얹어보는 것 정도다. (서비스 간 mTLS 불일치로 실제 붙었던 사고는 [[clickhouse istio mTLS 불일치 이슈|따로]] 정리해뒀다.)
 
-## 🔗 참고
+## 참고
 
 - [[clickhouse istio mTLS 불일치 이슈]]
 - [[CNI 구현체 선정]]

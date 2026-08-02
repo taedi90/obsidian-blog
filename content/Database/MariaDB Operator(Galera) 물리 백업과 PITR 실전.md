@@ -20,19 +20,19 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 오퍼레이터가 관리하는 Galera MariaDB를 `mariabackup`/`xbstream`으로 물리 백업하고, 복구할 때는 오퍼레이터·웹훅·cert-controller를 `replicas 0`으로 잠시 재워 자동복구와 충돌하지 않게 한 뒤, 단일 노드에만 데이터를 복원하고 `grastate.dat`을 `seqno: -1`·`safe_to_bootstrap: 1`로 재작성하고 나머지 노드 PVC를 비워 bootstrap시켰다. 여기에 오퍼레이터의 `PhysicalBackup`과 `bootstrapFrom.targetRecoveryTime`을 얹으면 특정 시점 복구(PITR)까지 선언적으로 넘길 수 있다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - MariaDB: 물리 백업/복원은 `mariabackup`(=`mariadb-backup`) 기준
 - Galera: 3노드 클러스터, `mariadb-operator`가 StatefulSet으로 관리
 - Kubernetes: NFS 계열 스토리지클래스(`nfs-csi`)에 PVC 배치
 - 네임스페이스는 이 글에서 애플리케이션 DB를 `app-db`, MariaDB CR 이름을 `app-mariadb`로 표기 (실제 값 마스킹)
 
-## 💬 이슈
+## 2. 이슈
 
 오퍼레이터는 편하다. `MariaDB` CR 하나 던지면 StatefulSet, Service, Galera 부트스트랩, primary failover까지 알아서 굴린다. 그런데 <b>백업을 복원해야 하는 순간</b>, 이 편함이 정확히 반대로 작동한다.
 
@@ -47,7 +47,7 @@ type:
 > [!NOTE]
 > 여기서 다루는 건 "한 노드만 datadir이 깨진" 흔한 케이스가 아니다. 그건 살아있는 노드가 donor가 되니 깨진 노드 PVC만 비우고 SST를 받게 하면 끝난다. 이 글은 그것보다 무거운, <b>백업 시점의 데이터로 클러스터 전체를 되감아야 하는</b> 경우다.
 
-## 🧗 해결
+## 3. 해결
 
 전체 흐름은 이렇게 잡았다.
 
@@ -203,7 +203,7 @@ spec:
 > [!INFO]
 > `bootstrapFrom`으로 복원한 뒤에는, 초기 부트스트랩을 마친 `MariaDB` 리소스(및 필요 시 남은 init 관련 StatefulSet/Job)를 정리하는 뒷마무리가 붙는다. 자동화가 편하긴 해도, 스테이징 PVC 용량 부족이나 이미지 pull 실패로 Job이 멈추는 경우가 있어서 나는 여전히 3번의 수동 흐름을 머리에 넣어둔다.
 
-## ✅ 확인
+## 4. 확인
 
 복원이 끝나면 Galera가 한 클러스터로 합의했는지부터 본다. 살아있는 노드에서 wsrep 상태를 조회한다.
 
@@ -225,7 +225,7 @@ kubectl -n app-db get mariadb app-mariadb \
 
 `wsrep_cluster_size=3`, `wsrep_cluster_status=Primary`, `wsrep_local_state_comment=Synced`, 그리고 `Ready=True`·`GaleraReady=True`면 끝이다. 마지막으로 복원한 시점의 데이터가 실제로 들어있는지 애플리케이션 테이블 몇 개를 눈으로 확인하면 마음이 놓인다. (백업이 최신이 아닐 수 있다는 걸 늘 의심하는 편이 낫다.)
 
-## 🔗 참고
+## 참고
 
 - [MariaDB Operator — Physical backup](https://github.com/mariadb-operator/mariadb-operator/blob/main/docs/physical_backup.md)
 - [MariaDB Operator — Galera](https://github.com/mariadb-operator/mariadb-operator/blob/main/docs/galera.md)

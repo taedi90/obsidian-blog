@@ -18,18 +18,18 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 호환 불가 변경이 있는 클라이언트 라이브러리(`weaviate-client`) 두 버전을 하나의 컨테이너에서 환경변수로 골라 써야 했다. multi-stage 빌드로 구버전을 별도 디렉토리에 설치하고, 런타임에 `sys.path.insert`로 import 우선순위를 분기해 해결했다. docker-compose로 버전별 서버를 붙여 CRUD와 버전 전용 API 차이까지 실제로 돌려 검증했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Python 3.11 (`uv` 기반 이미지)
 - `weaviate-client` 4.15.0 / 4.19.2 두 버전 공존
 - Weaviate 서버 1.26.1 / 1.34.0 (docker-compose로 각각 기동)
 
-## 💬 이슈
+## 2. 이슈
 
 같은 클라이언트 라이브러리의 두 버전을 <b>하나의 컨테이너 이미지</b>에서 환경변수로 골라 로드해야 하는 상황이 있었다. 구버전 서버와 신버전 서버를 둘 다 상대해야 하는데, 클라이언트 라이브러리는 그 사이에 호환 불가 변경(breaking change)이 있었다.
 
@@ -37,7 +37,7 @@ type:
 
 보통은 이럴 때 컨테이너를 둘로 나누거나 가상환경을 따로 판다. 그게 정석이다. 다만 이번엔 "이미지는 하나로 두고 실행 시점에 버전을 고른다"가 가능한지가 궁금했다. `pip install`은 한 환경에 같은 패키지의 두 버전을 나란히 두지 못한다. 나중에 깐 게 앞엣걸 덮어쓴다. 그러면 하나의 `site-packages` 안에서 두 버전을 어떻게 공존시킬 것인가, 그리고 런타임에 어느 쪽을 로드할지 어떻게 결정할 것인가가 문제였다.
 
-## 🧗 해결
+## 3. 해결
 
 핵심 아이디어는 두 개다. 하나는 <b>설치 위치를 물리적으로 분리</b>하는 것, 다른 하나는 <b>런타임에 `sys.path` 우선순위를 바꿔</b> import를 분기하는 것이다.
 
@@ -140,7 +140,7 @@ services:
       WEAVIATE_URL: "http://weaviate-v2:8080"
 ```
 
-## ✅ 확인
+## 4. 확인
 
 `docker compose up --build`로 두 앱을 동시에 띄웠다. 먼저 각 앱이 실제로 의도한 버전을 로드했는지부터 봤다. `weaviate.__version__`을 로그로 찍게 해뒀는데, `python-app-v1`은 `4.15.0`, `python-app-v2`는 `4.19.2`로 나왔다. 같은 이미지인데 환경변수만으로 로드된 버전이 갈렸다는 뜻이다.
 
@@ -160,7 +160,7 @@ services:
 
 정석대로면 버전마다 이미지를 나누는 게 맞고, 대부분은 그게 낫다. 다만 이렇게 `--target`으로 설치 위치를 나누고 `sys.path`로 로드 순서를 정하면, 하나의 이미지에서 두 버전을 골라 쓰는 것도 된다는 걸 눈으로 봤다. Python이 import를 어떻게 찾는지만 알면 우회로가 하나 더 생긴다.
 
-## 🔗 참고
+## 참고
 
 - [Python `sys.path`](https://docs.python.org/3/library/sys.html#sys.path)
 - [uv pip install — Target directory](https://docs.astral.sh/uv/pip/packages/)

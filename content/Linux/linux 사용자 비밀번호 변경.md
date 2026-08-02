@@ -13,7 +13,7 @@ completed:
 ---
 리눅스에서 사용자 비밀번호를 바꾸는 방법은 상황에 따라 두 가지다.
 
-## 대화형: passwd
+## 1. 대화형: passwd
 
 직접 터미널에서 바꿀 때 쓰는 가장 기본적인 방법이다. 현재 비밀번호를 확인한 뒤 새 비밀번호를 두 번 입력하면 된다.
 
@@ -26,7 +26,7 @@ Retype new password:
 passwd: password updated successfully
 ```
 
-## 비대화형: chpasswd
+## 2. 비대화형: chpasswd
 
 쉘 스크립트나 프로비저닝처럼 프롬프트 입력이 불가능한 환경에서는 `chpasswd`를 쓴다. `사용자:비밀번호` 형식을 표준입력으로 넘기면 한 줄로 끝난다.
 

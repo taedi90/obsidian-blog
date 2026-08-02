@@ -20,7 +20,7 @@ type:
   - tooling
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 레거시부터 DB 스키마를 `.sql` 파일로 두고 사람이 직접 DB에 반영해왔다. 사이트가 하나일 땐 버텼지만, 제품이 여러 폐쇄망 고객사로 퍼지면서 "어느 사이트에 뭐가 반영됐는지"가 추적이 안 돼 스키마 형상이 어긋나기 시작했다. DDL뿐 아니라 트리거·DML까지 수작업이었다. 버전 관리로 옮기되, 이미 배포된 <b>레거시(`.sql` 유지 + 도구를 안 쓰는 사이트와의 호환)</b>는 그대로 따라야 했다. Python 백엔드라 Alembic이 자연스러웠지만 `.sql` 유지에 약해서, <b>단일 바이너리(폐쇄망 반입 유리) + SQL 기반 + 강력한 baseline·diff</b>인 <b>Atlas</b>(Community Edition 버전드 마이그레이션)를 골랐다. 공통·사이트 SQL을 `common`/`site_custom`으로 나누고, 이미 굴러가던 DB는 `baseline`으로 편입, 머지된 마이그레이션은 `atlas.sum`으로 불변 고정, PR SQL 검증 CI와 배포 승인 게이트까지 붙였다.
@@ -210,11 +210,11 @@ make deploy  CLUSTER=prod              # common → site_custom 순차 적용
 - <b>클러스터 맵 병합 위치 오류</b>: 인라인 파이프라인이 클러스터 설정을 합칠 때, `clusters.yaml`의 중첩 키가 아니라 ROOT 맵에 병합해야 `atlas.hcl`의 `yamldecode` 구조와 맞는데 그걸 잘못 잡았었다.
 - <b>`dry-run`의 `|| true`가 실패를 삼킴</b>: dry-run 스텝에 `|| true`가 붙어 non-zero 종료를 삼키는 바람에, 실패한 마이그레이션이 초록불로 승인 게이트까지 진행됐다. exit code를 캡처해 non-zero면 스테이지를 실패 처리하도록 고쳤다. 배포에서 가장 무서운 건 실패를 성공으로 보고하는 것이다.
 
-## 남은 것
+## 10. 한계
 
 도구와 파이프라인은 섰는데, 마지막 관문은 사람이다. 개발팀이 "SQL은 손으로 돌리는 것"이라는 습관에서 "파일로 추가하고 PR 올리는 것"으로 넘어오게 하는 전환 교육이 남았다. 좋은 레일을 깔아도 타는 법을 알려주지 않으면 결국 옆길로 샌다.
 
-## 🔗 참고
+## 참고
 
 - [Atlas — Versioned Migrations](https://atlasgo.io/versioned/intro)
 - [Atlas — migrate apply](https://atlasgo.io/versioned/apply)

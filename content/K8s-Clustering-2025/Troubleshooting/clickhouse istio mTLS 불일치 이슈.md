@@ -19,12 +19,12 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > istio-injection이 켜진 네임스페이스에 ClickHouse 파드가 있으면, 클라이언트 사이드카가 `security.istio.io/tlsMode: istio` 라벨을 보고 자동으로 mTLS를 originate한다. 그런데 ClickHouse는 mTLS를 종단하지 못하고 평문으로 응답한다. 결과는 `WRONG_VERSION_NUMBER` → 503. 해결은 ClickHouse 사이드카 자체를 안 붙이는 거다(`sidecar.istio.io/inject: "false"`). 라벨이 사라지면 클라이언트도 평문으로 붙는다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes + Istio service mesh
 - ClickHouse: 서비스명 `app-clickhouse`, HTTP 포트 8123, native 포트 9000/9009
@@ -33,7 +33,7 @@ type:
 - 배포: Helm 차트 → Helmfile → ArgoCD
 - 네임스페이스·서비스명 등은 가상값으로 바꿔 적는다.
 
-## 💬 이슈
+## 2. 이슈
 
 테스트 환경에서 trace 조회 API가 ClickHouse에 질의하다 503을 받았다. 사용자에게는 500 에러로 노출되고 있었다.
 
@@ -55,7 +55,7 @@ curl http://app-clickhouse:8123/ping
 
 ClickHouse 컨테이너 자체는 정상이었다. 데이터도 멀쩡하고, 노드 리소스에도 문제가 없었다. ArgoCD 동기화 상태도 OK. 그러니까 ClickHouse는 살아 있는데, 클라이언트가 못 붙는 상황이었다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. envoy access log: 진짜 원인이 드러나다
 
@@ -104,7 +104,7 @@ spec:
 > [!IMPORTANT]
 > 이 패턴은 새로운 게 아니다. 같은 클러스터에서 MariaDB, Minio도 동일한 방식으로 메시에서 제외해 두고 있었다. mTLS를 종단하지 못하는 데이터스토어는 사이드카를 안 붙이는 게 정석이다. ClickHouse만 예외로 두고 있었던 게 문제였다.
 
-## ✅ 확인
+## 4. 확인
 
 수정 후 helmfile template으로 렌더를 확인하고, 테스트 환경에 적용했다.
 

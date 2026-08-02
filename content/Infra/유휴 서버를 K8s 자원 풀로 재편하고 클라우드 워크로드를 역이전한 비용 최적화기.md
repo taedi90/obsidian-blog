@@ -82,14 +82,14 @@ type:
 
 클러스터를 세운 것보다, 세워도 된다는 판단을 만들어내는 데 시간이 더 걸렸다.
 
-## 남은 이야기
+## 6. 한계
 
 기술 스택 선정과 구축 디테일(CNI·CSI 선택, BGP 연동, 관측가능성 스택 등)은 별도 시리즈로 정리해뒀다.
 
 - [[도입 배경|쿠버네티스가 필요했던 이유]] — 같은 문제를 "왜 K8s인가" 각도에서 본 글
 - [[internal-kubernetes-cluster|사내 쿠버네티스 클러스터 도입기]] — 4개월간의 구축 여정 인덱스
 
-## 🔗 참고
+## 참고
 
 - [Kubernetes Resource Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
 - [Kubespray](https://github.com/kubernetes-sigs/kubespray)

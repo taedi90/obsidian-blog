@@ -19,12 +19,12 @@ type:
   - comparison
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > LLM 트레이싱을 <b>Langfuse</b>로 붙이려는데, 채팅 본문과 LLM 응답이 OTLP 페이로드 한계에 걸려 trace가 잘렸다. 그래서 256KB를 넘는 페이로드는 <b>Media API</b>로 S3/MinIO에 오프로드하고 나머지는 OTLP로 보내는 두 경로로 나눴고, 저장 부하를 감안해 <b>ClickHouse</b>도 따로 뗐다.
 
-## 💡 개요
+## 1. 개요
 
 이미 사내 관측성 스택은 OTel Collector + ClickHouse + SigNoz로 굴러가고 있었다. 로그·메트릭·트레이스를 한곳에서 보는 인프라 관측성 쪽은 그걸로 충분했다. 이 글은 거기에 얹는 이야기가 아니라, 결이 다른 <b>LLM 트레이싱(LLM tracing)</b>을 어떻게 붙일지 설계한 기록이다.
 
@@ -32,7 +32,7 @@ LLM 트레이싱은 일반 분산추적과 보는 각도가 다르다. 인프라
 
 Langfuse를 고른 이유는 단순하다. OTel 기반으로 붙일 수 있어 벤더에 덜 묶이고(계약상으로도 OpenAPI·OCI·OpenTelemetry·MLflow 같은 개방형 표준으로 벤더 종속을 최소화하라는 조항이 있었다), 프롬프트 관리와 LLM-as-a-judge 같은 후처리가 한 도구에 들어 있었다. 문제는 붙이자마자 나왔다. (처음엔 OTLP 하나로 다 보내려 했는데, 이게 벽이더라.)
 
-## 📋 OTLP 페이로드 한계
+## 2. OTLP 페이로드 한계
 
 붙여보니 채팅 trace의 input/output이 통째로 사라지거나 잘려서 들어왔다. 원인은 페이로드 크기였다.
 
@@ -43,7 +43,7 @@ Langfuse를 고른 이유는 단순하다. OTel 기반으로 붙일 수 있어 �
 
 문제는 채팅이다. 멀티턴 대화 이력에 첨부·컨텍스트까지 실리면 본문은 <b>256KB를 우습게 넘긴다</b>. LLM 응답도 길어지면 마찬가지다. 결국 "OTLP 하나로 다 보내겠다"는 안은 성립하지 않았다. S3 오프로드 경로를 안 쓰고 OTLP 단일 경로로 유지할 옵션이 있나 한참 찾아봤는데, 없었다.
 
-## OTLP 경로와 Media API 경로
+## 3. OTLP 경로와 Media API 경로
 
 그래서 크기를 기준으로 경로를 둘로 갈랐다.
 
@@ -68,7 +68,7 @@ Langfuse를 고른 이유는 단순하다. OTel 기반으로 붙일 수 있어 �
 
 전제가 하나 붙는다. Media API가 동작하려면 Langfuse가 <b>S3/MinIO 백엔드를 공유</b>하고 있어야 한다. 다행히 기존 LLM 서비스용 오브젝트 스토리지 버킷을 재사용하면 돼서, 이 전제는 이미 충족돼 있었다.
 
-## Media API가 필요한 모듈
+## 4. Media API가 필요한 모듈
 
 모든 모듈에 Media API를 켤 필요는 없다. 판단 기준은 하나였다. <b>사용자 페이로드(채팅·LLM 응답·분석 결과)를 trace에 실어 보내느냐</b>. 실어 보내면 256KB를 넘길 수 있으니 필요하고, trace를 안 만들거나 읽기 전용이면 불필요하다.
 
@@ -87,7 +87,7 @@ Langfuse를 고른 이유는 단순하다. OTel 기반으로 붙일 수 있어 �
 
 정리하자면 사용자 본문을 trace에 싣는 채팅·서빙·분석·워크플로우 쪽만 Media API를 켜고, trace를 안 만드는 프록시류와 프롬프트만 읽는 모듈은 그냥 뒀다.
 
-## ClickHouse 분리와 데이터 유실 대비
+## 5. ClickHouse 분리와 데이터 유실 대비
 
 Langfuse는 본문을 ClickHouse에 넣는다. 사내 관측성 스택(SigNoz)도 ClickHouse를 쓴다. 그럼 하나로 합칠까 싶었지만, <b>ClickHouse를 별도로 분리</b>하는 쪽이 안정적이라고 봤다. LLM trace의 쓰기 부하와 인프라 관측성 데이터가 한 DB에서 섞이면 서로 성능에 영향을 주고, 스키마·TTL·백업 정책도 성격이 달라 같이 묶을 이유가 없었다. 노드 간 스키마 불일치 같은 골치 아픈 문제도 분리해두면 폭발 반경이 줄어든다.
 
@@ -102,7 +102,7 @@ Langfuse는 본문을 ClickHouse에 넣는다. 사내 관측성 스택(SigNoz)�
 
 어디서 어떻게 새는지를 알고 감당 가능한 선까지 막아두는 걸로 충분했다. (Kafka까지 앞단에 두는 안도 검토했는데, 지금 트래픽에선 과했다.)
 
-## 📊 시각화 도구 비교
+## 6. 시각화 도구 비교
 
 Langfuse UI는 LLM 디버깅·프롬프트 관리엔 좋지만, 그 옆에서 ClickHouse에 쌓이는 로그·메트릭·트레이스를 프론트에 임베드해서 보여줄 도구가 따로 필요했다. `otel-collector-contrib`의 `clickhouseexporter`로 넣은 데이터를 그대로 재활용하는 게 관건이라, <b>OSS 라이선스</b>와 <b>`clickhouseexporter` 스키마 호환성</b>을 축으로 후보를 비교했다.
 
@@ -115,7 +115,7 @@ Langfuse UI는 LLM 디버깅·프롬프트 관리엔 좋지만, 그 옆에서 Cl
 
 Uptrace와 SigNoz는 자체 스키마를 써서, `clickhouseexporter`로 넣어둔 데이터를 그대로 못 읽는다. 특히 프론트 임베드가 요건이었는데, SigNoz는 패널 단위 iframe 임베드를 지원하지 않고 대시보드 단위 공유만 됐다(이미 사내 인프라 관측성용으로 SigNoz를 쓰고 있었지만, 임베드 요건은 별개 문제였다). HyperDX는 매력적이지만 신생이고, 무엇보다 별도로 MongoDB를 요구했다.
 
-## ✅ 도입안
+## 7. 도입안
 
 일단 <b>Grafana + ClickHouse plugin</b>으로 가기로 했다.
 
@@ -127,7 +127,7 @@ HyperDX 도입은 미뤘다. 세션 리플레이 같은 건 탐났지만 MongoDB
 
 AGPLv3 플러그인이라 나중에 패키징에서 걸릴 여지는 남는다. 일단 Grafana로 가고, 문제가 생기면 그때 본다.
 
-## 🔗 참고
+## 참고
 
 - [Langfuse — OpenTelemetry 연동](https://langfuse.com/docs/opentelemetry/get-started)
 - [Langfuse — Multi-modality & Attachments (Media API)](https://langfuse.com/docs/tracing-features/multi-modality)

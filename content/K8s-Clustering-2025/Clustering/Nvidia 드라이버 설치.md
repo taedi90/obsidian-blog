@@ -21,7 +21,7 @@ type:
 
 NVIDIA에서 제공하는 Ansible role을 활용했다. 드라이버, CUDA toolkit, container toolkit 세 가지를 한 플레이북으로 묶어서 GPU 노드에 돌린다.
 
-## 문제: 공식 role은 오프라인을 안 지원한다
+## 1. 문제: 공식 role은 오프라인을 안 지원한다
 
 NVIDIA 공식 role은 패키지를 그 자리에서 다운로드한다. 폐쇄망에서는 이게 안 된다. 그래서 role 내부를 뜯어고쳐야 했다.
 
@@ -30,7 +30,7 @@ NVIDIA 공식 role은 패키지를 그 자리에서 다운로드한다. 폐쇄�
 - <b>패키지 소스를 로컬 리포지토리로 변경</b>: NVIDIA repo URL 대신 오프라인 환경에 미리 구성해둔 로컬 mirror를 바라보게 했다.
 - <b>다운로드 단계 우회</b>: role이 `get_url`로 바이너리를 당겨오는 부분을, 사전에 반입해둔 파일 경로를 가리키도록 바꿨다.
 
-## 플레이북
+## 2. 플레이북
 
 ```yaml
 ---
@@ -76,7 +76,7 @@ NVIDIA 공식 role은 패키지를 그 자리에서 다운로드한다. 폐쇄�
 
 `nvidia/facts` role이 `ansible_local`에 GPU 개수를 세팅한다. GPU가 없는 노드면 드라이버와 toolkit 설치를 건너뛴다. 이걸로 GPU 노드와 일반 노드를 같은 인벤토리에 두고 돌려도 안전하다.
 
-## containerd에 NVIDIA 런타임 등록
+## 3. containerd에 NVIDIA 런타임 등록
 
 드라이버와 toolkit만 올라간 상태로는 containerd가 NVIDIA 런타임을 모른다. `group_vars/gpu_node.yml`에서 containerd 추가 런타임을 등록한다.
 
@@ -98,7 +98,7 @@ containerd_additional_runtimes:
 
 Kubespray가 이 값을 읽어서 containerd 설정 파일에 `nvidia` 런타임을 추가한다. 클러스터 설치 시 GPU 노드 그룹에만 이 변수가 적용된다.
 
-## 설치 순서
+## 4. 설치 순서
 
 GPU 노드를 클러스터에 붙이는 전체 흐름은 이렇다.
 
@@ -109,7 +109,7 @@ GPU 노드를 클러스터에 붙이는 전체 흐름은 이렇다.
 > [!NOTE]
 > 드라이버 설치와 클러스터 조인 순서는 바뀌어도 큰 문제는 없다. 다만 containerd 설정에 NVIDIA 런타임이 들어가야 GPU 파드가 정상적으로 스케줄링되니, 조인 전에 드라이버와 toolkit을 올리는 편이 순서상 깔끔하다.
 
-## 오프라인에서 막혔던 지점
+## 5. 오프라인에서 막혔던 지점
 
 드라이버 버전과 커널 버전 매칭이 가장 까다로웠다. Rocky Linux 9의 커널 업데이트가 밀리면, 특정 드라이버 브랜치(570 등)가 빌드되지 않는다. `dkms`가 커널 헤더를 못 찾거나 버전이 어긋나면 설치가 중간에 죽는다.
 

@@ -18,7 +18,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > GPU가 여러 장 꽂힌 서버에 KVM/libvirt로 VM을 여러 대 올릴 일이 생겼는데, `virt-install`로 한 대씩 만드는 건 "같은 스펙 여러 대 + GPU 패스스루 + OS별 초기 설정"이 붙으니 손으로는 재현이 안 됐다. 그래서 [Terraform + libvirt 프로바이더](https://github.com/dmacvicar/terraform-provider-libvirt)로 옮겼다. 스토리지·베이스와 VM을 두 단계로 나눠 remote_state로 잇고, VM 정의를 맵 하나에 적으면 `for_each`가 GPU PCI 패스스루·cloud-init까지 얹어 그대로 찍어낸다.
@@ -146,7 +146,7 @@ VM의 `os` 값으로 이 표에서 골라 쓰니, Ubuntu든 Rocky든 같은 맵�
 
 옮기고 나서 제일 좋았던 건 "똑같이 다시"가 공짜가 된 점이다. VM을 늘리는 게 맵에 줄 추가, GPU 재배치가 PCI 주소 수정, OS 추가가 locals에 표 한 칸. 클라우드가 아니라 온프레미스 GPU 서버에서도 Terraform의 선언적 모델이 그대로 통했다. (클라우드 리소스로 Terraform을 처음 익힐 땐 [[LocalStack으로 Terraform 연습하기|LocalStack]]으로 연습했었다.)
 
-## 🔗 참고
+## 참고
 
 - [[LocalStack으로 Terraform 연습하기]]
 - [terraform-provider-libvirt](https://github.com/dmacvicar/terraform-provider-libvirt)

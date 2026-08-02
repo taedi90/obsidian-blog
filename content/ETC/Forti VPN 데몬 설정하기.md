@@ -11,15 +11,15 @@ aliases:
 completed:
 ---
 
-## 📝 요약
+## 요약
 > [!summary]
 > 
 
-## ⚙️ 환경
+## 1. 환경
 - 
-## 💬 이슈
+## 2. 이슈
 
-## 🧗 해결
+## 3. 해결
 
 config 파일
 ```bash
@@ -87,5 +87,5 @@ sudo launchctl bootstrap system /Library/LaunchDaemons/com.openfortivpn.plist
 sudo launchctl kickstart -k system/com.openfortivpn
 ```
 
-## 🚀 참고
+## 참고
 - [https://github.com/adrienverge/openfortivpn](https://github.com/adrienverge/openfortivpn)

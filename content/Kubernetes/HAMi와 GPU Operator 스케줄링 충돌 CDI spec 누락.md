@@ -20,26 +20,26 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > HAMi로 GPU를 쓰려고 하면 GPU Operator의 toolkit(pu-operator)이 management 컨테이너용 CDI spec만 만들고, 일반 워크로드가 쓸 개별 GPU UUID의 CDI spec은 애초에 생성하지 않아서 스케줄링이 실패한다. HAMi가 UUID를 골라줬는데 그 UUID를 정의하는 CDI spec 자체가 없으니 에러. 아직 완전히 해결한 건 아니고, 어디서 꼬이는지까지 파악한 단계다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes 클러스터
 - GPU 관리: NVIDIA GPU Operator (toolkit/pu-operator 포함)
 - GPU 가상화/공유: HAMi (Heterogeneous AI Computing Virtualization Middleware)
 - 특정 노드만 HAMi를 사용하려는 구성
 
-## 💬 이슈
+## 2. 이슈
 
 목표는 단순했다. 특정 노드에서만 HAMi로 GPU를 쓰고, 나머지 노드는 GPU Operator가 평소대로 관리하는 것. 그런데 HAMi를 적용하니 HAMi를 안 쓰는 노드에서도 GPU 스케줄링이 안 됐다.
 
 > [!NOTE]
 > HAMi와 GPU Operator는 GPU를 k8s에 노출하는 방식이 다르다. GPU Operator는 NVIDIA device-plugin으로 `nvidia.com/gpu`를 광고하고, HAMi는 자체 스케줄러 훅으로 GPU를 가상화해 나눠준다. 둘이 같은 클러스터에 있으면, "누가 GPU 자원을 광고하고 누가 스케줄링을 결정하느냐"가 충돌한다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 증상: HAMi 노드가 아닌데도 GPU가 안 잡힌다
 
@@ -93,7 +93,7 @@ HAMi를 "특정 노드만" 쓰려고 했는데 왜 전체가 망가졌는지가 
   - toolkit의 CDI spec 생성 클래스를 확장하는 설정이 있는지 확인
   - HAMi 대신 GPU Operator 자체의 time-slicing이나 MIG로 우회
 
-## ✅ 확인
+## 4. 확인
 
 아직 진행 중이다. 확인해야 할 항목은 이렇다.
 

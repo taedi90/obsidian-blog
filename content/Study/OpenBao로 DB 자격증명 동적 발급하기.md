@@ -18,7 +18,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 시크릿을 앱 코드·설정에서 걷어내려 [OpenBao](https://openbao.org/)를 OCI 단일 노드 k3s에 학습용으로 올려봤다. 앱은 OpenBao를 전혀 모른 채 사이드카가 넣어준 `/vault/secrets/db-creds` 파일만 읽어 DB에 붙고, 그 자격증명은 요청 때마다 새로 만들어졌다 만료되면 사라지는 임시 계정이다. 이걸 굴리며 seal/unseal의 실체, 동적 자격증명의 생명주기, 시크릿 관리 생태계에서 OpenBao가 앉는 자리를 정리했다.
@@ -32,7 +32,7 @@ type:
 - <b>스토리지 백엔드</b> — OpenBao가 <b>자기 상태</b>(정책·토큰·lease·암호문)를 저장하는 곳. `file`(PVC)이나 raft 등. 
 - <b>secrets engine</b> — 외부 시스템을 <b>관리</b>하는 플러그인. `database`(→PostgreSQL), KV, Transit, PKI 등.
 
-핵심은 <b>OpenBao 자체는 DB가 필요 없다</b>는 것이다. 이 데모에서 PostgreSQL은 OpenBao가 의존하는 저장소가 아니라 <b>관리하는 대상</b>이다. secrets engine은 다시 둘로 갈린다. 요청 시 자격증명을 <b>만들고</b> 만료 시 <b>회수</b>하는 동적 엔진(database·pki 등)과, 넣어둔 값을 <b>보관·전달</b>하는 정적 엔진(KV). 이 글의 주인공은 동적 쪽이다.
+<b>OpenBao 자체는 DB가 필요 없다</b>. 이 데모에서 PostgreSQL은 OpenBao가 의존하는 저장소가 아니라 <b>관리하는 대상</b>이다. secrets engine은 다시 둘로 갈린다. 요청 시 자격증명을 <b>만들고</b> 만료 시 <b>회수</b>하는 동적 엔진(database·pki 등)과, 넣어둔 값을 <b>보관·전달</b>하는 정적 엔진(KV). 이 글의 주인공은 동적 쪽이다.
 
 (참고로 OpenBao는 HashiCorp Vault의 오픈소스 포크다. Vault가 라이선스를 BUSL로 바꾸자 커뮤니티가 이전 MPL 시절을 이어받아 갈라져 나온 프로젝트라, 개념·API·심지어 사이드카 injector까지 Vault 계열과 거의 그대로 호환된다.)
 
@@ -55,7 +55,7 @@ Storage의 모든 데이터
 
 포인트는 unseal key가 데이터를 <b>직접</b> 여는 게 아니라는 것이다. `unseal key → root key 재조립 → keyring 복호화 → 데이터`의 3단이다. 그래서 봉인/해제는 순수하게 <b>"메모리에 복호화 키가 있느냐"의 토글</b>이다. 디스크는 그대로 두고 메모리의 root key를 버리면 seal, 조각으로 다시 조립해 올리면 unseal. 프로세스가 죽으면 메모리가 날아가니 <b>재시작마다 다시 봉인</b>된다(standalone 기준).
 
-여기서 헷갈렸던 게 하나 있다. unseal key를 이미 k8s Secret에 저장해뒀는데 왜 재시작할 때마다 `unseal.sh`를 또 돌려야 하나? OpenBao에는 <b>"이 Secret을 읽어 스스로 unseal"하는 기능이 없다</b>. Shamir 설계상 <b>외부 행위자</b>가 키를 제출해야 열리고, 그 행위자가 스크립트(또는 부트스트랩 Job)다. 이걸 진짜로 자동화하는 정답은 in-cluster Secret이 아니라 <b>auto-unseal</b> — root key를 외부 KMS(또는 다른 Bao의 Transit)로 암호화해두고 부팅 시 그쪽에 복호화를 요청해 스스로 여는 방식이다. 신뢰 앵커가 클러스터 밖에 있어야 "클러스터가 뚫려도 암호문과 열쇠를 동시에 얻지는 못한다"가 성립한다.
+여기서 헷갈렸던 게 하나 있다. unseal key를 이미 k8s Secret에 저장해뒀는데 왜 재시작할 때마다 `unseal.sh`를 또 돌려야 하나? OpenBao에는 <b>"이 Secret을 읽어 스스로 unseal"하는 기능이 없다</b>. Shamir 설계상 <b>외부 행위자</b>가 키를 제출해야 열리고, 그 행위자가 스크립트(또는 부트스트랩 Job)다. 이걸 자동화하는 정답은 in-cluster Secret이 아니라 <b>auto-unseal</b> — root key를 외부 KMS(또는 다른 Bao의 Transit)로 암호화해두고 부팅 시 그쪽에 복호화를 요청해 스스로 여는 방식이다. 신뢰 앵커가 클러스터 밖에 있어야 "클러스터가 뚫려도 암호문과 열쇠를 동시에 얻지는 못한다"가 성립한다.
 
 ## 3. 동적 DB 자격증명: 앱은 볼트를 모른다
 
@@ -130,7 +130,7 @@ etcd에 저장되기 전, apiserver 요청 경로 안에서 <b>한 번(one-shot)
 
 ## 7. 시크릿 관리 생태계에서 OpenBao의 자리
 
-공부하며 제일 얻은 건 개별 기능보다 <b>SOPS·KMS·IAM·OpenBao·ESO가 어떻게 겹치고 갈리는지</b>였다. 결론부터: 이들은 같은 레이어의 경쟁자가 아니라 <b>서로 다른 레이어의 스택</b>이다.
+공부하며 제일 얻은 건 개별 기능보다 <b>SOPS·KMS·IAM·OpenBao·ESO가 어떻게 겹치고 갈리는지</b>였다. 이들은 같은 레이어의 경쟁자가 아니라 <b>서로 다른 레이어의 스택</b>이다.
 
 ```text
 ① 신원 뿌리   IAM / 워크로드 아이덴티티     ← 모두가 여기에 인증(저장된 비밀 0을 지향)
@@ -144,7 +144,7 @@ etcd에 저장되기 전, apiserver 요청 경로 안에서 <b>한 번(one-shot)
 ④ 소비   워크로드(Pod/VM)
 ```
 
-진짜로 겹치는 건 전달 레이어의 <b>SOPS ↔ OpenBao</b>뿐이다. 그리고 그 둘의 근본 차이는 흔히 말하는 "수동 회전 vs 자동 회전"이 아니라 <b>보관 vs 생성</b>이다. SOPS는 넣어둔 값을 지켜서 전달할 뿐이고, OpenBao는 <b>값을 만들어내기까지</b> 한다(그래서 회전이 자동으로 따라온다). 대신 대가가 있다. SOPS는 배포 후 <b>런타임 의존성이 없지만</b>, OpenBao는 sealed되거나 죽으면 앱이 시크릿을 못 받는 <b>살아있는 의존성</b>이다(단일 노드에선 단일 장애점).
+겹치는 건 전달 레이어의 <b>SOPS ↔ OpenBao</b>뿐이다. 그리고 그 둘의 근본 차이는 흔히 말하는 "수동 회전 vs 자동 회전"이 아니라 <b>보관 vs 생성</b>이다. SOPS는 넣어둔 값을 지켜서 전달할 뿐이고, OpenBao는 <b>값을 만들어내기까지</b> 한다(그래서 회전이 자동으로 따라온다). 대신 대가가 있다. SOPS는 배포 후 <b>런타임 의존성이 없지만</b>, OpenBao는 sealed되거나 죽으면 앱이 시크릿을 못 받는 <b>살아있는 의존성</b>이다(단일 노드에선 단일 장애점).
 
 그래서 OpenBao를 도입한다고 SOPS가 완전히 사라지진 않는다. OpenBao 자신의 unseal 키 같은 <b>부트스트랩 앵커</b>는 여전히 어딘가(git이면 SOPS, 아니면 KMS) 있어야 하고, 사이드카로 못 주는 것(`imagePullSecrets`, Gateway TLS, 오퍼레이터가 읽는 Secret 오브젝트)은 ESO로 브리지하거나 그 부분만 SOPS로 남긴다. 우리 조직이 지금 쓰는 [[GitOps 비밀 관리 도입기 SOPS와 age 값 단위 암호화|SOPS 중심 방식]]은 동적이 불필요하고 서버를 안 늘려도 되는 GitOps 순수형으로 적합하고, 동적·회전·감사가 필요한 다수 서비스로 가면 OpenBao 중심(또는 둘을 섞은 하이브리드)이 답이 된다.
 
@@ -161,11 +161,11 @@ etcd에 저장되기 전, apiserver 요청 경로 안에서 <b>한 번(one-shot)
 - <b>웹훅 레이스.</b> 6절의 미주입 → `rollout restart`.
 - <b>StorageClass 중복.</b> 기본 StorageClass가 둘이라 PVC에 어느 걸 쓸지 명시해야 했다.
 
-## 남은 것
+## 9. 한계
 
 이 셋업은 철저히 학습용이라 부끄러운 구석이 많다. unseal 키와 root 토큰을 평문 Secret에 넣어뒀고 in-cluster TLS도 안 썼다(프로덕션엔 이대로 쓰면 안 된다). 제대로 가려면 재봉인을 없앨 transit/KMS auto-unseal, 그리고 사이드카로 못 주는 비-Pod 시크릿을 위한 ESO 브리지가 다음 숙제다. 그래도 스토리지 백엔드와 secrets engine을 가르고, 봉인의 신뢰 앵커를 어디 둘지 정하고, 앱을 볼트에서 떼어내 자격증명을 단명화하는 이 한 묶음을 직접 굴려본 건 남았다.
 
-## 🔗 참고
+## 참고
 
 - [[GitOps 비밀 관리 도입기 SOPS와 age 값 단위 암호화]]
 - [[Istio 서비스 메시 학습기]]

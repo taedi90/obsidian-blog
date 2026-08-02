@@ -12,18 +12,18 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 로컬 머신의 Docker CLI에서 SSH 프로토콜을 사용하여 원격 서버의 Docker를 직접 제어할 수 있다. `docker context`를 생성하면, 매번 원격 서버에 접속할 필요 없이 로컬 환경에서 원격지의 컨테이너를 간편하게 관리할 수 있다.
 
-## 💬 이슈
+## 1. 이슈
 
 여러 원격 서버의 Docker 컨테이너를 관리해야 할 때, 각 서버에 <b>SSH(Secure Shell)</b>로 일일이 접속하여 Docker 명령어를 실행하는 것은 번거로운 과정이었다. 특히 로컬 개발 환경에서 원격 서버의 컨테이너 상태를 빠르게 확인하거나 로그를 보고 싶을 때, 매번 터미널을 전환하고 로그인하는 과정이 개발 흐름을 끊는다고 느꼈다.
 
 결국 로컬 터미널에서 원격 서버의 Docker를 직접 제어할 방법이 필요했다.
 
-## 🧗 해결
+## 2. 해결
 
 이 문제의 해결책은 Docker의 `context` 기능을 활용하는 것이다. `docker context`는 특정 Docker 디몬(daemon)을 가리키는 설정의 집합으로, 이를 통해 로컬 CLI에서 원격 Docker 호스트로 손쉽게 전환하며 작업할 수 있다. SSH를 이용한 원격 제어는 별도의 TCP 포트를 외부에 노출할 필요가 없어 보안적으로도 이점이 있다.
 
@@ -82,7 +82,7 @@ remote-server       docker                                                      
 > Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 > ```
 
-## ✅ 확인
+## 3. 확인
 
 설정이 올바르게 완료되었는지 확인하는 것은 간단하다.
 
@@ -105,7 +105,7 @@ docker context use default
 > [!NOTE]
 > Powerlevel10k와 같은 터미널 테마를 사용한다면, 현재 활성화된 Docker 컨텍스트를 프롬프트에 표시하도록 설정할 수 있다. 이를 통해 실수로 다른 환경에서 명령을 실행하는 것을 방지할 수 있다.
 
-## 🔗 참고
+## 참고
 
 - [VSCode Docs: Developing inside a container on a remote Docker host](https://code.visualstudio.com/docs/containers/ssh)
 - [Docker Docs: Configure remote access for Docker daemon](https://docs.docker.com/config/daemon/remote-access/)

@@ -88,7 +88,7 @@ roleRef:
 
 한계도 분명하다. 지금은 <b>사용자 개인</b>을 role에 바인딩하는 구조라, 사람이 많아지면 values의 매핑이 길어진다. Entra ID의 <b>그룹</b>을 subject(`kind: Group`)로 받아 "그룹 → role"로 묶으면 개인별 바인딩을 크게 줄일 수 있는데, 그건 그룹 클레임 연동까지 손봐야 해서 다음 과제로 남겼다. (앞 글의 "Keycloak 연동 그룹별 권한 관리"와 이어지는 지점이다.)
 
-## 🔗 참고
+## 참고
 
 - [[OIDC(EntraID) 를 이용한 개인별 인증인가 구성]]
 - [Kubernetes — Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)

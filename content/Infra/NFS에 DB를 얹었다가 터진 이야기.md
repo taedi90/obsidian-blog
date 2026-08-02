@@ -20,19 +20,19 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > NFS 한 곳에 DB 파드들의 볼륨을 전부 몰아 넣었더니 I/O가 밀리기 시작했다. `df -i`부터 `lsof`, `vmstat`/`sar`, `dmesg`, `nfsstat`까지 계층적으로 좁혀 다수 DB 볼륨의 동시 쓰기가 원인임을 확인했고, 급한 불은 캐시 정리와 `dirty_ratio` 튜닝으로 껐다. 근본 대책은 DB 데이터는 로컬 SSD로, NFS는 공유 파일과 백업 전용으로 <b>스토리지를 용도별로 분리</b>하는 것이었다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes 클러스터 (kubeadm 기반), CNI는 Cilium
 - 스토리지: NFS 노드 1대에 `nfs-subdir-external-provisioner`로 동적 프로비저닝
 - NFS 서버: ext4 on LVM (`/dev/mapper/vg_nfs-lv_data` → `/data/nfs`)
 - 워크로드: MariaDB, Elasticsearch, Redis, RabbitMQ 등 operator로 올린 상태풀(StatefulSet) 다수
 
-## 💬 이슈
+## 2. 이슈
 
 어느 순간부터 클러스터에 올린 DB 파드들이 느려졌다. 쿼리가 간헐적으로 늘어지고, 백업 잡이 돌 때는 다른 서비스까지 같이 버벅였다. 처음엔 특정 파드 문제인 줄 알았는데, NFS 노드에 붙어 `uptime`을 쳐보니 로드 애버리지가 20을 넘고 있었다. 코어 수를 한참 웃도는 값이라 이건 파드 하나의 문제가 아니었다.
 
@@ -40,7 +40,7 @@ type:
 
 증상은 봤으니 원인을 찾아야 하는데, "NFS가 느리다"는 심증만으로는 손을 못 댄다. 디스크가 찬 건지, 파일 디스크립터가 샌 건지, 커널 레벨에서 뭐가 막힌 건지, 아니면 진짜 NFS 워크로드 자체가 과한 건지 — 층을 하나씩 걷어내며 확인하기로 했다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 계층적으로 원인 좁히기
 
@@ -135,7 +135,7 @@ DB StatefulSet의 볼륨클레임 스토리지클래스를 로컬 기반으로 �
 
 우선 NFS 노드에는 taint를 걸어 DB나 다른 파드가 다시 끼어들지 못하게 막고, 공유·백업 용도로만 남겼다. 네트워크 버퍼와 NFS 스레드 수를 연결량에 맞춰 조정해두긴 했는데, 근본은 어디까지나 "DB를 NFS에서 빼는 것"이다. 튜닝으로 될 문제였으면 애초에 여기까지 오지도 않았다.
 
-## ✅ 확인
+## 4. 확인
 
 NFS 노드에서 DB 워크로드를 걷어내고 노드를 정리한 뒤 다시 상태를 봤다.
 
@@ -149,7 +149,7 @@ ss -an | grep :2049 | wc -l
 
 편하자고 스토리지를 하나로 통일해둔 게 화근이었다. 워크로드마다 맞는 스토리지가 따로 있다는 걸, DB한테 NFS를 쥐여주고 나서야 확인했다.
 
-## 🔗 참고
+## 참고
 
 - [nfs(5) — NFS 마운트 옵션 man page](https://man7.org/linux/man-pages/man5/nfs.5.html)
 - [Linux VM sysctl (dirty_ratio 등) 커널 문서](https://docs.kernel.org/admin-guide/sysctl/vm.html)

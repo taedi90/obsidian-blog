@@ -20,12 +20,12 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > mariadb-operator의 galera 자동복구가 readiness 프로브의 K8s API 타임아웃을 Galera 불건강으로 해석하고 강제 bootstrap을 내렸다. 클러스터는 멀쩡했는데 오퍼레이터가 스스로 끊어죽인 셈이다. 게다가 `imagePullPolicy: Always`로 매번 130MB 이미지를 다시 받고 gcache가 128M라 짧은 다운타임도 전체 SST로 번지면서 복구에 50분이 걸렸다. 결국 데이터 손실은 없었지만, 장애를 만든 건 오퍼레이터 본인이었다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes + mariadb-operator
 - MariaDB Galera 3노드 (StatefulSet)
@@ -33,7 +33,7 @@ type:
 - 배포: Helm 차트 → Helmfile → ArgoCD (GitOps)
 - 네임스페이스·호스트명 등은 전부 가상값으로 바꿔 적는다.
 
-## 💬 이슈
+## 2. 이슈
 
 백업 체계를 구축하던 중이었다. 물리 복원·PITR·논리 백업 리허설을 한 번에 돌리느라 짧은 시간에 kubectl, Pod 생성·삭제, helm sync 15회, immediate 백업 CR 발화까지 한꺼번에 밀어 넣은 상태였다. 말하자면 클러스터에 버스트 부하를 주는 테스트를 하고 있었다.
 
@@ -45,7 +45,7 @@ galera.health "Galera cluster is not healthy"
 
 그로부터 약 50분. `app-mariadb-0`이 SST로 재조인을 마친 뒤에야 안정화됐다. 데이터 손실은 없었다(Galera SST로 보존됨). 운영 환경은 무관했고 테스트 환경 한정이었다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 타임라인: 무슨 일이 일어났나
 
@@ -98,7 +98,7 @@ Galera는 멀쩡했다. 3노드 중 2노드가 Primary/Synced로 살아 있었�
 | podRecovery | (짧음) | 30m |
 | gcache | 128M | 5G |
 
-핵심은 세 가지다.
+세 가지다.
 
 - <b>`imagePullPolicy: IfNotPresent`</b>로 이미지 재풀 비용을 없앴다.
 - <b>프로브 내성</b>을 올렸다. API가 잠깐 느려진다고 Galera를 unhealthy로 단정하지 않게, timeout 15s에 threshold 12, startupProbe 4h까지 줬다. 일시적 지연은 노이즈로 처리하고 넘어가는 게 목적이다.
@@ -115,7 +115,7 @@ Galera는 멀쩡했다. 3노드 중 2노드가 Primary/Synced로 살아 있었�
 - <b>리허설은 격리하거나 저부하 시간대에</b> — 라이브 클러스터에서 굳이 안 해도 될 테스트는 분리된 환경에서.
 - <b>immediate 백업 CR 재생성 유발 금지</b> — 백업 CR이 immediate 트리거를 달고 있으면 한 번 잘못 건드렸을 때 부하가 터진다. 스케줄 기반으로만.
 
-## ✅ 확인
+## 4. 확인
 
  견고화 값은 차트에 반영했다. 다만 라이브 반영은 롤링 재시작을 동반하니, 저부하 시간대에 통제된 deploy 창에서 진행하기로 했다. 정본 경로는 차트 병합 → GitOps → ArgoCD.
 

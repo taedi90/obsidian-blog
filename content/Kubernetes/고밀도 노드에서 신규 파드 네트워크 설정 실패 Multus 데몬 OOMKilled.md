@@ -18,12 +18,12 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 파드가 90여 개 뜬 고밀도 워커 노드에서 신규 파드가 `failed to setup network for sandbox`로 멈췄다. 원인은 그 노드의 Multus 데몬(thick plugin DaemonSet)이 기본 메모리 제한 `50Mi`에 걸려 반복적으로 OOMKilled되는 것이었다. 파드 밀도가 낮은 노드의 실사용량과 비교해 제한이 지나치게 빡빡함을 확인하고, 메모리 request/limit을 노드 밀도에 맞게 상향해 네트워크 설정을 안정화했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - CNI: Cilium(primary) + Multus thick plugin(secondary)
 - 컨테이너 런타임: containerd
@@ -33,7 +33,7 @@ type:
 > [!NOTE]
 > Multus thick plugin은 노드마다 <b>Multus 데몬</b>(DaemonSet) 하나가 돌고, containerd가 CNI를 부를 때 뜨는 `multus-shim`이 유닉스 소켓(`/run/multus/multus.sock`)으로 이 데몬에 일을 위임하는 구조다. 즉 그 노드에서 일어나는 모든 파드의 CNI ADD/DEL이 데몬 한 프로세스를 거친다. 데몬이 죽으면 그 노드의 신규 파드 네트워크가 통째로 막힌다. 같은 thick plugin 구조에서 데몬이 죽는 대신 <b>hang</b>했을 때의 증상은 [[한 노드에서만 파드가 ContainerCreating에 멈추는 문제와 좀비 multus-shim|다른 글]]에 따로 정리해뒀다. 이번은 hang이 아니라 프로세스가 실제로 죽는 경우다.
 
-## 💬 이슈
+## 2. 이슈
 
 특정 워커 한 대에 새로 스케줄되는 파드가 `ContainerCreating`을 못 벗어났다. 그런데 이번엔 이벤트가 조용하지 않고 에러를 뱉었다.
 
@@ -54,7 +54,7 @@ Warning  FailedCreatePodSandBox  10+ times  failed to setup network for sandbox 
 
 "간헐적으로 실패한다"가 단서였다. 데몬이 완전히 죽어 안 올라오는 거라면 100% 실패해야 하는데, 됐다 안 됐다 한다는 건 데몬이 <b>떴다 죽었다를 반복</b>하고 있다는 얘기다. 살아 있는 사이에 들어온 CNI 요청은 성공하고, 처리 도중 데몬이 죽으면 그 요청이 `EOF`로 실패하는 것이다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. Multus 데몬의 재시작 횟수
 
@@ -130,7 +130,7 @@ kubectl -n kube-system patch daemonset kube-multus-ds --type=json -p='[
 
 DaemonSet이라 patch 즉시 각 노드의 데몬 파드가 새 리소스로 롤링 재생성됐다. (매니페스트를 GitOps로 관리한다면 upstream 기본값을 그대로 쓰지 말고 이 오버라이드를 리포에 박아두는 게 맞다. 노드가 빽빽해질수록 또 터질 자리다.)
 
-## ✅ 확인
+## 4. 확인
 
 먼저 데몬이 더는 안 죽는지 봤다.
 
@@ -151,7 +151,7 @@ kubectl get pods -A -o wide --field-selector spec.nodeName=worker-07 | grep -v R
 
 에러 메시지 자체(`failed to setup network`, `EOF`)는 CNI를 가리켰지만, 그게 왜 실패하는지는 소켓 뒤 데몬의 종료 사유(`OOMKilled`)까지 내려가야 보였다. 그리고 그 종료가 특정 노드에서만 난 건 기본 메모리 제한이 노드 밀도를 고려하지 않은 고정값이었기 때문이다.
 
-## 🔗 참고
+## 참고
 
 - [Multus CNI](https://github.com/k8snetworkplumbingwg/multus-cni)
 - [Multus thick plugin DaemonSet 매니페스트](https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/deployments/multus-daemonset-thick.yml)

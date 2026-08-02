@@ -12,17 +12,17 @@ aliases:
 completed:
 ---
 
-## 📝 요약
+## 요약
 > [!summary]
 > - `SHOW ENGINE INNODB STATUS`
 > - `set GLOBAL innodb_print_all_deadlocks =  ON`
 
-## ⚙️ 환경
+## 1. 환경
 - mariadb 10.8.3
-## 💬 이슈
+## 2. 이슈
 데드락이 발생했을 때 mariadb 내부의 데드락 로그를 파악하는 방법이 필요했다.
 
-## 🧗 해결
+## 3. 해결
 ### 방법 1. `SHOW ENGINE INNODB STATUS` 쿼리
 `SHOW ENGINE INNODB STATUS` 쿼리 결과 중 'LATEST DETECTED DEADLOCK' 데이터를 확인하면 가장 최근에 발생한 데드락 정보를 확인할 수 있다. 마지막 1개 데드락 로그만 표시하기 때문에 연쇄적으로 데드락이 발생할 경우에는 확인이 어려운 문제가 있다.
 
@@ -35,5 +35,5 @@ innodb_print_all_deadlocks = 1
 ```
 
 
-## 🚀 참고
+## 참고
 - [https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_print_all_deadlocks](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_print_all_deadlocks)

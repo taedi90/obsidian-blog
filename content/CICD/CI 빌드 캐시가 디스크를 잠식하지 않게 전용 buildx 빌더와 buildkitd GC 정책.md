@@ -59,7 +59,7 @@ docker buildx inspect "$BUILDER_NAME" --bootstrap >/dev/null
 
 ## 3. buildkitd GC 정책으로 상·하한 걸기
 
-핵심은 빌더에 물린 `buildkitd.toml`이다. 여기에 GC 정책을 적어 캐시가 넘볼 수 있는 디스크 범위를 못 박았다.
+빌더에 물린 `buildkitd.toml`이다. 여기에 GC 정책을 적어 캐시가 넘볼 수 있는 디스크 범위를 못 박았다.
 
 ```toml
 # ref https://docs.docker.com/build/buildkit/toml-configuration/
@@ -118,7 +118,7 @@ docker buildx du --builder ci-builder
 
 캐시가 상한을 넘기려 하면 GC가 돌아 다시 내려오고, 그래도 하한 아래로는 안 떨어져 캐시 히트는 유지됐다. 디스크가 차서 빌드가 죽는 일도, 사람이 들어가 `prune`을 두들기는 일도 없어졌다. 원했던 "손 안 대도 캐시가 범위 안에서 사는" 상태가 이거였다.
 
-## 🔗 참고
+## 참고
 
 - [BuildKit TOML configuration](https://docs.docker.com/build/buildkit/toml-configuration/)
 - [Build cache garbage collection](https://docs.docker.com/build/cache/garbage-collection/)

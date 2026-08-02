@@ -17,7 +17,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 자체 로그인이 없는 대시보드·내부 도구(모니터링 UI 등)를 그냥 열어둘 수 없어서, 앞에 <b>oauth2-proxy</b>를 세우고 Keycloak을 OIDC 공급자로 붙였다. 사용자는 Keycloak SSO로 한 번 로그인하고, oauth2-proxy가 통과시킨 요청에는 사용자 식별 정보가 헤더로 실려 백엔드에 전달된다. 접근 제어는 Keycloak <b>role</b>로 하고, 인그레스의 `auth_request`로 여러 서비스 앞단에 공통으로 끼웠다.
@@ -77,7 +77,7 @@ metadata:
 
 지금은 통과/차단과 role 기반 접근까지다. 더 세밀한 <b>서비스별 권한</b>(같은 로그인이라도 A 도구는 admin만, B는 viewer도)은 인그레스별 `--allowed-role`을 다르게 두거나 role별 그룹을 나눠 확장할 여지가 있다. 쿠키·세션 보안(`cookie-secure`, 도메인 스코프)은 실제 HTTPS 도메인에 맞춰 조여야 한다.
 
-## 🔗 참고
+## 참고
 
 - [[OIDC(EntraID) 를 이용한 개인별 인증인가 구성]]
 - [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/)

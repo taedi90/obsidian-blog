@@ -17,7 +17,7 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 노드가 죽으면 그 위 파드는 다른 노드로 새로 떴는데, 죽은 노드의 <b>기존 파드가 Error·Completed로 남아</b> 목록이 지저분해졌다. 또 Deployment는 곧장 다른 노드로 재배치되는데 <b>StatefulSet은 그대로 멈춰</b> 있었다. 둘 다 쿠버네티스의 의도된 동작이다 — 잔존 파드는 pod GC가 정리하고(임계치 설정 가능), StatefulSet이 안 옮겨가는 건 "같은 신원의 파드가 동시에 둘 뜨는 것"을 막는 안전장치다. 방치보다 자동 정리·주기 점검으로 관리하는 게 낫다.
@@ -60,7 +60,7 @@ type:
 - StatefulSet이 노드 장애 때 안 옮겨가는 건 <b>at-most-one 보장을 위한 의도된 대기</b>다. 방치하면 그 replica가 계속 내려가 있는 것이니, 노드가 확실히 죽었으면 노드 삭제(권장) 또는 신중한 강제 삭제로 진행시켜야 한다.
 - 둘 다 "자동 정리 + 주기 점검"으로 운영 복잡성을 미리 줄이는 게 최선이다.
 
-## 🔗 참고
+## 참고
 
 - [Kubernetes — Pod Lifecycle (Garbage collection)](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/)
 - [Kubernetes — Force delete StatefulSet Pods](https://kubernetes.io/docs/tasks/run-application/force-delete-stateful-set-pod/)

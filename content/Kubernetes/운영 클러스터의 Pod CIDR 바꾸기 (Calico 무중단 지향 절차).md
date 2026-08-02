@@ -19,19 +19,19 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 파드 대역(`192.168.0.0/16`)이 노드가 쓰는 물리 네트워크 대역과 겹쳐 통신이 꼬이던 클러스터를, 파드 대역만 `10.244.0.0/16`으로 옮겼다. Calico IPPool·`kube-controller-manager`·`kubeadm-config`·`kube-proxy`의 CIDR을 순서대로 바꾼 뒤 노드를 하나씩 `delete` 후 재join하는 방식으로, 노드 라벨 백업과 `node-ipam-controller` 에러까지 대응하며 진행했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes: v1.30 (kubeadm)
 - CNI: Calico (IPIP `Always` 모드)
 - 기존 Pod CIDR `192.168.0.0/16` → 신규 `10.244.0.0/16`
 - 노드·주변 장비가 쓰는 물리 네트워크도 `192.168.x.x` 대역
 
-## 💬 이슈
+## 2. 이슈
 
 새 GPU 서버를 검증 클러스터에 join하려다 막혔다. 서버가 붙은 물리 네트워크가 `192.168.x.x` 대역인데, 하필 이 클러스터의 <b>Pod CIDR</b>이 `192.168.0.0/16`이었다. 파드에 붙는 IP와 실제 노드·주변 장비가 쓰는 IP가 같은 대역에서 겹치니, 특정 목적지로 가는 패킷이 파드 오버레이로 새거나 반대로 빨려 들어가는 식으로 라우팅이 애매해졌다.
 
@@ -39,7 +39,7 @@ Calico 기본값이 `192.168.0.0/16`이라 초기 설치 때 아무 생각 없�
 
 문제는 <b>Pod CIDR은 클러스터를 세울 때 한 번 정하면 바꾸라고 만든 값이 아니라는 점</b>이다. `kubeadm`으로 새 클러스터를 다시 까는 게 정석이지만, 이미 워크로드가 돌고 있는 걸 통째로 재설치할 수는 없었다. <b>클러스터를 살려둔 채, 파드 대역만 노드 하나씩 갈아끼우며 옮길 수 있는가?</b>
 
-## 🧗 해결
+## 3. 해결
 
 Pod CIDR은 한 군데 값이 아니라 여러 컴포넌트에 흩어져 박혀 있다. 어느 하나만 바꾸면 서로 어긋나 컨트롤플레인이 삐걱대므로, 바꿔야 할 곳을 먼저 전부 파악했다.
 
@@ -164,7 +164,7 @@ kubectl get nodes -o json \
 
 node-ipam 입장에서는 클러스터 CIDR은 이미 `10.244.0.0/16`인데, 노드에 박힌 `podCIDR`은 아직 옛 대역(`192.168.0.0/24`)이라 "이 노드 서브넷은 내 관할 밖"이라며 초기화를 거부한 것이다. 노드를 다시 join시켜 `podCIDR`을 신규 대역으로 갱신하면 이 에러는 사라진다. 에러 메시지 자체가 <b>왜 노드를 갈아끼워야 하는지</b>를 그대로 설명해준 셈이다.
 
-## ✅ 확인
+## 4. 확인
 
 먼저 `kube-controller-manager`가 정상인지 봤다. 파드가 `Running`이면서 로그에 앞의 node-ipam 에러가 더는 안 나오면 통과다.
 
@@ -189,7 +189,7 @@ kubectl get pods -A -o wide | awk '{print $1, $2, $7}'
 
 대단한 마법이 있는 작업은 아니었다. CIDR이 박힌 곳을 빠짐없이 찾고, 노드를 갈아끼워 `podCIDR`을 갱신하고, 라벨 백업 같은 되돌릴 구석을 만들어둔 게 전부다.
 
-## 🔗 참고
+## 참고
 
 - [Calico — Migrate from one IP pool to another](https://docs.tigera.io/calico/latest/networking/ipam/migrate-pools)
 - [Calico — IPPool resource](https://docs.tigera.io/calico/latest/reference/resources/ippool)

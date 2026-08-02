@@ -18,12 +18,12 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 네트워크가 잠깐 끊겼다 붙은 뒤 RabbitMQ 노드가 `running_nodes`로 재합류하지 못했다. firewalld로 파티션을 일부러 만들어 재현하고, mnesia의 `inconsistent_database`와 미러 큐 leader 승격 로그를 읽어 원인을 확인한 뒤, `cluster_partition_handling`을 `ignore`에서 `autoheal`로 바꿔 승자 노드 선출과 패자 노드 순차 재시작이 동작하도록 검증했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - RabbitMQ 3.x, 클래식 미러 큐(HA policy로 큐를 3노드에 미러링)
 - 브로커 노드 3대: `rabbit@mq.0`, `rabbit@mq.1`, `rabbit@mq.2` (컨테이너로 기동)
@@ -31,7 +31,7 @@ type:
 - 노드 간 통신은 firewalld가 열려 있는 포트 위에서 이뤄짐
 - `cluster_partition_handling = ignore` (기존 설정)
 
-## 💬 이슈
+## 2. 이슈
 
 증상 자체는 단순했다. 노드에 네트워크 장애가 한 번 나면, 붙고 나서 `rabbitmqctl cluster_status`를 봐도 `running_nodes`에 그 노드가 돌아오지 않았다. 브로커는 살아 있는데 클러스터 눈에는 여전히 죽은 노드로 남아 있는 상태였다.
 
@@ -41,7 +41,7 @@ RabbitMQ 클러스터는 노드 간 메타데이터를 <b>mnesia</b>라는 내�
 
 그럼 다른 값으로 바꾸면 정말 알아서 복구되는지, 그게 궁금했다. 운영 중에 네트워크를 끊어볼 순 없으니 파티션을 인위로 만들어 확인하기로 했다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. firewalld로 파티션 재현하기
 
@@ -107,7 +107,7 @@ cluster_partition_handling = autoheal
 
 동기화된 미러(replica)가 없는 큐는 master가 내려갈 때 통째로 멈춘다는 경고다. autoheal이 상태를 정리하는 건 맞지만, 그 순간 동기화 안 된 미러 큐의 메시지는 날아갈 수 있다는 뜻이다. 자가복구가 "무손실"이라는 얘기는 아니다.
 
-## ✅ 확인
+## 4. 확인
 
 파티션을 여러 번 만들고 붙이며 두 가지를 봤다.
 
@@ -124,7 +124,7 @@ rabbitmqctl cluster_status
 > [!NOTE]
 > 여기까지가 클래식 미러 큐 기준 이야기다. 최신 RabbitMQ는 미러 큐를 걷어내고 Raft 기반의 quorum queue를 권장한다. quorum queue는 다수결로 leader를 뽑기 때문에 파티션 상황에서 `autoheal` 같은 사후 정리에 덜 기대게 된다. 지금 새로 구성한다면 큐 타입부터 다시 보는 게 맞다.
 
-## 🔗 참고
+## 참고
 
 - [RabbitMQ — Clustering and Network Partitions](https://www.rabbitmq.com/docs/partitions)
 - [RabbitMQ — Classic Queue Mirroring](https://www.rabbitmq.com/docs/3.13/ha)

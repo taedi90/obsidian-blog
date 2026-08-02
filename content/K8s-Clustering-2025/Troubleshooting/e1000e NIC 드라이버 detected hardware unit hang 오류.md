@@ -19,18 +19,18 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > Intel e1000e NIC 드라이버의 `detected hardware unit hang` 오류는 불안정한 전력 관리와 네트워크 오프로딩 기능이 원인이었다. 커널 파라미터를 수정하고 오프로딩을 꺼서 해결했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - OS: Rocky Linux 9
 - Platform: Kubernetes
 - Hardware: Intel <b>e1000e</b> 네트워크 인터페이스 카드(NIC)
 
-## 💬 이슈
+## 2. 이슈
 
 특정 노드 하나가 네트워크 통신이 완전히 마비됐다. Kubernetes 클러스터에서는 `NotReady`로 빠졌고, SSH를 포함한 모든 원격 접근이 끊겨 물리 콘솔로만 들어갈 수 있었다. 해당 노드 `dmesg`를 보니 `e1000e: detected hardware unit hang`이 계속 찍히고 있었다. 찾아보니 Intel e1000e NIC 드라이버가 특정 상황에서 하드웨어 정지(hang)를 일으키는, 꽤 알려진 고질병이었다.
 
@@ -42,7 +42,7 @@ type:
 
 특이한 점은, 같은 하드웨어와 커널 버전을 쓰는 다른 노드는 멀쩡했고 유독 이 노드에서만 터졌다는 것이다.
 
-## 🧗 해결
+## 3. 해결
 
 여러 조치를 시도했다. 각 단계는 따로 적용해도 되고 몇 개를 겹쳐 적용해도 된다. 내 경우엔 2번과 3번을 함께 적용해서 최종적으로 문제를 잡았다.
 
@@ -144,7 +144,7 @@ sudo dracut -f
 sudo reboot
 ```
 
-## ✅ 확인
+## 4. 확인
 
 설정이 제대로 반영됐는지 확인하는 방법은 다음과 같다.
 
@@ -176,6 +176,6 @@ modinfo -p e1000e
 dmesg | grep e1000e
 ```
 
-## 🔗 참고
+## 참고
 
 - [Proxmox Forum: Intel NIC e1000e hardware unit hang](https://forum.proxmox.com/threads/intel-nic-e1000e-hardware-unit-hang.106001/)

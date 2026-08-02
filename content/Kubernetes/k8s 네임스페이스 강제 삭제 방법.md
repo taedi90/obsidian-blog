@@ -17,7 +17,7 @@ completed:
 namespace=<Hang 걸린 네임스페이스>; kubectl get namespace $namespace -o json | jq '.spec.finalizers= []' | kubectl replace --raw "/api/v1/namespaces/$namespace/finalize" -f -
 ```
 
-## 이슈
+## 1. 이슈
 
 네임스페이스를 삭제하다 보면 `Terminating` 상태에서 처리가 되지않고 hang 상태로 빠지는 경우가 있다.
 
@@ -25,7 +25,7 @@ namespace=<Hang 걸린 네임스페이스>; kubectl get namespace $namespace -o 
 
   
 
-## 해결
+## 2. 해결
 
 네임스페이스 내부의 문제를 찾아서 해결하고 모든 리소스를 삭제한 후 네임스페이스를 삭제하는 것이 정석이지만,
 

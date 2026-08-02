@@ -18,12 +18,12 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 워커 노드 한 대에서만 새로 스케줄되는 파드와 KubeVirt VM이 `ContainerCreating`에서 안 넘어갔다. containerd 로그의 `StopPodSandbox ... context deadline exceeded`와 그 노드에 쌓인 좀비 `multus-shim` 프로세스를 따라가 보니, CNI DEL 단계에서 shim이 Multus 데몬 응답을 못 받고 hang하는 게 근본 원인이었다. 문제 노드의 Multus 데몬 파드를 재생성하니 붙잡혀 있던 shim이 풀리고 밀려 있던 sandbox 작업이 흘러가면서 신규 파드가 바로 떴다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - CNI: Cilium(primary) + Multus thick plugin(secondary)
 - 컨테이너 런타임: containerd
@@ -32,7 +32,7 @@ type:
 > [!NOTE]
 > Multus thick plugin 구조를 먼저 짚어둔다. containerd가 CNI를 호출하면 `/opt/cni/bin/multus-shim`이라는 얇은 실행 파일이 뜨고, 이 shim은 실제 일을 직접 하지 않는다. 유닉스 소켓(`/run/multus/multus.sock`)으로 노드마다 도는 <b>Multus 데몬</b>(DaemonSet)에게 요청을 위임하고, 데몬이 delegate CNI(Cilium, bridge 등)를 호출한 결과를 돌려받아 containerd에 전달한다. 그러니까 이 경로는 `containerd → multus-shim → (소켓) → multus 데몬 → delegate CNI`로 이어진 사슬이고, 뒤가 막히면 앞이 통째로 대기한다.
 
-## 💬 이슈
+## 2. 이슈
 
 어느 순간부터 워커 한 대에 새로 뜨는 파드가 전부 `ContainerCreating`에 붙박였다. 기존에 이미 떠 있던 파드는 멀쩡히 돌고, 다른 노드는 아무 문제가 없었다. 딱 그 노드에 스케줄된 신규 파드만, 그리고 그 노드에 뜨는 KubeVirt VM(=virt-launcher 파드)만 안 넘어갔다.
 
@@ -44,7 +44,7 @@ type:
 - 같은 워크로드를 다른 노드에 올리면 정상 기동
 - 기존에 떠 있던 파드는 영향 없음
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 증상을 노드 단위로 좁히기
 
@@ -106,7 +106,7 @@ kubectl -n kube-system delete pod <kube-multus-ds-파드명>
 
 이게 끝이었다. 새 데몬이 소켓을 다시 잡으면서 응답을 기다리던 CNI 호출들이 풀렸고, 붙잡혀 있던 containerd도 밀린 sandbox 작업을 흘려보냈다. 좀비 shim들도 containerd가 뒤처리를 재개하면서 정리됐다. containerd나 노드를 따로 건드릴 것도 없이, 데몬 파드 재생성만으로 신규 파드가 다시 떴다.
 
-## ✅ 확인
+## 4. 확인
 
 좀비 shim이 걷혔는지부터 봤다.
 
@@ -128,7 +128,7 @@ kubectl get pod test-after-fix -o wide -w
 
 에러 메시지가 뚜렷했다면 오히려 빨랐을 텐데, "실패"가 아니라 "대기"라 `kubectl` 쪽이 조용했던 게 이 문제의 성격이었다. `ContainerCreating`이라는 한 단어 뒤에 kubelet → containerd → multus-shim → 데몬으로 이어진 사슬이 있고, 그중 어디가 답을 안 하고 붙잡고 있는지를 프로세스 상태까지 내려가 봐야 보였다.
 
-## 🔗 참고
+## 참고
 
 - [Multus CNI](https://github.com/k8snetworkplumbingwg/multus-cni)
 - [Multus thick plugin (shim + daemon)](https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/thick-plugin.md)

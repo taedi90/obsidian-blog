@@ -18,18 +18,18 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > PR을 머지하면 배포 봇이 ArgoCD를 폴링해 "배포 완료"를 슬랙에 알린다. 그런데 봇이 <b>직전 sync에서 남아있던 Healthy</b>를 그대로 읽고, 새 리비전이 반영되기도 전에 완료로 오판했다. 머지가 돌려준 커밋 SHA를 기준으로 `status`·`operationState`의 리비전 필드를 모아 매칭시키고, "그 리비전에서 Healthy 도달"을 엄격히 요구하는 게이트로 오탐을 없앴다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - ArgoCD: ApplicationSet 기반 GitOps (앱이 라벨로 스탬핑되어 stage별로 조회됨)
 - 배포 봇: Go로 재작성 (구버전은 Python), ArgoCD REST API를 폴링
 - 트리거: GitHub PR squash merge → 봇이 슬랙 메시지 한 개를 `chat_update`로 갱신하며 진행 상황 표시
 
-## 💬 이슈
+## 2. 이슈
 
 배포 봇의 역할은 단순하다. 개발자가 슬랙에서 PR을 squash merge하면, 봇이 그 커밋이 실제로 클러스터에 반영되고 앱이 정상인지를 대신 지켜봐 주는 것이다. GitOps라 머지가 곧 배포 트리거고, 봇은 ArgoCD Application의 상태를 폴링하다가 다 올라오면 "배포 완료"를 같은 슬랙 메시지에 갱신한다.
 
@@ -41,7 +41,7 @@ type:
 
 고칠 지점은 분명하다. Healthy만 보지 말고, "머지한 그 커밋에서 Healthy인가"를 봐야 한다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 어떤 커밋을 기준으로 삼나
 
@@ -130,7 +130,7 @@ func ReadyAtRevision(s AppState, targetSHA string) bool {
 > [!NOTE]
 > 이 게이트는 <b>모니터링 전용</b>이다. 봇은 ArgoCD에 sync·rollback 같은 side-effect 요청을 보내지 않는다. 상태를 읽어 판정만 하고, 실제 배포는 ArgoCD 리컨실 루프에 맡긴다. 봇이 성급하게 `refresh=hard`를 남발하면 그것대로 ArgoCD에 부하를 준다.
 
-## ✅ 확인
+## 4. 확인
 
 판정 로직이 순수 함수라 네트워크 없이 테이블 테스트로 검증했다. 특히 오탐 케이스(`stale healthy no rev`)를 `false`로 잡는 게 이 작업의 전부라, 그 케이스를 테스트에 먼저 넣었다.
 
@@ -161,7 +161,7 @@ cases := []struct {
 
 모든 대상 앱이 `✅`가 되면 봇이 최종 "배포 완료"를 확정한다. 이제 이 완료는 "머지한 그 커밋이 올라와서 Healthy"라는 뜻이 됐다. 고치기 전엔 그냥 "뭔가 Healthy"였던 것과는 다르다.
 
-## 🔗 참고
+## 참고
 
 - [ArgoCD Resource Health](https://argo-cd.readthedocs.io/en/stable/operator-manual/health/)
 - [ArgoCD API Docs](https://argo-cd.readthedocs.io/en/stable/developer-guide/api-docs/)

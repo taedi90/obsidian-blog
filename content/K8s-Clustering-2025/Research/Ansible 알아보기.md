@@ -399,7 +399,7 @@ pipelining = True
 > [!IMPORTANT]
 > 프로덕션에서는 반드시 `--check`로 Dry-run을 한 번 돌려보고 실제 변경을 하자. 설정 변경이나 서비스 재시작이 끼어 있으면 특히 그렇다.
 
-## 9. 🔗 참고
+## 9. 참고
 - [Ansible Best Practices](https://docs.ansible.com/ansible/2.8/user_guide/playbooks_best_practices.html)
 - [Ansible Galaxy Role Naming Rules](https://ansible.readthedocs.io/projects/lint/rules/role-name/)
 - [Kubespray Snake Case 전환 이슈](https://github.com/kubernetes-sigs/kubespray/issues/12195)

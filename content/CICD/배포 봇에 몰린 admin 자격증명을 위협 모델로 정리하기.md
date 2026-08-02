@@ -52,7 +52,7 @@ blast-radius가 곧바로 나온다. 이 호스트 한 곳이 털리면 공격�
 
 ## 3. 평문으로 커밋된 무기한 admin JWT
 
-제일 급한 건 이거였다. `docker-compose.yml`에 ArgoCD stg/prod admin 토큰이 <b>기본값으로 박혀</b> 있었다. env가 안 넘어오면 이 기본값을 쓰도록.
+여기서 가장 시급한 건 이거였다. `docker-compose.yml`에 ArgoCD stg/prod admin 토큰이 <b>기본값으로 박혀</b> 있었다. env가 안 넘어오면 이 기본값을 쓰도록.
 
 ```yaml
 # docker-compose.yml — env 미주입 시 쓰이는 기본값 자리에
@@ -96,7 +96,7 @@ if len(c.AllowedUsers) == 0 {
 }
 ```
 
-여기엔 짝이 있는 함정이 하나 더 있었다. 승인 버튼 핸들러에는 권한 체크가 아예 없었다. `/deploy` 슬래시 커맨드는 게이트를 통과하는데, 정작 파이프라인이 멈춰 서서 승인을 기다리는 input 버튼 — DB 스키마 마이그레이션 적용이나 prod 이미지 push 같은, 제일 파괴적인 지점 — 은 버튼만 보이면 아무나 누를 수 있었다. 앞문은 잠그고 뒷문은 열어둔 꼴이다. 승인·중단 버튼에도 같은 게이트를 물렸다. 새 봇은 슬래시든 버튼이든 모든 상호작용을 사용자 허용 검사로 감싼다.
+여기엔 짝이 있는 함정이 하나 더 있었다. 승인 버튼 핸들러에는 권한 체크가 아예 없었다. `/deploy` 슬래시 커맨드는 게이트를 통과하는데, 정작 파이프라인이 멈춰 서서 승인을 기다리는 input 버튼 — DB 스키마 마이그레이션 적용이나 prod 이미지 push 같은, 가장 파괴적인 지점 — 은 버튼만 보이면 아무나 누를 수 있었다. 슬래시 커맨드에는 권한 체크가 있었지만 승인 버튼에는 없었다. 승인·중단 버튼에도 같은 게이트를 물렀다. 새 봇은 슬래시든 버튼이든 모든 상호작용을 사용자 허용 검사로 감싼다.
 
 ## 5. 서명 없는 웹훅
 
@@ -111,7 +111,7 @@ def jenkins_input_webhook(*, flask_request_obj, jsonify_func, app_obj):
     ...
 ```
 
-웹훅 포트에 닿을 수 있는 사람이면 누구나 "prod 배포 승인이 필요합니다" 같은 그럴듯한 메시지를 채널에 꽂을 수 있다. 진짜 Jenkins가 보낸 건지, 사내망 어딘가에서 누가 curl로 쏜 건지 봇은 구분하지 못한다. 승인 흐름을 통째로 사칭할 수 있는 구멍이다.
+웹훅 포트에 닿을 수 있는 사람이면 누구나 "prod 배포 승인이 필요합니다" 같은 그럴듯한 메시지를 채널에 꽂을 수 있다. Jenkins가 보낸 건지, 사내망 어딘가에서 누가 curl로 쏜 건지 봇은 구분하지 못한다. 승인 흐름을 통째로 사칭할 수 있는 구멍이다.
 
 <b>HMAC-SHA256 공유 시크릿</b> 검증을 붙였다. 발신 측(Jenkins)과 봇이 같은 시크릿으로 본문의 HMAC을 계산하고, 헤더로 넘어온 서명과 상수 시간 비교로 맞춰본다. 안 맞으면 401.
 
@@ -152,7 +152,7 @@ if !Verify(secret, body, sig) {
 
 ## 7. 스코프 서비스계정으로 자격증명 분리
 
-핫픽스가 급한 불이라면, 근본 처방은 <b>봇이 admin을 아예 안 쥐게</b> 만드는 거다. 위협 모델에서 blast-radius가 컸던 이유는 하나였다. 권한이 합집합으로 한곳에 모여 있어서. 그러면 권한을 쪼개서, 각 작업을 그 작업 권한만 가진 실행자에게 위임하면 된다. UX는 그대로다 — 사용자는 여전히 Slack 버튼만 누른다.
+여기까지가 급한 불을 끄는 작업이었다면, 다음은 <b>봇이 admin을 아예 안 쥐게</b> 만드는 일이다. 위협 모델에서 blast-radius가 컸던 이유는 권한이 합집합으로 한곳에 모여 있어서였다. 권한을 쪼개서, 각 작업을 그 작업 권한만 가진 실행자에게 위임하면 된다. UX는 그대로다 — 사용자는 여전히 Slack 버튼만 누른다.
 
 - merge / 브랜치 삭제: admin GitHub 토큰 대신 gitops 리포 한정 fine-grained PAT. 봇은 트리거만.
 - ArgoCD sync: `admin:apiKey`가 아니라 프로젝트 스코프 + 필요한 액션만 가진 계정. 실제로 새 봇의 ArgoCD 토큰은 `applications, get` 정도의 읽기 스코프로 잡았다.
@@ -162,7 +162,7 @@ if !Verify(secret, body, sig) {
 
 평문 `.env`를 secret manager(SOPS / Vault / External Secrets 중 택1)로 옮기는 건 아직 결정을 안 했다. 팀 규모 대비 어디까지 갈지는 더 봐야 해서, 여기선 "정했다"고 못 쓰겠다.
 
-## 🔗 참고
+## 참고
 
 - [ArgoCD RBAC Configuration](https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/)
 - [Removing sensitive data from a repository (GitHub)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)

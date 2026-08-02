@@ -82,7 +82,7 @@ Karabiner-Elements 는 키보드와 마우스 입력신호를 조건에 따라(c
 
   
 
-## 시행착오 1
+## 1. 시행착오 1
 
   
 
@@ -169,7 +169,7 @@ enter, tab, space 키들은 경우에 따라 작성한 코드가 변형(줄바�
 
   
 
-## 시행착오 2
+## 2. 시행착오 2
 
   
 
@@ -196,7 +196,7 @@ enter, tab, space 키들은 경우에 따라 작성한 코드가 변형(줄바�
 
   
 
-## 잠정적 결론
+## 3. 잠정적 결론
 
   
 
@@ -233,13 +233,13 @@ enter, tab, space 키들은 경우에 따라 작성한 코드가 변형(줄바�
 
 # 적용 방법
 
-## 1. Karabiner-Elements 설치
+## 4. Karabiner-Elements 설치
 
   
 
 Karabiner-Elements [설치](https://karabiner-elements.pqrs.org/)
 
-## 2. .json 파일 다운로드
+## 5. .json 파일 다운로드
 
   
 
@@ -255,7 +255,7 @@ json 파일을 생성할 때 사용한 python 코드도 같이 확인할 수 있
 
   
 
-## 3. 설정 추가
+## 6. 설정 추가
 
   
 

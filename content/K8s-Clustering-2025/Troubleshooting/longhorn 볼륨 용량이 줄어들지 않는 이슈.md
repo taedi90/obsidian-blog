@@ -22,22 +22,22 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > Longhorn은 <b>블록 레벨</b>에서 동작하기 때문에 파일 시스템 내 데이터 삭제를 인식하지 못한다. v1.4.0 이상에서는 <b>fstrim</b> 명령을 통해 사용하지 않는 블록을 회수할 수 있다.
 
-## ⚙️ 환경
+## 1. 환경
 - Kubernetes: v1.32.6
 - Longhorn: v1.8.1
 
-## 💬 이슈
+## 2. 이슈
 
 ClickHouse에서 관측가능성 데이터(observability data)를 대량으로 삭제했지만, Longhorn UI에서 확인한 PVC 용량은 전혀 줄어들지 않는 문제가 발생했다. 파일 시스템 관점에서는 분명히 데이터가 삭제되었지만, 스토리지 볼륨의 실제 사용량은 그대로 유지되는 상황이었다.
 
 이런 현상은 처음 겪는 것이 아니었다. 몇 년 전에도 동일한 이슈를 경험하고 해결 방법을 찾아봤던 기억이 있지만, 시간이 지나면서 다시 까먹게 되었다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 원인 분석
 
@@ -94,7 +94,7 @@ kubectl patch deployment <deployment-name> \
   -p '{"spec":{"template":{"spec":{"volumes":[{"name":"data","persistentVolumeClaim":{"claimName":"<new-pvc>"}}]}}}}'
 ```
 
-## ✅ 확인
+## 4. 확인
 
 트림 작업 후 다음과 같은 방법으로 결과를 확인할 수 있다.
 
@@ -123,7 +123,7 @@ kubectl exec -it <pod-name> -- fstrim -v <mount-point>
 > [!NOTE]
 > 트림 작업의 효과는 즉시 나타나지 않을 수 있다. Longhorn의 백그라운드 프로세스가 실제 용량을 업데이트하는 데 시간이 소요될 수 있으므로, 몇 분 후에 다시 확인해보는 것이 좋다.
 
-## 🔗 참고
+## 참고
 - [SUSE Knowledge Base: Longhorn 볼륨 크기 관리](https://www.suse.com/ko-kr/support/kb/doc/?id=000020027)
 - [Longhorn Docs: Volume Size Management](https://longhorn.io/docs/archives/1.0.1/volumes-and-nodes/volume-size/)
 - [Longhorn Docs: Thin Provisioning 개념](https://longhorn.io/docs/archives/1.0.1/concepts/#21-thin-provisioning-and-volume-size)

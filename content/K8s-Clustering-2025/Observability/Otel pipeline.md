@@ -17,7 +17,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 관측 데이터(trace·메트릭·로그)를 SigNoz(ClickHouse)로 보내는 길목이 otel-collector다. 파이프라인은 <b>receivers(받기) → processors(가공) → exporters(내보내기)</b>의 세 토막이고, 신호(traces/metrics/logs)마다 이 조합을 `service.pipelines`에 따로 엮는다. 그리고 collector를 <b>agent(DaemonSet, 노드마다)</b>와 <b>gateway(Deployment, 중앙)</b> 2단으로 나눠, 노드-로컬 수집과 클러스터-레벨 집계·전송을 분리했다.
@@ -66,7 +66,7 @@ collector를 한 덩어리로 두지 않고 역할을 둘로 갈랐다.
 
 이렇게 나누면 노드-로컬 관심사(그 노드에서만 아는 것)와 클러스터 관심사(모아서 봐야 아는 것)가 분리된다. 부작용도 있는데, 두 계층이 같은 대상을 이중으로 긁으면 메트릭이 중복된다 — 이건 [[otel-collector 중복 스크래핑 이슈|따로]] 겪고 정리했다.
 
-## 🔗 참고
+## 참고
 
 - [[자바 메트릭 설정|자바 메트릭 수집 설정]]
 - [[otel-collector 중복 스크래핑 이슈]]

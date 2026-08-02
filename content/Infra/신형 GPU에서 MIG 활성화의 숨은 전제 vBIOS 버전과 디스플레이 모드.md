@@ -18,19 +18,19 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 새로 들인 Blackwell 워크스테이션 GPU에서 `nvidia-smi -mig 1`이 `Not Supported`로 막혔다. 카드 불량이 아니라 요건 미충족이었고, 원인을 <b>드라이버 575 이상 + vBIOS 최소 버전 + displayMode를 graphics에서 compute로 전환</b> 세 가지로 좁혔다. vBIOS는 직접 못 구해 리셀러에 요청하고, displayMode는 `displayModeSelector`로 바꾸는 식으로 대응했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - OS: Rocky 9.6 (`5.14.0-570.33.2.el9_6.x86_64`)
 - GPU: NVIDIA RTX PRO 6000 Blackwell Workstation Edition (96GB)
 - Driver: 580.65.06
 - vBIOS: 98.02.52.00.02
 
-## 💬 이슈
+## 2. 이슈
 
 MIG(Multi-Instance GPU)로 카드 한 장을 여러 인스턴스로 쪼개 쓰려고 활성화를 시도했는데 바로 막혔다.
 
@@ -51,7 +51,7 @@ No MIG-supported devices found.
 
 처음엔 카드가 불량인가 싶었다. 그런데 이 모델은 스펙상 MIG를 지원하는 카드다(그러니까 산 거고). 드라이버도 최신이라 "지원 안 함"이라는 메시지가 오히려 이상했다. 하드웨어 문제라기보다 <b>내가 뭔가 전제 조건을 안 채운</b> 쪽에 가깝다고 봤다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 공식 요건으로 좁히기
 
@@ -111,7 +111,7 @@ nvidia.com/mig-<slice_count>g.<memory_size>gb
 
 파드는 `nvidia.com/gpu` 대신 이 라벨을 `resources.limits`로 요청해서 쪼갠 조각 하나를 할당받는다. 카드 한 장을 여러 워크로드가 나눠 쓰게 만드는 게 애초에 MIG를 도입한 목적이었다.
 
-## ✅ 확인
+## 4. 확인
 
 세 요건을 다 채웠으면 활성화 자체가 경고 없이 통과하고, 프로파일 목록이 정상적으로 나온다.
 
@@ -130,7 +130,7 @@ kubectl describe node <gpu-node> | grep nvidia.com/mig
 
 다만 이 글을 쓰는 시점엔 vBIOS 회신을 기다리는 중이라 활성화까지 완전히 닫진 못했다. `Not Supported`가 카드 문제가 아니라 드라이버·펌웨어·표시 모드라는 세 전제 조건 문제였다는 것, 그리고 각각을 리셀러 요청과 `displayModeSelector`로 나눠 처리해야 한다는 것까지 규명한 단계다. vBIOS만 올라오면 위 확인 절차대로 마무리된다.
 
-## 🔗 참고
+## 참고
 
 - [MIG User Guide — Prerequisites](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#prerequisites)
 - [MIG User Guide — Additional Prerequisites for RTX PRO Blackwell GPUs](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#additional-prerequisites-for-rtx-pro-blackwell-gpus)

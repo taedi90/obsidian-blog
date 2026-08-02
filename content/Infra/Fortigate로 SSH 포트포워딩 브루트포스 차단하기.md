@@ -18,18 +18,18 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 본사 서버가 느려지고 SSH가 잘 안 붙는다는 제보를 받아 `btmp`와 Fortigate `diagnose sniffer`로 특정 해외 대역의 SSH 무차별 대입 공격을 확인했다. 인바운드 정책에서 국가·서브넷을 차단하려 했는데, 차단 규칙을 허용 규칙보다 <b>순서상 위</b>에 두고, 포트포워딩(VIP) 트래픽은 destination을 `all`이 아니라 <b>VIP 정책</b>으로 지정해야 실제로 막혔다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Fortigate (인바운드 정책 + Virtual IP 포트포워딩 구성)
 - 본사 애플리케이션 서버 `app-01` (SSH를 공인 IP의 비표준 포트로 포트포워딩 중)
 - 공인 IP `203.0.113.35`, 외부 노출 포트 `39022` → 내부 `app-01:22`로 DNAT
 
-## 💬 이슈
+## 2. 이슈
 
 "본사 `app-01` 서버가 느려지고 SSH도 잘 안 붙는다"는 제보를 받았다. 처음엔 서버 부하 문제인 줄 알았는데, 로그인 실패 로그부터 봤더니 그림이 달라졌다.
 
@@ -42,7 +42,7 @@ tail -f /var/log/btmp
 
 문제는 이 SSH가 공인 IP의 비표준 포트(`39022`)로 열려 있었다는 점이다. 포트를 바꿔둔다고 안 걸리는 게 아니라, 스캐너는 그냥 열린 포트를 전수로 훑는다. 결국 방화벽 단에서 공격 대역 자체를 끊어야 했다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 공격 트래픽 특정
 
@@ -81,7 +81,7 @@ Fortigate에서 포트포워딩은 `Policy & Objects → Virtual IPs`에서 외�
 - deny 정책이 허용 정책보다 순서상 <b>위</b>에 있을 것
 - 포트포워딩 트래픽 차단이면 destination을 `all`이 아니라 <b>VIP 오브젝트</b>로 지정할 것
 
-## ✅ 확인
+## 4. 확인
 
 차단 직후 다시 `btmp`를 봤다. 해당 대역발 실패 로그가 더는 쌓이지 않았다.
 
@@ -99,7 +99,7 @@ diagnose sniffer packet any 'src net 198.51.100.0/24 and port 39022' 4 0 a
 
 정책 자체는 처음부터 있었다. 순서와 destination 두 군데를 동시에 맞추기 전까지는 "규칙은 넣었는데 왜 안 막히지"만 반복했을 뿐이다.
 
-## 🔗 참고
+## 참고
 
 - [FortiGate Firewall policies (정책 평가 순서)](https://docs.fortinet.com/document/fortigate/7.4.0/administration-guide/954635/firewall-policies)
 - [FortiGate Virtual IPs (DNAT·포트포워딩)](https://docs.fortinet.com/document/fortigate/7.4.0/administration-guide/948208/virtual-ips)

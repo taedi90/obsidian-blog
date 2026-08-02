@@ -19,16 +19,16 @@ type:
   - comparison
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 사내 표준 VCS인 <b>Bitbucket 지원</b>을 1순위 조건으로 CI 도구를 훑었다. 그 관문을 통과한 후보들 중에서, 단순하고 직관적인 사용성이 돋보인 <b>DroneCI</b>를 골랐다. YAML 파이프라인에 쿠버네티스 네이티브라 지금 환경과 결이 맞았다.
 
-## 💡 개요
+## 1. 개요
 
 사내에 쿠버네티스 클러스터를 들이면서, 레거시에서 쓰던 Jenkins를 대신할 <b>CI(Continuous Integration)</b> 도구가 필요했다. Jenkins의 어디가 걸렸는지, 새 도구에 뭘 요구했는지, 후보들을 어떻게 걸렀는지를 정리했다.
 
-## 📋 선정 배경
+## 2. 선정 배경
 
 레거시 서버의 Jenkins를 그대로 마이그레이션하는 게 제일 빠른 길이긴 했다. 하지만 굳이 짐을 그대로 짊어지고 넘어올 이유를 못 찾았다. Jenkins의 걸리는 점은 이미 겪을 만큼 겪었다.
 
@@ -45,7 +45,7 @@ type:
 - <b>단순성</b>: 개발자들이 금방 배워서 쓸 수 있을 것.
 - <b>커뮤니티</b>: 막혔을 때 찾아볼 자료가 있고, 계속 업데이트되고 있을 것.
 
-## 📊 비교
+## 3. 비교
 
 Bitbucket 지원 여부를 첫 필터로 두고 후보를 걸렀다.
 
@@ -59,7 +59,7 @@ Bitbucket 지원 여부를 첫 필터로 두고 후보를 걸렀다.
 
 가장 아까웠던 건 Woodpecker CI였다. DroneCI를 오픈소스로 포크한 물건이라 설정이 간단하고 라이선스 걱정도 없는데, 하필 Bitbucket을 공식 지원하지 않아 첫 관문에서 걸렸다. Tekton은 확장성은 최고지만 이번 규모에 쓰기엔 파이프라인 구성이 과했고, Concourse CI는 설계 철학이 강해 팀에 강요하기 부담스러웠다. Gitea Actions는 Gitea 안에선 매끈하지만 Bitbucket 쪽이 아직 미덥지 않았다.
 
-## ✅ 선정 사유
+## 4. 선정 사유
 
 남은 후보 중 <b>DroneCI</b>로 정했다. 무게를 둔 지점은 이렇다.
 
@@ -67,7 +67,7 @@ Bitbucket 지원 여부를 첫 필터로 두고 후보를 걸렀다.
 2. <b>단순한 사용성</b>: Bitbucket을 지원하는 후보들 중 DroneCI는 UI와 YAML 파이프라인이 유독 간명했다. 복잡한 Jenkinsfile에서 벗어나 누구나 파이프라인을 읽고 쓸 수 있다는 게 컸다. CI를 나 혼자 쓰는 게 아니라 개발자들이 같이 써야 하니, 학습 곡선을 낮추는 게 곧 도입 성공률이었다.
 3. <b>쿠버네티스 네이티브</b>: 각 단계가 격리된 컨테이너에서 돌아 플러그인 의존성 문제에서 자유롭고, 클러스터 리소스도 효율적으로 쓴다. Jenkins에서 답답했던 부분을 정확히 메워 줬다.
 
-## 🔗 참고
+## 참고
 
 - [DroneCI 공식 문서 (Bitbucket 연동)](https://docs.drone.io/server/provider/bitbucket-cloud/)
 - [Bitbucket App password 생성 (Atlassian 공식 문서)](https://support.atlassian.com/bitbucket-cloud/docs/create-an-app-password/)

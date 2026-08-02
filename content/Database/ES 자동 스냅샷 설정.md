@@ -11,13 +11,13 @@ permalink:
 aliases:
 completed:
 ---
-## 이슈
+## 1. 이슈
 
 데이터 보호를 위해서 일정 주기로 엘라스틱서치 데이터를 스냅샷으로 보관해둘 필요성이 생겼다. 확인해보니 SLM(snapshot lifecycle management) API 를 사용하면 자동으로 스냅샷을 기록할 수 있다고 한다.
 
   
 
-## 해결
+## 2. 해결
 
 - Elasticsearch 8.4.3 버전 기준
 

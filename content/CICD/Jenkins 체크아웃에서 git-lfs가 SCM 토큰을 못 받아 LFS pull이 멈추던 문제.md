@@ -18,18 +18,18 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 파이프라인 체크아웃 중 git-lfs가 Jenkins가 쥔 SCM 토큰을 넘겨받지 못해 LFS API에서 "Bad credentials"로 막혀 체크아웃이 실패했다. Jenkins 이미지에 `git-lfs`를 설치하고 `git lfs install --system`으로 필터를 등록한 뒤, 체크아웃 단계에서는 자동 smudge를 끄고 인증이 붙은 명시적 pull(`GitLFSPull` 확장 또는 `GIT_LFS_SKIP_SMUDGE=1` + `git lfs pull`)로 LFS 객체를 당기도록 바꿨다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Jenkins: 2.555.1 (jdk21 기반 커스텀 이미지)
 - SCM: GitHub (프라이빗 리포, 토큰 인증)
 - 애플리케이션 리포에 LFS로 관리되는 대용량 파일 포함, GitOps 리포는 LFS 미사용
 
-## 💬 이슈
+## 2. 이슈
 
 빌드 잡이 소스를 체크아웃하다 LFS 객체를 받는 단계에서 실패했다. 로그를 파보면 LFS API 응답이 <b>Bad credentials</b>였다.
 
@@ -42,7 +42,7 @@ git이 LFS로 추적되는 파일을 체크아웃할 때는 <b>smudge</b> 필터
 - Jenkins 이미지에 git-lfs가 설치되고 필터가 등록돼 있을 것
 - 체크아웃 시 git-lfs가 SCM 토큰으로 인증할 것
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. Jenkins 이미지에 git-lfs 설치와 system 등록
 
@@ -104,9 +104,9 @@ GIT_LFS_SKIP_SMUDGE=1 git checkout "${ref}"
 git lfs pull
 ```
 
-핵심은 두 단계로 쪼갠 것이다. 자동 smudge가 인증 없이 돌다 실패하는 대신, smudge를 꺼서 checkout을 먼저 통과시키고, 자격증명이 실린 origin으로 `git lfs pull`을 명시적으로 돌린다. `${GIT_USER}`/`${GIT_PASS}`는 자격증명 스토어에서 주입받는 값이라 로그·스크립트에 평문으로 남기지 않는다.
+두 단계로 쪼갠 것이다. 자동 smudge가 인증 없이 돌다 실패하는 대신, smudge를 꺼서 checkout을 먼저 통과시키고, 자격증명이 실린 origin으로 `git lfs pull`을 명시적으로 돌린다. `${GIT_USER}`/`${GIT_PASS}`는 자격증명 스토어에서 주입받는 값이라 로그·스크립트에 평문으로 남기지 않는다.
 
-## ✅ 확인
+## 4. 확인
 
 같은 잡을 다시 돌려 체크아웃이 실패하지 않고 통과하는지 봤다. LFS 단계에서 "Bad credentials"가 사라지고 pull이 정상 종료했다.
 
@@ -119,7 +119,7 @@ git lfs ls-files   # 받아진 객체는 앞 상태 표시가 '*' (checkout됨)�
 
 `git lfs ls-files`에서 대상 파일들이 checkout된 상태로 잡히고, 이어지는 빌드가 실제 바이너리를 정상적으로 참조하면 끝이다. 인증이 붙은 뒤로는 실패가 재발하지 않았다.
 
-## 🔗 참고
+## 참고
 
 - [Git LFS](https://git-lfs.com/)
 - [git-lfs install (man)](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-install.adoc)

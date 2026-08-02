@@ -18,19 +18,19 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > RabbitMQ 클러스터 파드 3개가 한꺼번에 `erofs`(읽기 전용 파일 시스템) 에러로 CrashLoopBackOff에 빠졌다. Cluster Operator 신버전이 `readOnlyRootFilesystem`을 기본으로 켜면서 로그 경로 `/var/log/rabbitmq`에 쓰기 가능한 볼륨이 사라진 게 원인이었고, 해당 경로에 emptyDir을 마운트하는 것으로 복구했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes 클러스터 (검증 환경)
 - RabbitMQ Cluster Operator: v2.17.0
 - RabbitMQ: 3.9.13 / Erlang 24.3.2
 - RabbitmqCluster CR로 관리하는 3노드 클러스터 (StatefulSet)
 
-## 💬 이슈
+## 2. 이슈
 
 메시지 큐가 죽었다는 얘기가 들어왔다. 보니 RabbitMQ 파드 3개가 <b>전부</b> CrashLoopBackOff였다. 한두 개가 아니라 셋 다, 재시작 횟수는 어느새 13회까지 올라가 있었고 그 상태로 40분 넘게 돌고 있었다. 파드가 하나만 죽으면 노드 문제나 스케줄링을 의심하는데, 3개가 똑같이 죽으면 원인은 개별 파드 바깥에 있다.
 
@@ -44,7 +44,7 @@ cannot_log_to_file,"/var/log/rabbitmq/rabbit@...upgrade.log",erofs
 
 여기서 좀 이상했다. 어제까지 멀쩡히 돌던 클러스터다. 설정을 바꾼 기억도 없다. 그런데 갑자기 로그 경로가 읽기 전용이 됐다? 파일 시스템이 읽기 전용으로 잡히는 건 보통 두 가지다. 디스크가 맛이 가서 커널이 강제로 read-only로 리마운트했거나, 아니면 <b>누군가가 일부러 읽기 전용으로 마운트</b>했거나. 스토리지는 멀쩡했다. 그럼 후자다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 왜 갑자기 읽기 전용이 됐나
 
@@ -121,7 +121,7 @@ kubectl rollout status statefulset/app-rabbitmq-server -n app-mq
 kubectl get pods -n app-mq -l app.kubernetes.io/name=app-rabbitmq --watch
 ```
 
-## ✅ 확인
+## 4. 확인
 
 파드부터 봤다. 3개 모두 Running에 재시작 0회로 올라왔다.
 
@@ -150,7 +150,7 @@ kubectl exec app-rabbitmq-server-0 -n app-mq -- mount | grep /var/log/rabbitmq
 > [!NOTE]
 > 근본은 "Operator가 보안을 강화했다"가 아니라 "보안 강화로 읽기 전용이 된 경로에, 애플리케이션이 여전히 쓰려 했다"는 미스매치다. `readOnlyRootFilesystem`을 켜는 순간 그 워크로드가 쓰기를 시도하는 모든 경로(로그·캐시·임시 파일)에 볼륨이 붙어 있는지부터 확인해야 한다. Operator 업그레이드에서 보안 관련 기본값 변경은 특히 조용히 회귀를 만든다.
 
-## 🔗 참고
+## 참고
 
 - [RabbitMQ Cluster Operator v2.17.0 릴리스](https://github.com/rabbitmq/cluster-operator/releases/tag/v2.17.0)
 - [PR #1961: Add security context](https://github.com/rabbitmq/cluster-operator/pull/1961)

@@ -21,12 +21,12 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > mariadb-operator로 운영하는 Galera 3노드 클러스터에서 한 노드의 datadir이 깨져 CrashLoop에 빠지면, operator가 그 노드 때문에 reconcile을 끝내지 못해 클러스터 전체가 not-Ready로 묶인다. 정상 노드가 Primary/Synced인지부터 확인하고, operator reconcile을 suspend한 뒤 손상 노드의 PVC만 비우고 재기동해 <b>SST</b>로 다시 받게 하면 데이터 유실 없이 복구된다. 여러 노드가 동시에 깨져 split-brain이면 `grastate.dat`·`availableWhenDonor`·`startupProbe`까지 손봐야 한다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes + mariadb-operator
 - MariaDB Galera 3노드 클러스터 (StatefulSet, Pod 3개)
@@ -35,7 +35,7 @@ type:
 
 네임스페이스·호스트명·UUID 등은 전부 가상값으로 바꿔 적는다.
 
-## 💬 이슈
+## 2. 이슈
 
 어느 날 데이터 레이어를 받치던 NFS 서버 Pod가 재기동됐다. 그 스토리지클래스를 쓰던 PVC가 일제히 NFS 단절을 겪었고, 그 위에서 돌던 DB Pod들이 비정상 종료되는 과정에서 Galera 한 노드(`app-mariadb-2`)의 datadir 일부 파일이 깨졌다. 로그를 보면 이런 식이다.
 
@@ -53,12 +53,12 @@ Installation of system tables failed!
 probe.liveness "Galera not ready. Returning OK to facilitate recovery"
 ```
 
-처음엔 "정상 노드까지 맛이 갔나" 싶어 심장이 철렁했는데, 이건 고장 신호가 아니었다. 복구 중인 Pod가 kubelet한테 죽지 않도록 liveness가 일부러 OK를 돌려주는 <b>정상 동작</b>이다. 정상 primary 노드도 똑같은 로그를 남긴다. 결국 문제는 하나였다. operator가 손상 노드 하나 때문에 reconcile을 끝내지 못하고, 그 여파로 클러스터를 not-Ready로 잡아두고 있었을 뿐이다. 손상 노드만 복구하면 이 로그도 멈춘다.
+처음엔 "정상 노드까지 맛이 갔나" 싶어 심장이 철렁했는데, 이건 고장 신호가 아니었다. 복구 중인 Pod가 kubelet한테 죽지 않도록 liveness가 일부러 OK를 돌려주는 <b>정상 동작</b>이다. 정상 primary 노드도 똑같은 로그를 남긴다. operator가 손상 노드 하나 때문에 reconcile을 끝내지 못하고, 그 여파로 클러스터를 not-Ready로 잡아두고 있었을 뿐이다. 손상 노드만 복구하면 이 로그도 멈춘다.
 
 > [!NOTE]
-> Galera는 쓰기 가능한 상태를 유지하려면 과반(quorum)이 필요하다. 3노드 중 2노드가 Primary/Synced로 살아 있으면 클러스터 자체는 멀쩡하고, 나머지 1노드는 살아있는 노드에서 <b>SST(State Snapshot Transfer)</b>로 datadir 전체를 다시 받아 합류하면 그만이다. 즉 이 상황은 데이터가 사라진 사고가 아니라, 깨진 노드 하나를 버리고 다시 받는 문제다.
+> Galera는 쓰기 가능한 상태를 유지하려면 과반(quorum)이 필요하다. 3노드 중 2노드가 Primary/Synced로 살아 있으면 클러스터 자체는 멀쩡하고, 나머지 1노드는 살아있는 노드에서 <b>SST(State Snapshot Transfer)</b>로 datadir 전체를 다시 받아 합류하면 그만이다. 즉 깨진 노드 하나를 버리고 다시 받으면 되는 문제다.
 
-## 🧗 해결
+## 3. 해결
 
 되돌리기 어려운 작업이라, 손대기 전에 게이트를 하나 둔다. <b>정상 노드가 정말 Primary/Synced인가.</b> 이게 확인돼야 그 노드를 donor 삼아 손상 노드를 다시 받을 수 있다. 아니라면 아래 단순 절차로는 안 되고, split-brain 쪽으로 넘어가야 한다.
 
@@ -128,7 +128,7 @@ kubectl -n app-db scale statefulset app-mariadb --replicas=3
 kubectl -n app-db patch mariadb app-mariadb --type merge -p '{"spec":{"suspend":false}}'
 ```
 
-여기까지가 "한 노드만 깨졌고, 나머지가 멀쩡할 때"의 정석이다. 손댈 게 별로 없다. 진짜 성가신 건 여러 노드가 동시에 깨졌을 때다.
+여기까지가 "한 노드만 깨졌고, 나머지가 멀쩡할 때"의 정석이다. 손댈 게 별로 없다. 성가난 건 여러 노드가 동시에 깨졌을 때다.
 
 ### 5. 여러 노드가 깨졌을 때: grastate와 safe_to_bootstrap
 
@@ -138,7 +138,7 @@ kubectl -n app-db patch mariadb app-mariadb --type merge -p '{"spec":{"suspend":
 - Pod-1: Running이지만 혼자 새 UUID로 떨어져 나가 단독 클러스터를 형성
 - Pod-2: InnoDB 데이터 파일 손상으로 시작 불가
 
-Pod-0 로그의 핵심은 이거였다.
+Pod-0 로그에서 이 부분이 걸렸다.
 
 ```
 [ERROR] WSREP: It may not be safe to bootstrap the cluster from this node.
@@ -155,7 +155,7 @@ sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/g' /data/grastate.dat
 cat /data/grastate.dat  # 확인
 ```
 
-여기서 배운 게 하나 있다. Pod가 재시작되면 이 값이 다시 `0`으로 돌아간다. 그래서 operator를 suspend한 채로 `이 노드만 replicas=1`로 단독 부트스트랩하고, 나머지 노드는 datadir을 비워 SST로 다시 받게 한 뒤, 하나씩 붙이며 순서대로 확장했다(0→1→2→3). "재수 없으면 grastate를 몇 번 다시 고치게 된다"는 걸 몸으로 배웠다.
+Pod가 재시작되면 이 값이 다시 `0`으로 돌아간다. 그래서 operator를 suspend한 채로 `이 노드만 replicas=1`로 단독 부트스트랩하고, 나머지 노드는 datadir을 비워 SST로 다시 받게 한 뒤, 하나씩 붙이며 순서대로 확장했다(0→1→2→3). "재수 없으면 grastate를 몇 번 다시 고치게 된다"는 걸 몸으로 배웠다.
 
 ### 6. availableWhenDonor와 startupProbe
 
@@ -177,9 +177,9 @@ kubectl -n app-db patch mariadb app-mariadb --type=merge \
   -p '{"spec":{"podTemplate":{"spec":{"containers":[{"name":"mariadb","startupProbe":{"failureThreshold":200,"periodSeconds":30}}]}}}}'
 ```
 
-SST 실측치의 5배쯤을 잡아뒀다. 과해 보여도, timeout 한 번이면 처음부터 다시라 여유가 곧 안전이다.
+SST 실측치의 5배쯤을 잡아뒀다. 과해 보여도, timeout 한 번이면 처음부터 다시라 넉넉히 잡는 쪽이 낫다.
 
-## ✅ 확인
+## 4. 확인
 
 Pod가 다 올라오면 클러스터 크기와 CR 상태를 본다.
 
@@ -194,12 +194,12 @@ kubectl -n app-db exec app-mariadb-0 -c mariadb -- \
 
 `wsrep_cluster_size=3`, `Ready`/`GaleraReady=True`면 끝이다. 앞서 신경 쓰이던 agent의 `Galera not ready` 로그도 그제서야 멈춘다.
 
-다만 근본 트리거는 이 복구로 못 막는다는 게 남는다. NFS 서버 재기동은 그 위의 데이터 레이어 전체에 동시에 영향을 준다. 노드 하나 되살리는 것과, NFS를 건드릴 때 영향 범위를 함께 보는 건 다른 얘기다. 그래서 재발 방지 쪽으로는 `availableWhenDonor: true`와 넉넉한 `startupProbe`를 CR 표준값으로 박고, `wsrep_cluster_size` 알림을 걸어두는 선에서 정리했다. 이 절차 자체도 문서로 남겨 다음 사람(아마 미래의 나)이 당황하지 않게 해뒀다.
+다만 근본 트리거는 이 복구로 막을 수 없다. NFS 서버 재기동은 그 위의 데이터 레이어 전체에 동시에 영향을 준다. 노드 하나 되살리는 것과, NFS를 건드릴 때 영향 범위를 함께 보는 건 다른 얘기다. 그래서 재발 방지 쪽으로는 `availableWhenDonor: true`와 넉넉한 `startupProbe`를 CR 표준값으로 박고, `wsrep_cluster_size` 알림을 걸어두는 선에서 정리했다. 이 절차 자체도 문서로 남겨 다음 사람(아마 미래의 나)이 당황하지 않게 해뒀다.
 
 > [!IMPORTANT]
 > 여러 노드가 동시에 깨졌거나 어느 노드가 최신인지 불확실하면, 위 단순 절차로 함부로 datadir을 비우면 안 된다. `grastate.dat`의 seqno를 비교해 부트스트랩 노드를 먼저 정하는 정식 Galera 복구 흐름을 따른다. "정상 노드가 Primary/Synced인가"라는 게이트가 통과되지 않으면, 그건 이미 다른 종류의 사고다.
 
-## 🔗 참고
+## 참고
 
 - [MariaDB Galera Cluster](https://mariadb.com/kb/en/galera-cluster/)
 - [Galera Cluster Crash Recovery](https://galeracluster.com/library/documentation/crash-recovery.html)

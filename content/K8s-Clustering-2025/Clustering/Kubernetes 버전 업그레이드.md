@@ -19,7 +19,7 @@ type:
 
 쿠버네티스 버전 업그레이드는 한 번에 두 마이너 버전까지만 지원한다. 1.30에서 1.32로 가려면 1.31을 거쳐야 한다. 이런 제약이 있다는 걸 미리 알면 좋은데, 보통 업그레이드를 처음 할 때 모르고 접근하게 된다.
 
-## 래퍼 플레이북
+## 1. 래퍼 플레이북
 
 Kubespray가 `upgrade_cluster.yml` 플레이북을 제공한다. 우리가 만든 래퍼는 그걸 그대로 import한다. 사실 이 글은 래퍼가 거의 하는 일이 없다. 핵심은 인벤토리의 `kube_version` 변수를 바꾸는 것뿐이다.
 
@@ -31,7 +31,7 @@ Kubespray가 `upgrade_cluster.yml` 플레이북을 제공한다. 우리가 만�
 
 Kubespray의 업그레이드 플레이북이 알아서 노드를 하나씩 drain 하고, 컴포넌트를 올리고, uncordon 한다.
 
-## 절차
+## 2. 절차
 
 업그레이드는 결국 변수 하나를 바꾸고 플레이북을 실행하는 거지만, 전후 확인이 중요하다.
 
@@ -75,7 +75,7 @@ kubectl version --short
 kubectl get pods -n kube-system
 ```
 
-## 주의할 점
+## 3. 주의할 점
 
 - <b>한 번에 두 마이너 버전까지만</b>. 1.30에서 1.32로 직접 가면 안 된다. 1.31을 거쳐야 한다.
 - <b>API 디프리케이션 확인</b>. 버전이 올라가면 deprecated API가 사라진다. 업그레이드 전에 `kubectl deprecations` 또는 [Pluto](https://github.com/FairwindsOps/pluto)로 확인한다.

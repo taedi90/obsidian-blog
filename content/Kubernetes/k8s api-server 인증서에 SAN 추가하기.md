@@ -16,7 +16,7 @@ completed:
 
 이 문서는 Kubernetes API 서버 인증서의 SAN(Subject Alternative Name)에 새로운 도메인 또는 IP 주소를 추가하는 방법을 설명한다. 이는 API 서버 도메인 변경 등으로 인해 `x509: certificate is valid for ... not new-domain.com`과 같은 인증서 오류가 발생할 때 필요하다. 기존 인증서 백업, `kubeadm` 설정 수정, 인증서 재생성 및 API 서버 재시작 과정을 다룬다.
 
-## 이슈
+## 1. 이슈
 
 개발용 Kubernetes 클러스터의 도메인을 변경하는 일이 생겼다. 변경 후 `kubectl CLI`를 이용하려 했더니 API 서버에서 다음과 같은 오류가 발생했다.
 
@@ -27,7 +27,7 @@ completed:
 <b>SAN(Subject Alternative Name)이란?</b>
 SAN은 X.509 인증서의 확장 필드로, 하나의 인증서에 여러 개의 호스트 이름(도메인 이름, IP 주소 등)을 연결할 수 있도록 한다. Kubernetes API 서버는 클라이언트가 접속할 때 이 SAN 목록을 확인하여 접속하려는 도메인 또는 IP가 인증서에 유효하게 등록되어 있는지 검증한다. 따라서 API 서버의 접근 도메인이나 IP가 변경될 경우, 해당 정보가 인증서의 SAN에 포함되어 있지 않으면 인증서 유효성 검사 오류가 발생한다.
 
-## 해결
+## 2. 해결
 
 -   <b>임시로 `kubectl`을 사용할 수 있도록 구성하기</b>  
     `/etc/hosts`에 마스터 서버의 주소에 기존에 등록된 SAN을 설정하여 사용하는 방법이 있다. 또는 `kubectl` 명령어에 `--insecure-skip-tls-verify`를 추가하여 TLS 검증을 무력화할 수 있다. (보안상 권장되지 않는 방법이다.)

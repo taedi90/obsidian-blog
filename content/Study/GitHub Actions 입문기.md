@@ -16,7 +16,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > CI라면 Jenkins·Drone CI·GitLab CI만 써봤는데, [[폐쇄망 전용 싱글 바이너리 워크플로우 도구 Deck 만들기|Deck]]을 GitHub에서 하며 GitHub Actions를 처음 만졌다. 이후 사내 여러 리포 CI도 Actions로 옮기며 이벤트 트리거·job/step·재사용 워크플로우(`workflow_call`)·매트릭스·`make` 위임·릴리스/배포 트리거가 손에 익었다. 로직은 `make`로 밀어 로컬과 CI를 일치시키고, 공통 본체는 `workflow_call`로 한 번만, 보안 스캔은 상시 잡으로 둔 게 골자다.
@@ -110,7 +110,7 @@ Deck 말고도 사내 리포 CI를 Actions로 옮기면서 패턴이 굳었다(�
 
 리포가 달라도 굳은 습관은 셋이었다. 로직은 `make`로 밀어 로컬과 CI를 일치시키고, 공통 본체는 `workflow_call`로 한 번만 쓰고, 보안 스캔은 상시 잡으로 파이프라인에 박는다. 결국 낯설었던 건 도구가 아니라 이벤트 기반·호스티드 러너·재사용 워크플로우라는 Actions 특유의 어휘였다.
 
-## 🔗 참고
+## 참고
 
 - [[폐쇄망 전용 싱글 바이너리 워크플로우 도구 Deck 만들기]]
 - [[goreleaser 릴리스 자동화]]

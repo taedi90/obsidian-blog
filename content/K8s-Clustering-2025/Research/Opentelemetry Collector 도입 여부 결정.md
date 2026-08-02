@@ -16,7 +16,7 @@ completed: true
 type:
   - note
 ---
-## 💡 개요
+## 1. 개요
 
 솔직히 말해, 처음에는 <b>Opentelemetry Collector</b>가 왜 필요한지 전혀 이해하지 못했다. 관측 가능성(Observability) 스택을 구성하면서 마주친 Collector는 그저 <b>데이터 파이프라인 중간에 끼어있는 불필요하고 복잡한 계층</b>처럼 보였다. 애플리케이션에서 데이터를 바로 APM이나 로그 저장소로 보내면 될 텐데, 왜 굳이 Collector라는 것을 거쳐야 하는지 의문이었다.
 
@@ -24,7 +24,7 @@ type:
 
 > 처음에는 불필요한 중간 계층이라 생각했던 Opentelemetry Collector가, 실제 사용해보니 벤더 종속성을 완벽히 제거하고 관측 가능성 파이프라인의 유연성을 극대화하는 핵심 컴포넌트임을 깨닫게 되었다. 초기 러닝커브는 오히려 장기적인 운영 효율성으로 돌아왔다.
 
-## 🤔 초기 우려와 고민
+## 2. 초기 우려와 고민
 
 ### Opentelemetry Collector란?
 
@@ -51,7 +51,7 @@ type:
 - <b>OTLP 프로토콜</b> 지원: Jaeger나 여러 관측가능성 툴에서 OTLP를 직접 지원하기 때문에 사실 Collector 없이도 OpenTelemetry 표준은 유지할 수 있지 않나?
 - <b>직접 연결의 단순함</b>: 애플리케이션 → 백엔드 직접 연결이 더 간단하고 명확해 보이는데?
 
-## 🔍 테스트 과정에서 발견한 가치
+## 3. 테스트 과정에서 발견한 가치
 
 검토하던 `SigNoz`가 Collector를 기본 아키텍처로 채택하고 있었기에, 마지못해 Collector를 테스트 환경에 구성하게 되었다. 파이프라인의 개념(Receiver, Processor, Exporter)을 익히는 것은 역시나 쉽지 않았다.
 
@@ -108,7 +108,7 @@ processors:
         action: delete  # 민감한 속성 제거
 ```
 
-## 🚀 최종 도입과 활용
+## 4. 최종 도입과 활용
 
 ### 아키텍처 표준화
 
@@ -128,5 +128,5 @@ processors:
 
 초기에 우려했던 러닝커브와 복잡성은, 오히려 <b>장기적인 관점에서의 비교할 수 없는 유연성과 운영 효율성</b>으로 되돌아왔다. 지금은 Opentelemetry Collector 없는 관측 가능성 파이프라인은 상상할 수 없을 정도로 매우 만족하며 사용하고 있다.
 
-## 🔗 참고
+## 참고
 - [OpenTelemetry Docs - Collector](https://opentelemetry.io/docs/collector/)

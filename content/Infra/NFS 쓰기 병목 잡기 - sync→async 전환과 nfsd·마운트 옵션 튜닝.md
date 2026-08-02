@@ -19,10 +19,10 @@ type:
   - improvement
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
-> 사내 클러스터의 DB를 백업본에서 복구하는데 임시파일 하나 만드는 데 수 분씩 걸려 복구가 사실상 멈췄다. 원인은 NFS 서버의 `sync` export와 동시 쓰기 과부하였다. exports를 `async`(+`no_wdelay`)로 바꾸고 `nfsd` 스레드를 올린 뒤, 클라이언트 마운트 옵션(`rsize`/`wsize`/`hard`/`timeo`)까지 손봐서 쓰기 지연을 걷어냈다. 대신 `async`가 지는 데이터 손실 리스크는 UPS·애플리케이션 `fsync`·백업으로 눈 뜨고 받아들였다.
+> 사내 클러스터의 DB를 백업본에서 복구하는데 임시파일 하나 만드는 데 수 분씩 걸려 복구가 멈췄다. 원인은 NFS 서버의 `sync` export와 동시 쓰기 과부하였다. exports를 `async`(+`no_wdelay`)로 바꾸고 `nfsd` 스레드를 올린 뒤, 클라이언트 마운트 옵션(`rsize`/`wsize`/`hard`/`timeo`)까지 손봐서 쓰기 지연을 걷어냈다. 대신 `async`가 지는 데이터 손실 리스크는 UPS·애플리케이션 `fsync`·백업으로 눈 뜨고 받아들였다.
 
 우리 온프레미스 클러스터는 스토리지를 NFS 한 대에 몰아 쓰고 있었다. DB 데이터를 NFS에 얹는 게 정석이 아니라는 건 알지만(랜덤 I/O가 많은 DB와 네트워크 파일시스템은 궁합이 나쁘다) 당장 별도 블록 스토리지가 없는 환경이라 그렇게 굴러가던 상황이었다. 문제는 MariaDB Galera를 물리 백업본에서 복구하던 날 터졌다.
 
@@ -110,7 +110,7 @@ mount -t nfs -o rsize=65536,wsize=65536,hard,timeo=14,retrans=2 \
 > [!NOTE]
 > 근본적으로 DB 데이터를 NFS에 얹는 구성 자체가 임시방편이다. 지금은 튜닝으로 버티지만, 결국은 DB는 로컬 SSD 기반 블록 스토리지로, NFS는 공유 파일·백업 같은 순차 워크로드로 역할을 나누는 게 맞다. 이 글은 그 이전(以前)의, 있는 자원으로 버텨낸 기록에 가깝다.
 
-## 🔗 참고
+## 참고
 
 - [exports(5) — NFS server export table](https://man7.org/linux/man-pages/man5/exports.5.html)
 - [nfs(5) — NFS 클라이언트 마운트 옵션](https://man7.org/linux/man-pages/man5/nfs.5.html)

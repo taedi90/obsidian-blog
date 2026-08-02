@@ -18,7 +18,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > KubeVirt·Multus 매니페스트가 `kubevirt/`와 `network/` 두 트리에 나뉘어 있었고, 마스터 VM 정의가 구·신버전으로 중복돼 있었다. 어느 파일이 실제로 배포된 건지 매번 헷갈리는 게 문제였다. 기능별(operators / networking / vms / datavolumes) 단일 트리로 통합하고, 구버전과 실험 잔재는 `archive/`로 몰아넣었다.
@@ -75,7 +75,7 @@ kubevirt/
 
 `vms/templates/`에 VM 생성 가이드용 README와 기본 템플릿을 하나 두었다. 폴더가 기능별로 나뉘어 있으니 이런 게 들어갈 자리가 자연스럽게 생겼다.
 
-## 🔗 참고
+## 참고
 
 - [KubeVirt 공식 문서](https://kubevirt.io/)
 - [Containerized Data Importer (CDI)](https://github.com/kubevirt/containerized-data-importer)

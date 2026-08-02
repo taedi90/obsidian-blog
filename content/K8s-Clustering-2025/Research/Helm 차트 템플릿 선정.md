@@ -13,17 +13,17 @@ type:
   - comparison
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > MSA 솔루션을 표준화된 방식으로 배포하려고 Helm 차트 템플릿을 비교했고, <b>Helmet</b> 라이브러리 차트를 감싼 래퍼 차트 구조로 정했다. Bitnami보다 설정이 간결하고 라이선스가 자유롭다는 점이 결정적이었다.
 > - 실제 차트 구조는 [helmet-extended 저장소](https://github.com/taedi90/helmet-extended)에서 볼 수 있다.
 
-## 💡 개요
+## 1. 개요
 
 회사 솔루션을 <b>Helm 패키징</b>하려면 공통 포맷이 필요했다. 솔루션이 <b>MSA(Microservices Architecture)</b>라 부서마다 따로 개발하는데, 공통 틀을 안 잡아두면 배포 방식이 부서 수만큼 갈라질 게 뻔했기 때문이다.
 
-## 📋 선정 배경
+## 2. 선정 배경
 
 ### 공통으로 필요한 Kubernetes 리소스
 
@@ -52,7 +52,7 @@ Manifest 기준으로 이 정도는 거의 매번 필요하다고 봤다.
 
 서비스마다 같은 구조의 차트를 쓰되, 서비스별 특성에 맞는 커스터마이징은 열어둬야 했다. 이 둘을 동시에 만족하는 게 관건이었다.
 
-## 📊 비교
+## 3. 비교
 
 ### Bitnami 차트
 
@@ -137,7 +137,7 @@ Bitnami는 기능이 풍부한 게 오히려 오버스펙이었고, 라이선스
 Application Chart → Helmet Wrapper Chart → Helmet → (Bitnami Common Chart)
 ```
 
-## ✅ 선정 사유
+## 4. 선정 사유
 
 이 구조로 간 이유는 이렇다.
 
@@ -149,7 +149,7 @@ Application Chart → Helmet Wrapper Chart → Helmet → (Bitnami Common Chart)
 
 구성 자체는 좀 복잡해졌지만, 개발팀 편의성과 배포 표준화를 생각하면 남는 장사라고 봤다.
 
-## 🔗 참고
+## 참고
 
 - [Bitnami Charts Repository](https://github.com/bitnami/charts)
 - [Helmet Charts Repository](https://github.com/companyinfo/helm-charts)

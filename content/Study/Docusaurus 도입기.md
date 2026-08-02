@@ -17,7 +17,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > [[폐쇄망 전용 싱글 바이너리 워크플로우 도구 Deck 만들기|Deck]]의 문서를 README 한 장으로 버티다, 기능이 늘며 스크롤 지옥이 되자 [Docusaurus](https://docusaurus.io/)로 옮겼다. 문서를 파일 하나로 늘려가는 구조를 얻고, CLI 레퍼런스는 [[Cobra로 Go CLI 만들기|Cobra]] 명령 정의에서 자동 생성해 얹고, 한/영 번역은 AI(`claude -p`)로 돌리되 source_hash 증분·용어집·조사 정규화로 품질을 잡았다. 배포는 GitHub Pages.
@@ -88,7 +88,7 @@ docs/quick-start.md  ──(hash 계산)──┐
 
 문서 사이트는 GitHub Pages로 배포했다. `docs/`나 워크플로우가 바뀌면 Actions가 `npm ci && npm run build`로 정적 사이트를 만들고, 그 산출물을 Pages 아티팩트로 올려 배포한다. (배포 워크플로우 자체는 [[GitHub Actions 입문기|GitHub Actions]] 글에서 CI 전반과 함께 다룬다.) 문서를 push하면 몇 분 뒤 사이트가 갱신되니, 문서도 코드와 같은 흐름을 탄다.
 
-## 🔗 참고
+## 참고
 
 - [[폐쇄망 전용 싱글 바이너리 워크플로우 도구 Deck 만들기]]
 - [[Cobra로 Go CLI 만들기]]

@@ -18,18 +18,18 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > NVIDIA RTX PRO 6000(Blackwell) GPU가 `nvidia-smi`에서 `No devices were found`로 안 잡혔다. BIOS에서 fastboot·CSM·secure boot를 끄고, OS(Rocky 9.5/9.6·Ubuntu 24.04)와 드라이버(570/575/580의 open·dkms·server 계열)를 표로 조합해 돌려보니 <b>open 커널 모듈 계열 + 충분히 최신인 OS 커널</b>일 때만 동작했다. 이 동작 조합을 오프라인 설치 플레이북으로 표준화했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - GPU: NVIDIA RTX PRO 6000 (Blackwell)
 - OS 후보: Rocky 9.5 / 9.6, Ubuntu 24.04
 - 드라이버 후보: 570 / 575 / 580 브랜치 (open · dkms · server 계열)
 
-## 💬 이슈
+## 2. 이슈
 
 곧 고객사 프로젝트에 같은 모델을 납품할 예정이라, 사내에서 미리 물려보고 검증하려고 새 워크스테이션에 카드를 꽂았다. 그런데 OS를 올리고 드라이버를 깐 뒤 `nvidia-smi`를 치니 이게 나왔다.
 
@@ -48,7 +48,7 @@ No devices were found
 
 문제는 이 카드가 <b>갓 나온 신형 아키텍처</b>라 참고할 사례가 거의 없다는 점이었다. 검색해도 나오는 건 한두 세대 전 카드 이야기뿐이고, "이 OS에 이 드라이버 깔면 된다"는 딱 떨어지는 답이 없었다. 그러면 직접 조합을 돌려보는 수밖에 없다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. BIOS (fastboot·CSM·secure boot)
 
@@ -64,7 +64,7 @@ fastboot만 껐을 땐 증상이 그대로였다. 셋을 다 끄고 나서야 �
 
 BIOS를 정리하고도 어떤 조합은 되고 어떤 조합은 안 됐다. 여기서 갈린 게 <b>드라이버의 커널 모듈 종류</b>였다.
 
-NVIDIA 드라이버는 커널 모듈이 크게 두 갈래다. 예전부터 쓰던 독점(proprietary) 모듈과, 최근 주력으로 넘어온 open 커널 모듈. NVIDIA는 신형 아키텍처부터 open 커널 모듈을 사실상 표준으로 밀고 있고, 신형 실리콘 지원도 open 쪽이 먼저 붙는다. 그래서 패키지 이름에 `-open`이 붙은 계열과 그렇지 않은 계열(`-dkms`, `-server`)이 결과를 갈랐다.
+NVIDIA 드라이버는 커널 모듈이 크게 두 갈래다. 예전부터 쓰던 독점(proprietary) 모듈과, 최근 주력으로 넘어온 open 커널 모듈. NVIDIA는 신형 아키텍처부터 open 커널 모듈을 표준으로 밀고 있고, 신형 실리콘 지원도 open 쪽이 먼저 붙는다. 그래서 패키지 이름에 `-open`이 붙은 계열과 그렇지 않은 계열(`-dkms`, `-server`)이 결과를 갈랐다.
 
 > [!NOTE]
 > Ubuntu의 `nvidia-driver-XXX-server`는 데이터센터용 독점 드라이버, `-server-open`과 `-open`은 open 커널 모듈 버전이다. Rocky(RHEL 계열)는 `dnf module`의 스트림으로 `XXX-open`과 `XXX-dkms`가 나뉜다. 이름이 비슷해서 헷갈리는데, 신형 카드에서는 "open이 붙었는가"가 핵심이었다.
@@ -132,7 +132,7 @@ sudo dnf module install nvidia-driver:580-open -y
 
 open을 주력으로 두되 dkms 계열도 같이 받아 로컬 리포에 굽어뒀다. 카드나 커널이 조금 달라졌을 때 fallback으로 둘 다 손에 쥐고 있는 편이 마음 편했다. (지난 세대 카드에서 설치 순서가 꼬여 애먹은 적이 있어서, 커널 헤더/devel을 드라이버보다 먼저 깔도록 순서도 플레이북에 박아뒀다.)
 
-## ✅ 확인
+## 4. 확인
 
 가장 먼저 GPU가 잡히는지부터 봤다.
 
@@ -150,7 +150,7 @@ docker run --rm --gpus all ubuntu:24.04 nvidia-smi
 
 여기까지 통과하면 이 워크스테이션은 클러스터 워커로 붙일 준비가 된 것이다. 신형이라 답이 없던 카드가, 표 한 장으로 재현 가능한 조합이 됐다.
 
-## 🔗 참고
+## 참고
 
 - [NVIDIA Transitions Fully Towards Open-Source GPU Kernel Modules](https://developer.nvidia.com/ko-kr/blog/nvidia-transitions-fully-towards-open-source-gpu-kernel-modules/)
 - [NVIDIA Datacenter Driver Installation Guide](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html)

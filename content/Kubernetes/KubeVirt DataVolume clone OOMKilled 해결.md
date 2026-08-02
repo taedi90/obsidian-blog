@@ -18,19 +18,19 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > KubeVirt에서 VM을 찍을 때마다 베이스 DataVolume을 clone하는데, 이 clone이 진행률 0%에서 계속 OOMKilled로 죽었다. 원인은 두 개였다. CSI 볼륨 clone을 못 받쳐주는 스토리지라 host-assisted clone으로 떨어지는데, CDI가 띄우는 clone 파드의 메모리 limit이 옮길 데이터에 비해 낮아서 그 한도를 넘겨 죽었고, 베이스 PVC가 실사용 대비 수십 배로 부풀려 있어 clone이 처리할 데이터 자체가 컸다. CDI 파드 메모리 limit을 2Gi로 올리고 베이스 PVC를 30Gi에서 10Gi로 줄여 clone을 통과시켰다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes 클러스터에 KubeVirt + CDI(cdi-operator, cdi-cr) 설치
 - 스토리지: CSI 볼륨 clone/스냅샷을 지원하지 않는 스토리지(그래서 뒤에 나오는 host-assisted clone으로 떨어진다)
 - 베이스 이미지: Rocky Linux 9 GenericCloud 이미지로 만든 베이스 `DataVolume`
 - VM은 `dataVolumeTemplates`로 이 베이스 PVC를 clone해서 root 디스크를 만드는 구조
 
-## 💬 이슈
+## 2. 이슈
 
 VM을 재사용성 있게 찍으려고 베이스 `DataVolume`을 미리 만들어두고, `VirtualMachine`의 `dataVolumeTemplates`에서 그걸 clone해 root 디스크로 쓰는 구조를 잡았다. 구성은 [[kubevirt-setting|KubeVirt 오프라인 테스트 환경 글]]에 정리해둔 그대로다.
 
@@ -53,7 +53,7 @@ kubectl get pod <clone-pod> -o jsonpath='{.status.containerStatuses[0].lastState
 
 처음엔 노드 메모리가 부족한가 싶어 스케줄된 노드만 쳐다봤는데, 노드는 여유가 있었다. 문제는 clone 파드에 걸린 메모리 limit이었다. 이 limit이 clone이 실제로 쓰는 양보다 낮으니, 파드가 그 한도를 넘기는 순간 cgroup OOM으로 죽는 거였다. (원인 두 개가 얽혀 있었는데, 처음엔 그걸 몰라서 노드만 애꿎게 의심했다.)
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. clone이 어떻게 도는가
 
@@ -98,7 +98,7 @@ spec:
 
 이렇게 베이스를 슬림하게 만들고 나니, 앞서 올린 메모리와 맞물려 clone이 안정적으로 끝까지 돌았다.
 
-## ✅ 확인
+## 4. 확인
 
 VM을 다시 켜고 clone `DataVolume`의 진행률이 실제로 올라가는지 봤다.
 
@@ -112,7 +112,7 @@ kubectl get datavolume -w
 
 진행률이 0을 벗어나 100%까지 올라가고 `Succeeded`로 끝났다. clone 파드도 `OOMKilled` 없이 정상 종료됐고, 그 볼륨을 root 디스크로 문 VM이 정상 부팅했다. 반복해서 죽던 게 한 번에 넘어가니 허무할 정도였는데, 원인이 메모리 하나가 아니라 파드 메모리와 볼륨 크기 두 개였다는 걸 늦게 안 게 이 삽질의 대부분이었다.
 
-## 🔗 참고
+## 참고
 
 - [KubeVirt user-guide — Clone API](https://kubevirt.io/user-guide/storage/clone_api/)
 - [CDI — clone-datavolume](https://github.com/kubevirt/containerized-data-importer/blob/main/doc/clone-datavolume.md)

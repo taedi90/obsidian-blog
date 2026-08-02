@@ -18,18 +18,18 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > Harbor DB·스토리지 장애로 레지스트리 데이터가 통째로 날아갔다. 전 노드에 캐시된 컨테이너 이미지 754개를 마지막 동아줄로 보고 역push 복구를 시도했지만, `ctr images check`로 걸러보니 레이어가 온전한 건 8개뿐이었다. 나머지는 containerd에 이름·매니페스트만 남고 실제 레이어(blob)가 없는 껍데기라, 외부 소스 없이는 복구가 불가능하다는 걸 확인하고 재빌드·재pull로 방향을 틀었다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes 클러스터 (컨테이너 런타임 containerd)
 - 컨테이너 레지스트리: Harbor
 - 노드에 캐시된 이미지: 754개 (전 노드 `crictl images` 합산)
 
-## 💬 이슈
+## 2. 이슈
 
 Harbor의 DB와 오브젝트 스토리지가 장애로 함께 무너지면서 레지스트리 데이터가 손실됐다. 백업이 있었으면 이 글은 없었을 것이다. 없었으니 이 글이 있다.
 
@@ -39,7 +39,7 @@ Harbor의 DB와 오브젝트 스토리지가 장애로 함께 무너지면서 �
 
 결론부터 말하면 이 가설은 대체로 틀렸다. 다만 왜 틀렸는지가 이 글의 핵심이라, 순서대로 적는다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 전 노드 캐시 이미지 목록 수집
 
@@ -120,7 +120,7 @@ docker push registry.internal.example/library/nginx:1.24
 # 사내 이미지: CI/CD 재실행으로 재빌드
 ```
 
-## ✅ 확인
+## 4. 확인
 
 | 항목 | 수량 |
 |------|------|
@@ -134,12 +134,12 @@ docker push registry.internal.example/library/nginx:1.24
 교훈은 뻔하지만 뼈아프다.
 
 - <b>노드 캐시는 백업이 아니다.</b> 실행에 필요한 레이어만 조각조각 남을 뿐, 이미지 전체를 담고 있지 않다. 재난 시 최후의 동아줄로 기대할 대상이 못 된다.
-- 레지스트리 백업이 곧 복구 가능성이다. Harbor DB(PostgreSQL) 정기 백업, 오브젝트 스토리지 스냅샷, 설정 버전 관리가 없으면 데이터 손실 시 사실상 복구 수단이 없다.
+- 레지스트리 백업이 곧 복구 가능성이다. Harbor DB(PostgreSQL) 정기 백업, 오브젝트 스토리지 스냅샷, 설정 버전 관리가 없으면 데이터 손실 시 복구 수단이 없다.
 - 사내 빌드 이미지가 그나마 살아난 건 소스와 Dockerfile이 관리되고 있었기 때문이다. 이건 결과적으로 이중화가 돼 있던 셈이다.
 
 단일 Harbor 인스턴스는 SPOF다. 중요 이미지는 외부 스토리지에 이중 push해두거나 레지스트리 복제를 걸어두는 편이 좋겠다는 생각을, 데이터를 다 날리고 나서야 했다.
 
-## 🔗 참고
+## 참고
 
 - [containerd content flow (image content store)](https://github.com/containerd/containerd/blob/main/docs/content-flow.md)
 - [crictl (Kubernetes debug)](https://kubernetes.io/docs/tasks/debug/debug-cluster/crictl/)

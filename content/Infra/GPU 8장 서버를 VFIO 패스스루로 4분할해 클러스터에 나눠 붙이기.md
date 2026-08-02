@@ -21,12 +21,12 @@ type:
   - architecture
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > GPU 8장이 달린 물리 서버 한 대를 개발·검증 클러스터가 나눠 쓰게 만들었다. IOMMU와 VFIO로 GPU를 호스트 커널에서 떼어내고(선점하던 드라이버와 fabricmanager는 blacklist·unbind로 정리), Terraform libvirt provider로 스토리지 풀·qcow2 백킹 볼륨·cloud-init·PCI 패스스루를 코드화해 VM 4대를 찍었다. 이후 Ansible로 드라이버·container-toolkit·containerd·쿠버네티스를 얹어 워커로 join했고, 마지막에 macvtap과 파드 CIDR 충돌까지 걷어냈다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - 물리 호스트: GPU 8장(A100 SXM4 계열, PCI ID `10de:20b2`), Ubuntu + libvirt/KVM
 - VM 게스트: Rocky Linux 9, VM당 GPU 2장씩 총 4대
@@ -34,7 +34,7 @@ type:
 - Terraform: `dmacvicar/libvirt` v0.9.2 / Ansible
 - 네트워크: 호스트·VM 공용 대역 `10.0.20.0/24` (호스트 `10.0.20.10`, VM `10.0.20.21~24`)
 
-## 1. 왜 서버 한 대를 4분할했나
+## 2. 왜 서버 한 대를 4분할했나
 
 GPU 8장짜리 서버가 한 대 있었다. 그런데 이 녀석이 어느 쪽 클러스터에도 온전히 속하지 못하고 애매하게 놀고 있었다. 개발 클러스터도 GPU가 아쉽고, 검증 클러스터도 아쉬운데, 서버를 통째로 한쪽에 넣자니 반대쪽이 굶는다.
 
@@ -42,7 +42,7 @@ GPU 8장짜리 서버가 한 대 있었다. 그런데 이 녀석이 어느 쪽 �
 
 여기서 걸리는 건 하나다. GPU는 물리 장치라 동시에 두 곳이 쓸 수 없다. VM에게 넘기려면 <b>먼저 호스트가 그 GPU에서 손을 떼야</b> 한다. 실제로 이번 작업에서 제일 오래 붙든 게 이 부분이었다.
 
-## 2. 전체 그림
+## 3. 전체 그림
 
 작업은 성격이 뚜렷하게 셋으로 갈렸다. 그래서 디렉토리도 그렇게 나눴다.
 
@@ -52,7 +52,7 @@ GPU 8장짜리 서버가 한 대 있었다. 그런데 이 녀석이 어느 쪽 �
 
 호스트 준비는 재부팅과 커널 파라미터가 얽혀 있어 코드화보다 손으로 짚어가며 하는 게 안전했다. 반면 VM은 4대를 똑같이 찍어내는 일이라 Terraform이 제격이었고, VM 내부 설정은 멱등성(idempotency)이 필요해 Ansible로 갔다. 역할별로 도구를 갈라놓으니 나중에 VM 한 대만 다시 밀 때도 깔끔했다.
 
-## 3. 호스트 준비: GPU를 커널에서 떼어내기
+## 4. 호스트 준비: GPU를 커널에서 떼어내기
 
 ### 3-1. 가상화와 IOMMU 켜기
 
@@ -154,7 +154,7 @@ done
 > [!IMPORTANT]
 > 패스스루가 안 될 때 modprobe 설정만 붙들고 씨름하기 쉬운데, 실제로는 <b>런타임에 장치를 점유하는 서비스</b>가 원인인 경우가 많다. "누가 `/dev/nvidia*`를 열고 있나"부터 확인하는 게 훨씬 빠르다. `softdep`은 부팅 순서를 고정할 뿐, 부팅 이후 다시 뜬 서비스까지 막아주진 않는다.
 
-## 4. Terraform으로 VM 뼈대를 코드화
+## 5. Terraform으로 VM 뼈대를 코드화
 
 호스트가 GPU에서 손을 뗐으니, 이제 VM을 찍을 차례다. 4대를 손으로 만들면 스펙이 미묘하게 어긋나기 마련이라 Terraform으로 선언했다. 상태를 두 단계로 나눴다. 자주 안 바뀌는 <b>스토리지·베이스 이미지</b>(`01-infra`)와 자주 갈아엎는 <b>VM 본체</b>(`02-vms`)다.
 
@@ -216,7 +216,7 @@ users:
 # 비밀번호는 secret 변수로만 참조하고 평문으로 커밋하지 않는다
 ```
 
-핵심은 도메인 정의에서 GPU를 붙이는 부분이다. VM별 GPU 목록을 받아 `hostdev`로 PCI 주소를 통째로 넘긴다. `managed = true`면 libvirt가 도메인 기동/종료 시 <b>호스트 드라이버 detach와 vfio 인계를 알아서</b> 처리한다.
+도메인 정의에서 GPU를 붙이는 부분이다. VM별 GPU 목록을 받아 `hostdev`로 PCI 주소를 통째로 넘긴다. `managed = true`면 libvirt가 도메인 기동/종료 시 <b>호스트 드라이버 detach와 vfio 인계를 알아서</b> 처리한다.
 
 ```hcl
 # vm 정의에 적힌 PCI 주소들을 게스트에 그대로 패스스루
@@ -249,7 +249,7 @@ vms = {
 
 한 가지 삽질 흔적을 남겨두면, `terraform destroy`로 VM을 지울 때 NVRAM이 남아 다음 생성이 꼬이는 일이 있었다. 그래서 destroy 시점에 원격 호스트로 `virsh undefine --nvram`을 날리는 정리 리소스를 따로 뒀다. 만드는 것보다 <b>깨끗하게 지우는 것</b>이 반복 작업에선 더 중요하더라.
 
-## 5. Ansible로 드라이버·런타임·쿠버네티스 얹기
+## 6. Ansible로 드라이버·런타임·쿠버네티스 얹기
 
 VM이 뜨면 그 안은 맨 OS다. 여기에 GPU 드라이버, 컨테이너 런타임, 쿠버네티스를 얹어 워커로 만드는 건 Ansible로 했다. 인벤토리에 VM 4대를 넣고 세 개의 플레이북을 순서대로 돌린다.
 
@@ -271,7 +271,7 @@ ansible-playbook -i inventory/hpc/inventory.yml playbooks/sysctl_config.yml
 kubeadm token create --print-join-command
 ```
 
-## 6. 네트워크: macvtap과 파드 CIDR 충돌
+## 7. 네트워크: macvtap과 파드 CIDR 충돌
 
 배선에서 두 번 걸렸다. 둘 다 "붙긴 붙는데 통신이 안 되는" 종류라 더 성가셨다.
 
@@ -295,7 +295,7 @@ source = { direct = { dev = var.network.host_dev, mode = "bridge" } }
 > [!NOTE]
 > 노드를 delete하고 재join하면 <b>노드에 붙어 있던 라벨이 사라진다.</b> GPU 노드에 스케줄링 라벨을 걸어뒀다면 재join 후 다시 달아줘야 한다. 안 그러면 파드가 `NodeAffinity` 조건에 걸려 조용히 스케줄링에서 밀린다. (한참 헤맸다.)
 
-## ✅ 확인
+## 8. 확인
 
 호스트에서는 IOMMU와 장치 할당이 준비됐는지부터 봤다.
 
@@ -313,7 +313,7 @@ kubectl get nodes -o wide
 
 개발·검증 클러스터에 각각 VM 2대씩, GPU 2장씩 `Ready`로 올라오면 끝이다. 놀던 서버 한 대가 이제 양쪽 클러스터에서 동시에 일하게 됐다.
 
-## 🔗 참고
+## 참고
 
 - [Terraform libvirt provider (dmacvicar/libvirt)](https://registry.terraform.io/providers/dmacvicar/libvirt/latest/docs)
 - [Arch Wiki — PCI passthrough via OVMF](https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF)

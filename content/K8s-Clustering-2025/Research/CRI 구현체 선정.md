@@ -13,19 +13,19 @@ type:
   - comparison
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 클러스터의 CRI를 Docker에서 <b>containerd</b>로 바꿨다. Docker는 쿠버네티스와 직접 말을 못 해 cri-dockerd라는 어댑터를 한 겹 거쳐야 하는데, 그 레이어를 걷어내니 구조가 단순해지고 라이선스 걱정도 사라졌다.
 
-## 💡 개요
+## 1. 개요
 
 클러스터를 세우면서 <b>컨테이너 런타임 인터페이스(Container Runtime Interface, CRI)</b>를 정해야 했다. 처음엔 개발팀이 Docker에 익숙하다는 이유로 Docker를 붙잡고 있었는데, 운영 경험이 쌓이면서 containerd로 넘어가는 게 맞다는 결론에 이르렀다.
 
 > [!INFO]
 > CRI는 쿠버네티스가 여러 컨테이너 런타임과 통신하기 위한 표준 인터페이스다. kubelet이 컨테이너를 만들고 시작하고 멈출 때 이 인터페이스를 쓴다.
 
-## 📋 선정 배경
+## 2. 선정 배경
 
 예전 클러스터에서는 개발자들의 쿠버네티스 경험이 얕아, 빠른 개발을 핑계로 <b>쿠버네티스가 관리하지 않는 Docker 컨테이너를 직접 띄워</b> 쓰곤 했다. 공식 문서가 권장하지 않는 방식인 건 알았지만, 그땐 속도가 먼저였다.
 
@@ -36,7 +36,7 @@ type:
 - 쿠버네티스도, Kubespray도 containerd를 표준으로 미는 추세다.
 - Docker Desktop <b>라이선스</b> 이슈도 마음 한켠에 걸렸다.
 
-## 📊 비교
+## 3. 비교
 
 | 구분 | Docker + cri-dockerd | containerd |
 | --- | --- | --- |
@@ -50,7 +50,7 @@ type:
 
 표의 아키텍처 한 줄이 사실상 결론이다. Docker를 쓰면 kubelet부터 컨테이너까지 네 단계를 거치는데, containerd는 그걸 두 단계로 줄인다. 붙잡고 있을 명분이던 CLI 문제도, 알고 보니 `nerdctl`이 `docker` 명령어와 거의 그대로 호환돼 생각만큼 큰 벽이 아니었다.
 
-## ✅ 선정 사유
+## 4. 선정 사유
 
 <b>containerd</b>로 정했다. 이유를 추리면 이렇다.
 
@@ -79,7 +79,7 @@ kubelet → containerd → runc
 > [!IMPORTANT]
 > 초반에 제일 걱정했던 CLI 변경 혼란은 거의 없었다. `nerdctl`이 `docker` 명령어를 워낙 잘 흉내 내 준 덕이다. 붙잡고 있던 이유가 막상 넘어와 보니 별것 아니었던 셈이다.
 
-## 🔗 참고
+## 참고
 
 - [Kubernetes CRI 공식 문서](https://kubernetes.io/docs/concepts/architecture/cri/)
 - [containerd 공식 사이트](https://containerd.io/)

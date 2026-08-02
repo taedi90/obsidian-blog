@@ -19,12 +19,12 @@ type:
   - comparison
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 온프레미스에 서버 3식을 납품하면서 HA/Failover를 표방했는데, 정작 서버나 도커가 재기동되면 컨테이너가 자동으로 살아나지 않고 Galera·Redis 클러스터는 멤버십이 꼬였다. restart policy(`always`/`unless-stopped`), healthcheck + 자가 재기동 스크립트, Docker Swarm 세 방식을 저울질했고, <b>unhealthy 컨테이너를 자동으로 재생성해주는 건 Swarm뿐</b>이라는 게 핵심 차이였다. 다만 Swarm은 폐쇄망 registry, 공유 스토리지, stateful 서비스의 노드 고정, Galera bootstrap 선행 조치를 요구해서 그 값을 치를지가 진짜 판단 지점이었다.
 
-## 💡 개요
+## 1. 개요
 
 우리 제품은 사이트에 납품할 때 권장 사양으로 서버 3식을 제안한다. 명분은 HA와 Failover다. 그런데 막상 운영을 들여다보니 그 명분이 무색했다.
 
@@ -37,7 +37,7 @@ type:
 > [!INFO]
 > unhealthy 컨테이너를 재기동하는 healthcheck 트릭 자체는 [[Docker Healthcheck 실패 시 컨테이너 재기동 설정|따로 정리해둔 글]]이 있다. 이 글은 그 트릭을 포함해 "3서버 납품에서 뭘 고를 것인가"를 저울질한 의사결정 기록이다.
 
-## 📋 선정 배경
+## 2. 선정 배경
 
 세 방식을 이해하려면 도커가 어디까지 해주고 어디서 손을 놓는지부터 봐야 한다.
 
@@ -74,7 +74,7 @@ healthcheck:
 - 서비스가 노드 간을 옮겨 다니니 볼륨을 어떻게 공유할지가 숙제다. 공유 스토리지(NFS 등)가 제일 간단하지만 속도 이슈가 있고, 아니면 GlusterFS·Ceph·rsync 같은 걸 얹어야 하는데 사이트마다 정책이 걸린다.
 - `depends_on`은 Swarm에서 무시된다. 원래도 이건 `docker compose up`에만 먹고 재기동 상황에선 순서 없이 다 같이 뜬다. Galera가 특히 여기서 터진다.
 
-## 📊 비교
+## 3. 비교
 
 세 방식을 같은 축으로 놓고 봤다.
 
@@ -91,7 +91,7 @@ healthcheck:
 
 표를 채우고 나니 답이 좁혀졌다. unhealthy 컨테이너를 <b>깔끔하게 자동 재생성</b>하고 노드 다운을 감지해 재배치까지 해주는 건 Swarm뿐이다. 나머지 둘은 "컨테이너가 종료되면 다시 띄운다"는 restart policy의 틀 안에서 노는 변형이라, 노드 자체가 죽는 시나리오엔 손을 못 댄다.
 
-## ✅ 선정 사유
+## 4. 선정 사유
 
 결론만 말하면 <b>Docker Swarm</b> 쪽으로 기울었다. 이유는 표의 굵은 칸 하나다. 3식 납품의 명분이 "노드 하나 죽어도 서비스가 산다"인데, 그걸 도커 기본기나 스크립트 편법으로는 못 채운다. `docker swarm init`을 해도 기존 컨테이너가 사라지지 않아 전환 부담도 생각보다 작았다.
 
@@ -122,7 +122,7 @@ mysqladmin ping -uroot -p"${MYSQL_ROOT_PASSWORD}" -h 127.0.0.1
 
 정리하자면, unhealthy 자동 재생성과 노드 재배치를 얻는 대가로 registry·공유 스토리지·Galera 부트스트랩이라는 숙제를 떠안는 거래다. 3식 납품이 표방한 HA를 실제로 채우려면 이 숙제값이 아깝지 않다고 판단했다. 물론 사이트마다 스토리지 정책이 다르니, 공유 볼륨을 못 쓰는 곳에선 stateful을 노드 고정으로 도는 조합이 현실적인 절충이 될 것이다.
 
-## 🔗 참고
+## 참고
 
 - [Docker Swarm mode overview](https://docs.docker.com/engine/swarm/swarm-mode/)
 - [Docker Swarm services](https://docs.docker.com/engine/swarm/services/)

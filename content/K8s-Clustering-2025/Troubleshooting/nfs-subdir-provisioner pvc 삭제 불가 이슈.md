@@ -21,17 +21,17 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > nfs-subdir-provisioner의 <b>pathPattern</b> 설정으로 인해 PVC 삭제 시 실제 NFS 디렉토리가 삭제되지 않는 버그가 4.0.18 버전에서 해결되었다. Docker 이미지가 공식 레지스트리에 없어 직접 빌드하여 문제를 해결했다.
 
-## ⚙️ 환경
+## 1. 환경
 - Kubernetes 클러스터
 - nfs-subdir-external-provisioner (4.0.17 이하 버전)
 - pathPattern 설정이 포함된 StorageClass
 
-## 💬 이슈
+## 2. 이슈
 
 Kubernetes에서 <b>nfs-subdir-provisioner</b>를 사용하여 동적 볼륨 프로비저닝을 구성했다. StorageClass에서 `reclaimPolicy: Delete`로 설정했음에도 불구하고, PVC를 삭제할 때 실제 NFS 서버의 디렉토리는 그대로 남아있는 문제가 발생했다.
 
@@ -40,7 +40,7 @@ Kubernetes에서 <b>nfs-subdir-provisioner</b>를 사용하여 동적 볼륨 프
 > [!INFO]
 > pathPattern 설정 예시: `${.PVC.namespace}-${.PVC.name}-${.PVC.annotations.volume.beta.kubernetes.io/storage-class}`
 
-## 🧗 해결
+## 3. 해결
 
 GitHub Issues에서 같은 증상을 겪은 사람들의 보고를 찾았다. 조사해보니 nfs-subdir-external-provisioner의 알려진 버그였고, <b>4.0.18 버전</b>에서 수정됐다.
 
@@ -74,7 +74,7 @@ spec:
         image: your-registry/nfs-subdir-external-provisioner:4.0.18
 ```
 
-## ✅ 확인
+## 4. 확인
 
 업데이트 후 테스트했다. pathPattern이 설정된 StorageClass로 PVC를 생성하고 삭제해보니 결과는 이랬다.
 
@@ -85,7 +85,7 @@ spec:
 > [!NOTE]
 > nfs-subdir-provisioner는 기본적으로 삭제된 볼륨을 `archived-` 접두사를 붙여서 백업하는 방식으로 동작한다. 완전 삭제를 원한다면 `archiveOnDelete: "false"` 설정을 추가해야 한다.
 
-## 🔗 참고
+## 참고
 - [GitHub Issue #347: Delete with pathPattern doesn't work](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/issues/347)
 - [GitHub Issue #272: pathPattern causes PV deletion to fail](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/issues/272)
 - [nfs-subdir-external-provisioner GitHub Repository](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)

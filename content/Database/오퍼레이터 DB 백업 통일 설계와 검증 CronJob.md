@@ -20,7 +20,7 @@ type:
   - automation
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 오퍼레이터가 관리하는 PostgreSQL(CNPG)·MariaDB(Galera)에 백업 CR이 하나도 없던 상태를 손봤다. 복구는 <b>물리 PITR</b>에 전부 맡겨 백본으로 삼고, 월1회 <b>논리 덤프</b>는 백본이 깨졌을 때를 위한 보험으로만 낮게 운용했다.
@@ -262,7 +262,7 @@ find /backup -name '*.sql.gz' -mtime +180 -delete # 6개월 보관
 
 오퍼레이터가 백업까지 "알아서 해줄 것 같지만", 무엇을 어느 계층에서 얻을지는 내가 직접 나눠야 했다.
 
-## 🔗 참고
+## 참고
 
 - [CloudNativePG — Backup](https://cloudnative-pg.io/documentation/current/backup/)
 - [CloudNativePG — Recovery](https://cloudnative-pg.io/documentation/current/recovery/)

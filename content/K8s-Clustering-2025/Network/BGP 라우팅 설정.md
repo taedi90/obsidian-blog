@@ -18,11 +18,11 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 > [!SUMMARY]
 > Fortigate 간 IPsec 터널 인터페이스에 IP를 할당하고 <b>BGP</b> 피어링을 걸어 Kubernetes의 Pod/Service CIDR를 사무실 네트워크에 광고했다. Cilium의 BGP 기능으로 클러스터 대역이 라우팅 테이블에 자동으로 올라오면서, LoadBalancer나 Ingress 같은 별도 리소스 없이 내부망에서 Pod·서비스 IP에 바로 접근할 수 있었다.
 
-## ⚙️ 환경
+## 1. 환경
 - <b>UTM</b>: Fortigate 60E (v5.6.8)
 - <b>CNI</b>: Cilium 1.17.4
 - <b>Kubernetes</b>: 1.32.6
@@ -32,12 +32,12 @@ type:
     - <b>Pod CIDR</b>: 10.10.0.0/16
     - <b>Service CIDR</b>: 10.20.0.0/16
 
-## 💬 이슈
+## 2. 이슈
 Kubernetes의 Pod·Service 네트워크는 기본적으로 클러스터 내부에서만 접근된다. 외부에서 접근하려면 로드밸런서(LoadBalancer)나 인그레스(Ingress) 같은 리소스를 따로 걸어줘야 한다.
 
 그런데 이번 클러스터는 개발·테스트 성격이 강했다. 개발자들이 Port Forwarding 같은 번거로운 절차 없이 사무실에서 Pod나 Service IP로 바로 붙을 수 있으면 좋겠다 싶었다. 즉 별도 리소스를 만들지 않고도 사무실 PC에서 `curl 10.10.1.23:8080` 한 줄이 그냥 동작하는 것, 그게 목표였다.
 
-## 🧗 해결
+## 3. 해결
 사무실 네트워크와 IDC의 Kubernetes 클러스터 네트워크를 잇기 위해 <b>BGP(Border Gateway Protocol)</b>를 쓰기로 했다.
 
 ### 1. BGP를 선택한 이유
@@ -213,7 +213,7 @@ spec:
 ### 4. 방화벽 정책 추가
 마지막으로 Fortigate에서 BGP 통신(TCP 179번 포트)과 ICMP가 오갈 수 있도록 방화벽 정책을 추가했다. 특히 내부(LAN)에서 터널 인터페이스로 나가는 방향 정책에서 BGP를 열어주지 않으면 피어링이 아예 안 맺어진다. 여기서 한참 헤맸다.
 
-## ✅ 확인
+## 4. 확인
 설정을 끝낸 뒤 BGP 세션 상태와 경로 교환이 제대로 되는지 아래 명령어들로 확인했다. 주로 쓴 것들만 추렸다.
 
 <b>Fortigate에서 BGP 상태 확인</b>
@@ -248,14 +248,14 @@ cilium bpf lb list
 ```
 `cilium bgp peers`로 세션이 `established`인지, 광고한 경로 수가 맞는지 확인한다.
 
-## 💡 알게된 사실
+## 5. 알게된 사실
 Fortigate GUI가 편하긴 해도 세부 설정은 결국 CLI로 내려가야 한다는 걸 다시 느꼈다. 터널 인터페이스 IP 할당은 GUI에 메뉴 자체가 없었다.
 
 iBGP에서는 피어로부터 받은 경로를 다른 iBGP 피어에게 다시 광고하지 않는다. 이걸 몰라서 처음엔 노드끼리 경로가 안 도는 이유를 한참 찾았다. 결국 Fortigate에서 `route-reflector-client`를 켜서 IDC 장비가 <b>Route Reflector</b> 역할을 하도록 만들어 해결했는데, 덕분에 iBGP가 왜 이렇게 동작하는지 몸으로 이해하게 됐다.
 
 그리고 설정을 그때그때 적어두지 않으면 나중에 반드시 고생한다는 걸 또 배웠다. (이 글이 그 증거다.)
 
-## 🔗 참고
+## 참고
 - [Fortigate Cookbook: Adding addresses to the tunnel interfaces](https://docs.fortinet.com/document/fortigate/5.6.0/cookbook/115120/adding-addresses-to-the-tunnel-interfaces)
 - [Fortigate Admin Guide: Basic BGP example](https://docs.fortinet.com/document/fortigate/7.6.2/administration-guide/763341/basic-bgp-example)
 - [Cilium BGP Control Plane](https://docs.cilium.io/en/latest/network/bgp-control-plane/bgp-control-plane/)

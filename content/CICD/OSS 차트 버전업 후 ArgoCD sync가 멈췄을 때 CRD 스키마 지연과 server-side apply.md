@@ -19,17 +19,17 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > OSS 차트를 버전업하자 새 CR은 신규 필드를 렌더하는데 클러스터의 CRD 스키마는 옛 버전 그대로라, ArgoCD가 diff를 계산하는 단계에서 `ComparisonError`로 멈추고 sync가 교착됐다. Helm이 CRD를 자동 업그레이드하지 않는 게 원인이었고, 새 CRD를 `kubectl apply --server-side --force-conflicts`로 먼저 올려 교착을 풀었다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - ArgoCD로 관리하는 클러스터 `prod-01`, Application `platform-base`
 - 대상 차트: `kube-prometheus-stack` 80.4.1 → 86.2.0 (prometheus-operator 0.91.0) 버전업
 
-## 💬 이슈
+## 2. 이슈
 
 차트 버전만 올렸는데 ArgoCD Application이 sync를 못 하고 앉아 있었다. 상태가 좀 이상했다.
 
@@ -47,7 +47,7 @@ error calculating structured merge diff: error building typed value from config 
 
 여기서 눈여겨봐야 할 건 이게 <b>apply 실패가 아니라는 점</b>이다. apply를 시도하다 거부당한 게 아니라, 그 전 단계인 <b>desired 상태와 live 상태의 diff 계산</b> 자체가 깨졌다. ArgoCD는 매니페스트가 실제로 바뀌었는지 알아야 sync를 진행하는데, 그 판단을 위한 계산이 안 되니 아예 출발선에서 멈춰버린 것이다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. field not declared in schema가 무슨 뜻인가
 
@@ -96,7 +96,7 @@ kubectl apply --server-side --force-conflicts \
 
 CRD 업그레이드는 클러스터 전역에 영향을 주는 작업이라, 나는 문제가 된 `crd-alertmanagers.yaml` 하나만 먼저 올려 diff가 풀리는지 본 뒤 전체를 적용했다.
 
-## ✅ 확인
+## 4. 확인
 
 CRD를 올린 뒤 스키마에 `hostNetwork`가 생겼는지부터 다시 봤다. 진단 때 썼던 `jq` 명령을 그대로 다시 돌려 `hostNetwork`가 출력되면 스키마가 따라잡힌 것이다. 그다음 ArgoCD Application의 `ComparisonError`가 사라지고 sync가 다시 도는지 확인했다. diff가 계산되기 시작하니 sync는 자연스럽게 정상으로 돌아왔다.
 
@@ -108,7 +108,7 @@ CRD를 올린 뒤 스키마에 `hostNetwork`가 생겼는지부터 다시 봤다
 
 근본적으로는 OSS 차트를 버전업할 때 CRD 동기화를 절차에 넣어두면 이 교착을 안 만난다. Helm이 대신 안 해주는 부분이니 우리가 챙겨야 한다.
 
-## 🔗 참고
+## 참고
 
 - [Server-Side Apply — Kubernetes](https://kubernetes.io/docs/reference/using-api/server-side-apply/)
 - [Custom Resource Definitions — Helm Best Practices](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/)

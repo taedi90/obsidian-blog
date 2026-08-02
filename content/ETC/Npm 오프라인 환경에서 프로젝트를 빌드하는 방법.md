@@ -17,7 +17,7 @@ completed:
 > [!Note]  
 > offline-mirror 를 활용한다!  
 
-## 이슈
+## 1. 이슈
 
 사내의 React 프로젝트를 오프라인 운영환경에서 빌드되기 위한 구성이 필요한 순간이 발생했다. 그러기 위해서는 빌드에 필요한 패키지 파일들을 오프라인 환경으로 모두 옮겨주는 작업이 필요했는데 사내의 Java 나 Python 프로젝트에 비해서 패키지 변경 빈도가 잦아 간편한 해결책이 있을까 찾아보게 되었다.
 
@@ -25,7 +25,7 @@ completed:
 
   
 
-## 해결
+## 2. 해결
 
 가장 먼저 확인한 내용은 `Yarn Berry`였는데, 뭔가 새롭고 혁신적인 방법 같아 (필자는 프론트 지식이 없음) 프론트 담당자에게 berry 를 쓰게 해주시면 안 되냐며 간절하게 애원해봤으나, 현재 프로젝트에서 쓰는 패키지 중 berry 와 호환되지 않는 게 있다는 이야기를 전해 듣고 좌절하고 말았다. 얼른 업계 표준으로 자리매김했으면 좋겠다.
 
@@ -74,25 +74,25 @@ cd ${HERE}
 
 PACKAGE_DIR="./npm-packages"
 
-## .yarnrc 파일이 기존에 있다면 .yarnrc.ori 파일로 변경
+## 3. .yarnrc 파일이 기존에 있다면 .yarnrc.ori 파일로 변경
 if [ -f .yarnrc ]; then 
     mv .yarnrc .yarnrc.ori
 fi
 
-## .yarnrc 파일 생성
+## 4. .yarnrc 파일 생성
 cat <<EOF > .yarnrc
 yarn-offline-mirror "${PACKAGE_DIR}"
 yarn-offline-mirror-pruning true
 EOF
 
-## yarn clean && yarn cache clean
+## 5. yarn clean && yarn cache clean
 yarn clean
 yarn cache clean
 
-## yarn 실행 (이 과정에서 패키지가 PACKAGE_DIR 로 다운로드 됨
+## 6. yarn 실행 (이 과정에서 패키지가 PACKAGE_DIR 로 다운로드 됨
 yarn install
 
-## .yarnrc 파일 삭제 (또는 원상복구)
+## 7. .yarnrc 파일 삭제 (또는 원상복구)
 rm .yarnrc
 if [ -f .yarnrc.ori ]; then 
     mv .yarnrc.ori .yarnrc
@@ -127,7 +127,7 @@ script:
 - |
 
   if [[ "${MODE}" == "prod" ]]; then
-    ## 운영 서버
+## 8. 운영 서버
     if [ -f .yarnrc ]; then 
       rm .yarnrc
     fi
@@ -136,7 +136,7 @@ script:
     yarn install --offline
     yarn build:prod
   else
-    ## 개발 서버
+## 9. 개발 서버
     sh ${HERE}/${YARN_PACKAGE_DOWNLOAD_SCRIPT} # 위에 작성했던 스크립트
     yarn build
 

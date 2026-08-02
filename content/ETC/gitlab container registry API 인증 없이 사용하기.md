@@ -16,7 +16,7 @@ completed:
 > [!important]  
 > gitlab-registry configmap 의 아래 내용을 주석처리한다.# auth:# token:# realm: https://hostname/jwt/auth# service: container_registry# issuer: \"gitlab-issuer\"# # This is provided from the initContainer execution, at a known path.# rootcertbundle: /etc/docker/registry/certificate.crt# autoredirect: false  
 
-## 이슈
+## 1. 이슈
 
 gitlab container registry 를 이용해 private registry 를 구성하는 중, “UNAUTHORIZED” 에러를 마주하게 되었다.
 
@@ -25,7 +25,7 @@ $ curl --insecure https://<registry-host>/v2/_catalog
 {"errors":[{"code":"UNAUTHORIZED","message":"authentication required","detail":[{"Type":"registry","Class":"","Name":"catalog","Action":"*"}]}]}
 ```
 
-## 해결
+## 2. 해결
 
 정상적인 방법으론 Bearer Token 을 발급 받아서 활용하는 방법이 있다.
 

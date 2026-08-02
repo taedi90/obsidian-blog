@@ -20,12 +20,12 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > flowise를 이전 버전에서 새 버전으로 올렸더니 컨테이너가 시작하자마자 OOMKilled로 죽었다. 메모리 limit이 1Gi였는데 새 버전은 초기화 단계에서 이걸 넘겨버렸다. 로그상엔 에러가 없이 "Auth initialized successfully"까지 찍히고 그 다음 4초 만에 SIGKILL(137). startup probe가 500을 뱉는 걸로 봐서는 앱 자체 문제인 줄 알았는데, 원인은 단순히 메모리 부족이었다. limit을 1Gi에서 4Gi로 올려서 해결했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Kubernetes + Istio 사이드카 인젝션
 - flowise: 앱 차트의 서브차트로 배포
@@ -34,13 +34,13 @@ type:
 - 장애 버전: 새 버전 (1Gi limit 초과)
 - 서비스명·차트명·버전 번호 등은 가상값으로 바꿔 적는다.
 
-## 💬 이슈
+## 2. 이슈
 
 flowise 디플로이먼트가 롤아웃되고 파드가 정상으로 돌아오지 않았다. 파드는 `PodInitializing`에 걸려 있었고, 일단 시작해도 `CrashLoopBackOff`로 빠졌다.
 
 처음엔 여러 원인이 뒤섞여 있었다. 순서대로 풀어가야 했다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 첫 번째 낚시: 사이드카가 안 뜬다
 
@@ -124,7 +124,7 @@ CPU는 그대로 뒀다. 100m request / 2000m limit. 이번 장애는 CPU와 무
 
 내부 이슈 트래커에 장애를 등록하고, 배포 차트에 PR을 올렸다. PR이 머지되면 GitOps로 배포되는 구조다. 메모리 수정이 포함된 상태로 배포했다.
 
-## ✅ 확인
+## 4. 확인
 
 수정 후 flowise 새 버전이 정상적으로 `Running` 상태로 돌아왔다. "Auth initialized successfully" 이후 "listening" 로그가 찍히고, startup probe가 통과했다. 재시작 없이 안정적으로 동작했다.
 

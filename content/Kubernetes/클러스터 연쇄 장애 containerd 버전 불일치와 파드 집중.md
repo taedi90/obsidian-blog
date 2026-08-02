@@ -18,12 +18,12 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 테스트 클러스터에서 12개 이상 서비스가 연쇄로 응답 불가에 빠졌다. 노드 자원은 멀쩡했고 컨트롤 플레인도 정상이었다. 원인은 두 가지가 겹쳤다. containerd 버전이 노드마다 1.6.25부터 1.6.33까지 파편화되어 있었고, 구버전(1.6.25) 노드에 파드 54개가 몰려 있었다. 구버전 containerd 위에서 파드 간 통신이 죽으면서 `OCI runtime: namespace path lstat /proc/0/ns/ipc not found` 에러가 터지고, 파드 종료조차 안 되는 상태로 번졌다. 임시로 ArgoCD selfHeal을 끄고 ApplicationSet을 정비해 안정화했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - 테스트 클러스터, 워커 노드 5대
 - container runtime: containerd (버전 혼재 1.6.25 ~ 1.6.33)
@@ -32,7 +32,7 @@ type:
 - 영향 네임스페이스: 앱 네임스페이스 (약 290개 파드)
 - 노드명·네임스페이스 등은 가상값으로 바꿔 적는다.
 
-## 💬 이슈
+## 2. 이슈
 
 테스트 클러스터가 느리다는 리포트가 들어왔다. 처음엔 단순 부하인가 싶었는데, 곧 "느린" 게 아니라 "죽어가는" 상태라는 걸 깨달았다.
 
@@ -50,7 +50,7 @@ index-api: context deadline exceeded
 > [!NOTE]
 > `OCI runtime: namespace path lstat /proc/0/ns/ipc not found`는 containerd가 컨테이너의 네임스페이스 경로를 못 찾을 때 나오는 에러다. 컨테이너 런타임 자체가 파드 상태를 추적하지 못하고 있다는 뜻이다. 보통 containerd 버전 불일치나 런타임 버그에서 나온다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 노드는 멀쩡한데 파드는 죽는다
 
@@ -120,7 +120,7 @@ spec:
 - <b>파드 분산</b> — worker-03에 몰린 파드를 다른 노드로 분산. node affinity, topology spread constraints 검토.
 - <b>selfHeal 정책 수립</b> — 평소엔 켜두되, 장애 상황에서는 끄는 운영 수칙 문서화.
 
-## ✅ 확인
+## 4. 확인
 
 임시 조치(selfHeal 끄기) 적용 후 ArgoCD의 추가 churn이 멈췄다. 이후 점진적으로 구버전 노드의 containerd를 업그레이드하면서 카스케이드가 수렴했다.
 

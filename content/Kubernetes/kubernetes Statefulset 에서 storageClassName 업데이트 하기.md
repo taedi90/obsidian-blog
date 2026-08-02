@@ -11,7 +11,7 @@ permalink:
 aliases:
 completed:
 ---
-## 이슈
+## 1. 이슈
 
 Statefulset 으로 구성된 Elasticsearch 파드를 업데이트 하려니 다음과 같은 오류가 발생했다.
 
@@ -21,21 +21,21 @@ Statefulset 으로 구성된 Elasticsearch 파드를 업데이트 하려니 다�
 
   
 
-## 해결
+## 2. 해결
 
 수정을 위해서는 Statefulset 을 삭제하고 다시 생성해주는 방법이 있다고 한다. 이때 `--cascade=orphan` 옵션이 핵심이다. StatefulSet 리소스만 삭제하고 그 아래 파드와 PVC는 그대로 남겨두기 때문에, 실행 중인 파드를 건드리지 않고 명세만 갈아끼울 수 있다.
 
 ```bash
-## 현재 구성을 yaml 파일로 저장
+## 3. 현재 구성을 yaml 파일로 저장
 kubectl get statefulset some-statefulset -o yaml > statefulset.yaml
 
-## 파일 내용 수정
+## 4. 파일 내용 수정
 vim statefulset.yaml
 
-## 파드를 제거하지 않고 Statefulset 삭제
+## 5. 파드를 제거하지 않고 Statefulset 삭제
 kubectl delete statefulset some-statefulset --cascade=orphan
 
-## 변경된 StorageClass 로 Statefulset 다시 생성
+## 6. 변경된 StorageClass 로 Statefulset 다시 생성
 kubectl apply -f statefulset.yaml
 ```
 

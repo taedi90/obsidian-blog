@@ -17,7 +17,7 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 오프라인으로 RPM 저장소를 미러링해 옮겼더니 `dnf module list/enable/install`이 모듈을 하나도 못 봤다. RPM 패키지만 복제하고 <b>module 메타데이터(`modules.yaml`)</b>를 안 실었기 때문이다. dnf 모듈러리티는 이 메타데이터가 저장소에 있어야 스트림을 인식한다. 해결은 둘 — 미러에 <b>modular 메타데이터를 포함</b>시키거나, 아예 모듈 기능을 우회해 <b>필요한 RPM 아티팩트만 직접 받아</b> 설치하는 것이다.
@@ -49,7 +49,7 @@ dnf <b>모듈러리티(AppStream 모듈)</b>는 일반 RPM 메타데이터와 �
 
 이번엔 스트림 전환이 필요하지 않아 <b>갈래 B</b>로 갔다 — 필요한 목록을 까서 아티팩트만 가져오는 쪽이 오프라인 관리 부담이 훨씬 적었다. (스트림을 실제로 바꿔야 하는 상황이면 A가 맞다.)
 
-## 🔗 참고
+## 참고
 
 - [[엔비디아 드라이버]]
 - [dnf — Module command](https://dnf.readthedocs.io/en/latest/command_ref.html#module-command-label)

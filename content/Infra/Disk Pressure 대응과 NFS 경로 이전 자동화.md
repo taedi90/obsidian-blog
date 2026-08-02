@@ -19,7 +19,7 @@ type:
   - automation
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > Node Disk Pressure로 노드가 주기적으로 죽던 클러스터의 디스크 용도를 전수조사해 스토리지 노드 2대에 대용량 디스크를 증설했다. 그다음 NFS 데이터를 새 디스크(`/data2`)로 옮겨야 했는데, 그 경로를 쓰는 워크로드가 수십 개라 손으로 세는 순간 하나는 빠뜨릴 게 뻔했다. 그래서 StorageClass 기준으로 PVC와 이를 물고 있는 파드를 자동으로 찾아 scale down/up 명령을 통째로 생성하는 스크립트를 만들고, 검증부터 운영까지 순서대로 내렸다 rsync로 옮긴 뒤 원복했다.
@@ -145,7 +145,7 @@ tar -czf /data2/old-nfs-backup.tar.gz -C /data cluster-nfs
 
 정작 손이 많이 간 건 rsync나 결재가 아니라, "빠뜨리면 안 되는 파드 목록"을 사람이 아니라 스크립트가 쥐게 만든 부분이었다. 수십 개짜리 목록을 손으로 관리했다면 어딘가는 반드시 틀렸을 거다.
 
-## 🔗 참고
+## 참고
 
 - [Kubernetes Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)
 - [kubectl scale](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_scale/)

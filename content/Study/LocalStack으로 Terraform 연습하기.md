@@ -17,7 +17,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > Terraform을 익히고 싶은데 실습 대상이 AWS면 요금이 무섭다. [LocalStack](https://www.localstack.io/)은 AWS API를 로컬 컨테이너로 흉내 내줘서 진짜 AWS 없이 `terraform apply`까지 연습할 수 있다. `tflocal`(LocalStack용 래퍼)을 쓰면 엔드포인트가 자동으로 잡히므로, S3 버킷 하나를 plan→apply→확인까지 돌려봤다.
@@ -124,7 +124,7 @@ awslocal s3 ls
 
 `plan`으로 계획을 보고 `apply`로 반영하고 CLI로 확인하는 이 한 바퀴가 Terraform의 기본 루프다. 요금 걱정 없이 이 루프를 반복하며 감을 잡을 수 있다는 게 LocalStack의 값어치였다. (온프레미스 GPU 서버를 실제로 코드로 찍어낸 이야기는 [[Terraform으로 GPU VM 찍어내기|따로]] 정리했다.)
 
-## 🔗 참고
+## 참고
 
 - [[Terraform으로 GPU VM 찍어내기]]
 - [LocalStack](https://www.localstack.io/)

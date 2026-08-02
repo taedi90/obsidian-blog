@@ -20,7 +20,7 @@ type:
   - tooling
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 폐쇄망 멀티사이트에 배포하는 Helm values 안에 DB 비밀번호 같은 비밀이 평문으로 섞여 있던 걸 <b>SOPS + age 값 단위 암호화</b>로 없앴다. common은 비밀 자리를 센티넬 더미로만 두고 적용 사이트만 `secrets.yaml`을 암호화하며, helmfile이 렌더할 때 `sops -d`로 <b>메모리에서만 복호화</b>해 디스크에 평문이 안 떨어지게 했다.
@@ -68,7 +68,7 @@ values/<사이트>/values.yaml  ← 사이트 설정(비밀 아님)
 values/<사이트>/secrets.yaml ← 그 사이트의 실 비밀. SOPS+age로 암호화.
 ```
 
-핵심은 common에 비밀 값을 절대 두지 않는 것이다. common은 "이 자리에 비밀이 온다"는 걸 알리는 <b>센티넬(sentinel)</b> 더미만 담는다. 값은 전부 `__OVERRIDE_REQUIRED__`다.
+common에 비밀 값을 절대 두지 않는다. common은 "이 자리에 비밀이 온다"는 걸 알리는 <b>센티넬(sentinel)</b> 더미만 담는다. 값은 전부 `__OVERRIDE_REQUIRED__`다.
 
 ```yaml
 # values/common/values.yaml (발췌 — 구조만 있고 값은 더미)
@@ -82,7 +82,7 @@ postgresql:
     postgresPassword: __OVERRIDE_REQUIRED__
 ```
 
-이 더미가 두 가지 일을 한다. 하나는 "이 사이트에서 채워야 할 비밀 목록"을 그 자체로 보여준다는 것(센티넬을 grep하면 채울 목록이 나온다). 다른 하나는 안전장치다. 어떤 사이트가 비밀을 덜 채우면 렌더 결과에 `__OVERRIDE_REQUIRED__`가 그대로 남고, 그게 진짜 비밀번호로 쓰여 배포 후 인증이 깨진다. 즉 <b>깜빡한 비밀은 조용히 넘어가지 않고 반드시 티가 난다</b>. 이 점은 뒤(7절)에서 검증 게이트로 다시 쓴다.
+이 더미가 두 가지 일을 한다. 하나는 "이 사이트에서 채워야 할 비밀 목록"을 그 자체로 보여준다는 것(센티넬을 grep하면 채울 목록이 나온다). 다른 하나는 안전장치다. 어떤 사이트가 비밀을 덜 채우면 렌더 결과에 `__OVERRIDE_REQUIRED__`가 그대로 남고, 그게 비밀번호로 쓰여 배포 후 인증이 깨진다. 즉 <b>깜빡한 비밀은 조용히 넘어가지 않고 반드시 티가 난다</b>. 이 점은 뒤(7절)에서 검증 게이트로 다시 쓴다.
 
 병합 순서는 이렇게 잡았다.
 
@@ -133,7 +133,7 @@ grep -E 'MONGO_PASSWORD|ENC\[|recipient:' charts/2.app-data/values/site-a-app-2/
 
 ## 5. helmfile 렌더 시 메모리 복호화
 
-복호화를 언제, 어디서 하느냐가 이 설계의 진짜 관심사였다. 파일로 한 번 복호화해두고 helmfile을 돌리면 그 순간 평문이 디스크에 떨어진다. 그건 원점 회귀다.
+복호화를 언제, 어디서 하느냐가 이 설계의 관심사였다. 파일로 한 번 복호화해두고 helmfile을 돌리면 그 순간 평문이 디스크에 떨어진다. 그건 원점 회귀다.
 
 그래서 복호화를 helmfile 렌더 파이프라인 안으로 밀어넣었다. `charts/_shared/values.gotmpl`이 값을 병합할 때, secrets.yaml이 있으면 그 자리에서 `sops -d`를 호출해 <b>메모리에서만</b> 복호화한다.
 
@@ -230,9 +230,9 @@ cd charts/<레이어> && TARGET_ENV=<사이트> helmfile template | grep -c __OV
 
 복호화 게이트는 "열리는가"를, 완전성 게이트는 "다 채웠는가"를 본다. 둘은 다른 실수를 잡아서 하나로 합쳐지지 않는다.
 
-## 남은 것
+## 8. 한계
 
-솔직히 아직 도입 단계다. 운영으로 넘기기 전에 정리할 게 남아 있다.
+아직 도입 단계다. 운영으로 넘기기 전에 정리할 게 남아 있다.
 
 - 현재 키는 개발용이다. 운영 전에 master·사이트 키를 실제 키로 재발급하고 master는 하드웨어/비밀번호 관리자에 custody해야 한다. 지금은 편의상 dev에 있다.
 - CI 통합. 사내 CI가 별도로 있어서, 비밀 렌더에 필요한 복호화 키를 CI 에이전트에 자격증명으로 주입하는 부분을 정리해야 한다.
@@ -241,7 +241,7 @@ cd charts/<레이어> && TARGET_ENV=<사이트> helmfile template | grep -c __OV
 
 전면 적용을 미루고 사이트 단위로 켜는 구조라 이 미완들이 배포를 막지는 않는다. 그게 단계적 적용으로 설계한 이유이기도 하다.
 
-## 🔗 참고
+## 참고
 
 - [SOPS](https://github.com/getsops/sops) — 값 단위 암호화, age 백엔드 내장
 - [SOPS v3.13.1 릴리스](https://github.com/getsops/sops/releases/tag/v3.13.1)

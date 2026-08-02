@@ -16,7 +16,7 @@ aliases:
 completed: true
 featured: true
 ---
-## 🚀 요약
+## 요약
 > [!SUMMARY]
 > InnoDB에서 인덱스 없는 컬럼을 WHERE 조건으로 <b>PESSIMISTIC_WRITE</b>를 걸면 <b>레코드 락(Record Lock)</b>뿐 아니라 <b>갭 락(Gap Lock)</b>까지 함께 걸릴 수 있고, 이게 의도치 않은 데드락으로 이어진다.
 > - 공식문서는 <b>REPEATABLE READ</b> 격리 수준 이상에서 Gap Lock 이 발생하는 경우를 설명하지만 READ_COMMITTED 와 READ_UNCOMMITTED 격리 수준에서도 Gap Lock 이 발생했다.
@@ -26,12 +26,12 @@ featured: true
 > 	- 비관적 락이 아닌 낙관적 락으로 로직 변경 
 > 	- 트랜젝션 오류 시 재시도 로직 추가
 
-## ⚙️ 환경
+## 1. 환경
 - MariaDB 10.8.3 (InnoDB)
 - Spring Boot 2.5.1
 - JDK 1.8
 
-## 💬 이슈
+## 2. 이슈
 사내 솔루션에서 <b>비관적 락(PESSIMISTIC_WRITE)</b>을 사용하는 로직에 트랜잭션 간 경합이 발생하며 간헐적으로 데드락이 발생하는 문제를 겪었다. 문제 상황을 재현하기 위해 아래와 같이 코드를 구성해보았다.
 
 ### 엔티티
@@ -75,7 +75,7 @@ Caused by: javax.persistence.OptimisticLockException: org.hibernate.exception.Lo
 
 이러한 점들 때문에 단순한 경합 문제가 아닌, 로직 상에서 의도치 않은 다른 원인이 있을 것이라 판단했고, 더 깊이 파고들어 보기로 했다.
 
-## 🧗 해결
+## 3. 해결
 ### MariaDB 로그 확인
 서비스 오류 로그만으로는 정확한 원인 파악이 어려워, MariaDB의 데드락 로그를 직접 확인해보기로 했다. (확인 방법은 [[MariaDB 데드락 로그 확인]] 참고)
 
@@ -263,7 +263,7 @@ public class DeadLockTestService {
 
 추가적으로, 데드락이 아니더라도 발생할 수 있는 타임아웃(`PessimisticLockException`)에 대비하여 트랜잭션 오류 시 비즈니스 로직을 재시도하는 로직을 더한다면 더욱 안정적인 서비스를 만들 수 있을 것이라 생각한다. 이는 트랜잭션 외부에서 처리하거나 별도의 스케줄링 로직으로 구현하는 것이 어떨까 싶다.
 
-## 🔗 참고
+## 참고
 - [mariadb 공식문서 innodb-lock-modes](https://mariadb.com/kb/en/innodb-lock-modes/)
 - [mysql 공식문서 innodb-locking](https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html)
 - [mysql 공식문서 innodb-deadlocks](https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlocks.html)

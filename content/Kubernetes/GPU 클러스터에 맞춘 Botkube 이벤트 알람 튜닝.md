@@ -18,7 +18,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 클러스터 이벤트가 실시간으로 안 보이는 데다, 막상 알람을 켜니 노이즈가 쏟아졌다. Botkube로 크리티컬한 이벤트 사유만 추리고, GPU 파드가 뜰 때 정상적으로 한 번 거치는 `Insufficient nvidia.com/gpu` 계열 `FailedScheduling`을 메시지 제외 규칙으로 걸러냈다. 여기에 알람 채널과 커맨드 채널을 나누고 환경별로 values를 분리해, "실제로 사람이 봐야 하는 이벤트"만 Slack으로 가게 만들었다.
@@ -72,7 +72,7 @@ event:
 
 여기가 이 클러스터의 고유한 부분이다. 위에서 `FailedScheduling`을 reason에서 뺐는데, 그것만으로는 부족했다. GPU 파드는 정상적으로 뜨는 경우에도 <b>스케줄링을 한 번 실패하고 시작</b>하기 때문이다.
 
-파드가 `nvidia.com/gpu` 자원을 요청하면, 스케줄러 입장에서 그 순간 할당 가능한 GPU가 없으면 일단 `FailedScheduling`을 낸다. 이유 메시지는 `Insufficient nvidia.com/gpu`다. GPU가 붐비는 클러스터에서는 파드가 큐에서 잠깐 대기했다가 GPU가 나면 배치되는 게 정상 흐름이라, 이 이벤트는 사실상 "지금 GPU 기다리는 중"이라는 상태 표시에 가깝다. 문제 상황이 아니다.
+파드가 `nvidia.com/gpu` 자원을 요청하면, 스케줄러 입장에서 그 순간 할당 가능한 GPU가 없으면 일단 `FailedScheduling`을 낸다. 이유 메시지는 `Insufficient nvidia.com/gpu`다. GPU가 붐비는 클러스터에서는 파드가 큐에서 잠깐 대기했다가 GPU가 나면 배치되는 게 정상 흐름이라, 이 이벤트는 "지금 GPU 기다리는 중"이라는 상태 표시에 가깝다. 문제 상황이 아니다.
 
 그런데 이걸 그대로 두면 GPU 워크로드를 올릴 때마다 알람이 울린다. GPU 파드가 많은 클러스터에서는 이게 알람의 대부분을 차지했다. reason 필터로 `FailedScheduling`을 이미 뺐지만, 사유 이름만으로 거르면 "정말 스케줄이 안 되는" 진짜 문제까지 같이 사라질 수 있어 찜찜했다. 그래서 사유가 아니라 <b>메시지 내용</b>으로 한 겹 더 걸었다.
 
@@ -146,13 +146,13 @@ communications:
       appToken: <REDACTED>
 ```
 
-## 마무리
+## 7. 마무리
 
 설치할 때 한 가지 걸렸던 점. Botkube를 `helm upgrade`로 올리면 ConfigMap이 제대로 갱신되지 않는 경우가 있었다. 그래서 설정을 바꿀 때는 `helm delete` 후 재설치하는 쪽으로 굳혔다. 알람 툴이라 잠깐 내려가도 서비스 영향이 없어 이 방식이 마음 편했다.
 
 결과적으로 알람 채널을 열면 이제 `CrashLoopBackOff`·`OOMKilled`처럼 진짜 봐야 할 것만 남았다. GPU 대기 도배가 사라진 것만으로도 채널이 읽을 만해졌다.
 
-## 🔗 참고
+## 참고
 
 - [Botkube Kubernetes source configuration](https://docs.botkube.io/configuration/source/kubernetes)
 - [Botkube Kubectl executor](https://docs.botkube.io/configuration/executor/kubectl)

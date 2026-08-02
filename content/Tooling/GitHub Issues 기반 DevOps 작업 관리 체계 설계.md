@@ -18,7 +18,7 @@ type:
   - improvement
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > DevOps 요청과 작업이 슬랙 DM, 개인 메모, 리포 안 마크다운으로 흩어져서 "그거 어떻게 됐어요"에 답을 못 하는 상태였다. 이걸 GitHub Issues 하나로 모으면서, 이슈 타입은 저장소 라벨 `type/*`로 단일화하고, 계층은 `Epic → Issue → Sub-issue`로 고정하고, 상태·우선순위·영향도·SLO 같은 운영 메타데이터는 라벨이 아니라 GitHub Project 필드로 뺐다. 타입별 템플릿과 Request 파생 규칙까지 정해서, 검색·집계·자동화가 가능한 작업 관리 운영안으로 만들었다.
@@ -111,63 +111,63 @@ Request를 다루는 방식이 이 운영안에서 제일 신경 쓴 부분이�
 타입을 나눠도 사람마다 본문 채우는 방식이 다르면 집계가 안 된다. 그래서 타입별로 [Issue Template](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository)을 만들어 최소한의 뼈대를 강제했다. 예를 들어 Change 템플릿은 이렇게 잡았다. 위험도·검증·롤백을 비워두고 넘어가지 못하게 하는 게 목적이다.
 
 ```md
-## Change Summary
+## 1. Change Summary
 무엇을 변경하는지
 
-## Source
+## 2. Source
 - Request:
 
-## Type
+## 3. Type
 - [ ] Infra
 - [ ] Config
 - [ ] Deployment
 
-## Risk
+## 4. Risk
 - Low / Medium / High
 
-## Change Window
+## 5. Change Window
 적용 일정 또는 배포 시간
 
-## Approver
+## 6. Approver
 승인자
 
-## Validation
+## 7. Validation
 검증 방법
 
-## Rollback Plan
+## 8. Rollback Plan
 롤백 방법
 ```
 
 Incident 템플릿은 탐지 시각·영향·임시 조치·추정 원인을 받고, 마지막에 `Follow-up Actions`로 재발 방지 작업 생성을 유도한다. 장애가 그냥 닫히고 끝나는 걸 막으려는 장치다.
 
 ```md
-## Incident Summary
+## 9. Incident Summary
 무슨 사건이 발생했는지
 
-## Detected At
+## 10. Detected At
 발생 또는 탐지 시각
 
-## Impact
+## 11. Impact
 영향 서비스, 사용자, 팀
 
-## Severity
+## 12. Severity
 - Low / Medium / High / Critical
 
-## Detection
+## 13. Detection
 어떻게 탐지했는지
 
-## Mitigation
+## 14. Mitigation
 임시 조치 또는 즉시 대응
 
-## Suspected Root Cause
+## 15. Suspected Root Cause
 추정 원인
 
-## Follow-up Actions
+## 16. Follow-up Actions
 - [ ] 원인 분석
 - [ ] 영구 조치
 - [ ] 재발 방지 작업 생성
 
-## Done Criteria
+## 17. Done Criteria
 사건 종료 기준과 후속 조치 완료 기준
 ```
 
@@ -186,7 +186,7 @@ Incident 템플릿은 탐지 시각·영향·임시 조치·추정 원인을 받
 
 돌아보면 대단한 기술이 들어간 작업은 아니다. 라벨 몇 개, 필드 몇 개, 템플릿 다섯 개. 그런데 "작업이 어디 있는지 아무도 모른다"에서 "필터 한 번이면 나온다"로 바뀌는 데는 이 정도면 충분했다. 도구를 더 산 게 아니라 이미 있던 GitHub Issues의 규칙을 정한 것뿐이다.
 
-## 🔗 참고
+## 참고
 
 - [About issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues)
 - [Adding sub-issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues)

@@ -17,7 +17,7 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > ECK(Elastic Cloud on Kubernetes) operator로 띄운 Elasticsearch에서, standalone처럼 `elasticsearch.yml`에 `xpack.security.*`를 넣어 TLS·인증을 끄려 했는데 안 먹었다. ECK가 관리하는 설정은 <b>사용자가 덮어써도 operator가 되돌리기</b> 때문이다. 끌 수 있는 건 <b>HTTP 계층의 자체서명 인증서</b>(`spec.http.tls.selfSignedCertificate.disabled: true`)까지고, <b>노드 간 transport TLS와 보안 자체</b>는 ECK가 강제한다.
@@ -62,7 +62,7 @@ spec:
 - <b>불가</b>: 노드 간 transport TLS 끄기, 보안(인증) 자체 끄기 — ECK가 관리·강제.
 - <b>교훈</b>: ECK를 쓰기로 했으면 "operator가 관리하는 영역"을 먼저 확인해야 한다. standalone 감각으로 `elasticsearch.yml`을 덮으려다 시간을 버렸다. 평문·무인증이 꼭 필요하면 ECK가 아니라 standalone 배포를 골랐어야 하는 문제다.
 
-## 🔗 참고
+## 참고
 
 - [ECK — Settings managed by ECK](https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s/settings-managed-by-eck)
 - [discuss.elastic — disable security in ECK](https://discuss.elastic.co/t/how-to-disable-security-authentication-in-eck/334057)

@@ -18,7 +18,7 @@ type:
   - tooling
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 사내 self-hosted 레지스트리가 오래된 태그로 디스크를 계속 잠식했다. 레지스트리 HTTP API로 리포지토리의 매니페스트를 일괄 삭제하고(`--dry-run` 지원), 실제 디스크는 `garbage-collect`로 회수한 뒤, 어느 리포지토리가 얼마를 먹는지 용량을 조회하는 bash 스크립트 세트로 정리했다. 파괴적인 삭제 쪽에는 dry-run을 기본 안전장치로 넣었다.
@@ -175,7 +175,7 @@ registry garbage-collect /etc/docker/registry/config.yml
 > [!IMPORTANT]
 > GC는 push가 없는 시점에 도는 게 안전하다. 삭제 대상을 계산하는 동안 새 이미지를 밀어넣으면, 아직 매니페스트가 안 붙은 blob을 참조 없는 것으로 보고 지워버릴 수 있다. 정리 작업은 CI가 조용한 시간대에 잡았다.
 
-## 🔗 참고
+## 참고
 
 - [Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/)
 - [Registry garbage collection](https://distribution.github.io/distribution/about/garbage-collection/)

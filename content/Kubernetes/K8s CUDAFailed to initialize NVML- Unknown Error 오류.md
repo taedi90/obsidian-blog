@@ -17,13 +17,13 @@ completed:
 > [!important]  
 > GPU 를 사용하는 파드에 ‘privileged’ 권한 부여하기  
 
-## 이슈
+## 1. 이슈
 
 쿠버네티스 클러스터에 Nvidia GPU 를 사용하는 파드를 생성하고 바로는 정상적으로 파드가 동작하지만 일정 시점 이후에 기능이 제대로 동작하지 않는 현상이 발생했다. 파드 내부에서 `nvidia-smi` 명령어를 실행했을 때 ‘Failed to initialize NVML: Unknown ErrorFailed to initialize NVML: Unknown Error’ 오류가 발생했다.
 
   
 
-## 해결
+## 2. 해결
 
 여러 레퍼런스를 살펴봐도 정확한 원인을 이해하거나 파악하지 못했다. 다만 동일한 증상을 재현하는 방법은 알아냈는데, 호스트에서 `systemctl daemon-reload` 명령어를 입력한 직후에 파드 내부에서 `nvidia-smi` 를 확인해보면 동일한 문제가 발견되었다.
 

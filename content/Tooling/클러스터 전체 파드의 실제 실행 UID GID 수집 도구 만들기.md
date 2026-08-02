@@ -18,7 +18,7 @@ type:
   - note
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 파드 매니페스트의 `securityContext`에 적어둔 `runAsUser`/`runAsGroup`은 "이렇게 돌아라"는 요청일 뿐, 실제 프로세스가 그 UID로 도는지는 별개다. 컨테이너 안 PID 1의 `/proc/1/status`를 읽어 실제 실행 UID/GID를 클러스터 전역으로 긁어모으는 Bash 도구를 만들었다. `kubectl exec`로 직접 읽는 방식과 노드마다 DaemonSet을 띄워 호스트 `/proc`를 읽는 방식 두 가지를 두고, 수집 결과를 jq로 JSON 집계해 보안 감사에 썼다.
@@ -190,7 +190,7 @@ kubectl delete -f manifests/node-process-inspector-daemonset.yaml
 
 수집한 JSON에는 네임스페이스·파드명·UID가 다 들어 있어 클러스터 구조가 그대로 드러난다. 민감한 비밀은 아니어도 밖에 내놓을 물건은 아니라, 출력 파일은 `chmod 0600`으로 잠그고 리포지토리엔 커밋하지 않았다.
 
-## 🔗 참고
+## 참고
 
 - [Configure a Security Context for a Pod or Container](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
 - [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)

@@ -18,7 +18,7 @@ type:
   - improvement
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 폐쇄망 설치용 Ansible 역할(`offline_preinstall`)의 변수가 서브롤마다 defaults 파일로 흩어져 있었다. 같은 변수가 여러 파일에 중복됐고, 한 변수는 파일마다 값이 어긋나 있었으며(드리프트), 같은 값을 이름만 다르게 부르는 쌍도 있었다. 이걸 최상위 역할의 `defaults/main.yml` 한 파일로 모으고, 커뮤니티 롤을 벤더링하면서 딸려 온 molecule·tests·예제·CI 짐을 걷어냈다. 변수의 출처를 한 곳(SSOT)으로 만든 게 핵심이다.
@@ -124,7 +124,7 @@ nvidia_driver_ubuntu_cuda_keyring_package: "cuda-keyring_1.1-1_all.deb"   # 드�
 
 체감으로 남은 건 따로 있다. 키링 패키지 버전 하나 바꾸려고 어느 파일이 진짜인지 뒤지던 일이 사라졌다. 이제 `defaults/main.yml` 한 곳만 열면 된다. 값이 어긋날 여지도 구조적으로 없어졌다. 기능은 그대로인데 다음 사람(대개 미래의 나)이 손댈 때의 비용만 낮춘, 조용한 리팩토링이다.
 
-## 🔗 참고
+## 참고
 
 - [Ansible — Using Variables (변수 우선순위)](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html)
 - [Ansible — Roles (defaults와 include_role)](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_roles.html)

@@ -20,12 +20,12 @@ type:
   - architecture
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > KubeVirt VM에 붙인 secondary IP가 재기동할 때마다 바뀌는 게 문제였다. Pod 애노테이션으로 IP를 고정하려 했지만 KubeVirt가 VM을 launcher 파드로 넘길 때 `ips` 필드를 지워버려서 먹히지 않았다. 결국 VXLAN 브리지로 노드 간 L2를 확장하고, 그 위에 Multus NAD를 VM별로 하나씩 두면서 <b>Static IPAM</b>으로 주소를 NAD에 박아두는 쪽으로 우회했다. IP가 파드가 아니라 선언(NAD)에 묶이니, VM을 껐다 켜거나 다른 노드로 옮겨도 같은 주소를 유지한다.
 
-## 💡 개요
+## 1. 개요
 
 앞서 [[kubevirt-setting|KubeVirt로 오프라인 테스트 환경 만들기]] 글 끝에 "고정 IP 할당은 실패했다, Multus 쓰면 된다는데 복잡해서 접었다"고 적어뒀다. 그 접어둔 걸 다시 폈다.
 
@@ -33,7 +33,7 @@ KubeVirt VM은 실제로는 특수한 파드(virt-launcher) 안에서 돌아간�
 
 VM을 다른 VM이나 외부에서 <b>고정된 주소로 계속 찾아야 하는</b> 용도라면 이건 곤란하다. IP가 바뀔 때마다 붙는 쪽 설정을 고쳐야 하니까. 그래서 "재기동을 하든, VM이 다른 노드로 스케줄되든 항상 같은 IP"라는 조건을 만족시키고 싶었다.
 
-## 📋 선정 배경
+## 2. 선정 배경
 
 요구사항은 세 줄로 정리됐다.
 
@@ -46,7 +46,7 @@ VM을 다른 VM이나 외부에서 <b>고정된 주소로 계속 찾아야 하�
 > [!NOTE]
 > `cni.exclusive`를 안 끄면 Cilium이 `/etc/cni/net.d`를 자기 것만 남기고 정리해버려서 Multus 체인이 통째로 무시된다. Multus를 얹는데 secondary 인터페이스가 아예 안 생긴다면 여기부터 의심하는 게 빠르다. 그리고 `bridge`, `static` 같은 플러그인은 [containernetworking/plugins](https://github.com/containernetworking/plugins)에서 받아 `/opt/cni/bin`에 깔아둬야 한다.
 
-## 📊 비교
+## 3. 비교
 
 고정 IP를 만드는 방법을 순서대로 시도했다. 결과부터 표로.
 
@@ -70,7 +70,7 @@ annotations:
 
 그러면 IP를 파드가 아니라 <b>NAD 자체</b>에 박아두면 된다. 요청하는 주체가 사라지니 떼일 필드도 없다. Static IPAM이 딱 그 용도다.
 
-## ✅ 선정 사유
+## 4. 선정 사유
 
 정리된 구성은 이렇다. 노드 위에 VXLAN 브리지를 깔아 L2를 확장하고, 그 브리지를 쓰는 Multus NAD를 VM마다 하나씩 만들되 IPAM은 static으로 고정한다.
 
@@ -136,7 +136,7 @@ spec:
 
 한계도 분명하다. VM 대수만큼 NAD가 늘고, 주소를 사람이 직접 관리해야 한다. 대수가 크게 늘면 Whereabouts 같은 IPAM으로 넘어가는 게 맞겠지만, 지금 규모에선 눈에 보이는 Static이 관리하기 편했다.
 
-## 🔗 참고
+## 참고
 
 - [KubeVirt — Interfaces and Networks](https://kubevirt.io/user-guide/network/interfaces_and_networks/)
 - [KubeVirt Issue #4564 — static ip on multus controlled interface](https://github.com/kubevirt/kubevirt/issues/4564)

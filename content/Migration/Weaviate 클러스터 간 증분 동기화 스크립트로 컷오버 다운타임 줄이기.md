@@ -19,7 +19,7 @@ type:
   - automation
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > Weaviate는 클러스터 간 실시간 복제(CDC)가 없어 backup/restore로만 이관하면 쓰기 정지 시간이 데이터 크기에 비례한다. 그래서 미리 backup/restore로 채워두고, 그 뒤 바뀐 오브젝트만 `after` 커서로 전량 순회해 따라잡는 증분 동기화 스크립트를 stdlib만으로 짰다.
@@ -160,7 +160,7 @@ API 키는 `--api-key` 인자나 `WEAVIATE_API_KEY` 환경변수로만 받고, <
 
 한계는 분명하다. 이건 실시간 복제가 아니라 "돌릴 때마다 그 시점까지 따라잡는" 폴링형 도구고, 서버 시간 필터가 못 미더워 매번 전량을 순회한다. 삭제 정합은 더 비싸다. 그래도 backup/restore 하나로 다운타임을 데이터 크기에 통째로 묶어두는 것보다는 훨씬 나았다.
 
-## 🔗 참고
+## 참고
 
 - [Weaviate REST API — objects](https://docs.weaviate.io/weaviate/api/rest)
 - [Weaviate — Read all objects (cursor)](https://weaviate.io/developers/weaviate/manage-data/read-all-objects)

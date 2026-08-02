@@ -18,19 +18,19 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 쿠버네티스 클러스터를 통째로 내렸다 복구하니 한 환경의 Weaviate만 `raft requestVote`/`heartbeat` 실패로 크래시 루프에 빠졌다. 같은 매니페스트인데 데이터가 20배 많은 환경만 스키마 캐치업이 부트스트랩 타임아웃을 넘겨 죽고 있었고, `RAFT_BOOTSTRAP_TIMEOUT`과 `RAFT_TIMEOUTS_MULTIPLIER`, 스냅샷 임계값을 올려서 기동시켰다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - Weaviate 1.25+ (Raft로 메타데이터를 복제하는 버전대)
 - Kubernetes StatefulSet 배포, 멀티 노드 구성
 - 동일 매니페스트를 쓰는 두 환경 — dev, stg
 - 데이터 용량: dev 약 1GB, stg 약 20GB
 
-## 💬 이슈
+## 2. 이슈
 
 쿠버네티스 클러스터가 통째로 내려간 적이 있었다. 노드를 다시 살리고 나니 대부분은 알아서 올라오는데, Weaviate만 상태가 이상했다. 파드가 떴다 죽었다를 반복하는 크래시 루프였다.
 
@@ -47,7 +47,7 @@ could not open cloud meta store
 
 여기서 좀 갸웃했던 건, <b>dev 클러스터는 복구 후 멀쩡히 올라왔다</b>는 점이다. stg만 이 꼴이었다. 매니페스트도, Weaviate 버전도, 노드 구성도 같은데 한쪽만 안 뜨니 처음엔 네트워크나 라벨 같은 걸 의심했다. requestVote가 실패한다길래 노드끼리 raft 포트가 막혔나 싶어 그쪽부터 뒤졌는데, 포트는 열려 있었다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. 왜 stg만 안 떴을까
 
@@ -92,7 +92,7 @@ env:
 > [!NOTE]
 > 클러스터 간에 IP를 재사용하는 환경(같은 대역을 여러 클러스터가 돌려 쓰는 경우)이라면 `RAFT_ENABLE_FQDN_RESOLVER=true`와 `RAFT_FQDN_RESOLVER_TLD`를 설정해 IP 대신 FQDN 기반으로 노드를 찾게 하는 옵션도 있다. 우리 상황은 여기까진 아니어서 적용하진 않았지만, 노드 디스커버리가 IP 때문에 꼬인다면 볼 만하다.
 
-## ✅ 확인
+## 4. 확인
 
 값을 올린 뒤 stg 파드 로그를 다시 봤다. `bootstrap: context deadline exceeded`로 끊기던 자리에서 이번엔 캐치업 진행 로그가 끝까지 올라왔다.
 
@@ -102,7 +102,7 @@ Schema catching up: applying log entry: [X/Y]
 
 `[X/Y]`의 X가 Y에 도달하고 나면 raft가 리더를 잡고, 그 뒤로 requestVote/heartbeat 에러가 더는 안 뜬다. 파드가 `Running`으로 안정되고 재시작 카운트가 더 안 오르는지, `kubectl get pod`로 몇 분 지켜본 뒤 마무리했다. dev와 달리 stg는 애초에 데이터가 무거웠던 거라, 앞으로 데이터가 더 늘면 이 타임아웃도 다시 손봐야 할 수 있다.
 
-## 🔗 참고
+## 참고
 
 - [Weaviate Known Issues — RAFT timeouts under heavy load](https://docs.weaviate.io/weaviate/release-notes/known-issues#raft-timeouts-under-heavy-load)
 - [Weaviate cluster setup failing (forum)](https://forum.weaviate.io/t/weaviate-cluster-setup-with-docker-on-different-servers-failing/3318)

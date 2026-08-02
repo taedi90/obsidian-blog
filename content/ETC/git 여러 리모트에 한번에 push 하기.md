@@ -14,7 +14,7 @@ completed:
 ## 요약
 
 ```bash
-## 설정
+## 1. 설정
 remote_1=example.com/project.git
 remote_2=example2.com/project.git
 remote_3=example3.com/project.git
@@ -24,22 +24,22 @@ git remote set-url --add all "${remote_2}"
 git remote set-url --add all "${remote_3}"
 
 
-## 사용
+## 2. 사용
 git push all # [--all] <-- 요건 모든 브랜치를 push 하려할 때만
 ```
 
-## 이슈
+## 1. 이슈
 
 git 을 사용하다보니 리모트 저장소를 여러개 두는 경우가 발생했다. 그러다보니 로컬에서 소스코드가 변경되면 여러 곳의 리모트에 각각 push 를 해줘야했고 이걸 한 번에 해줄 수 있는 방법이 있을까 찾아봤다.
 
   
 
-## 해결
+## 2. 해결
 
 ‘all’ 이라는 remote 를 등록하고 `set-url --add` 로 여러개의 리모트를 등록하는 방법을 찾게 되었다.
 
 ```bash
-## 리모트 저장소 리스트 (https of ssh 경로)
+## 5. 리모트 저장소 리스트 (https of ssh 경로)
 remote_1=example.com/project.git # 메인 저장소 (fetch 도 포함)
 remote_2=example2.com/project.git
 remote_3=example3.com/project.git

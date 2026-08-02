@@ -20,7 +20,7 @@ type:
 featured: true
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 고객사마다 요구하는 실행 UID/GID가 달라서, 그에 맞춰 컨테이너 이미지를 <b>매번 다시 빌드</b>하고 있었다. 고객사 수만큼 이미지 변형이 생겨 관리가 어렵고 납품·업데이트마다 재빌드가 필요했다. <b>빌드 UID와 런타임 UID를 분리</b>해서, 이미지는 한 번만 빌드하고 런타임 UID/GID는 배포 시 `securityContext`로만 지정하도록 바꿨다. 방식은 OpenShift의 <b>arbitrary-UID 패턴</b>을 vanilla 쿠버네티스에 이식한 것 — 이미지 내부 파일을 빌드 그룹(GID) 소유 + group-writable(`chmod -R g=u`)로 두고, 파드에 그 GID를 `supplementalGroups`로 등록하면 런타임 UID가 무엇이든 group 권한으로 파일에 접근한다. 언어 런타임별로 걸리는 지점(`HOME`, node의 passwd 조회)은 `ENV HOME`과 `nss_wrapper`로 메웠다. 기존 고정 UID 방식은 그대로 두고, 그 위에 임의 UID로도 돌 수 있는 "여지"를 얹는 변경이라 무손상이다.
@@ -123,11 +123,11 @@ GPU처럼 디바이스 노드 접근이 필요한 워크로드는 도메인별 �
 
 팀 리뷰에서도 이 부분을 짚었다. "전체 경로 스코프가 넓어진 게 아니라 특정 그룹을 쓰는 방식이고, root로 도는 것도 아니니 컨테이너 non-root 요건은 여전히 충족한다"는 데 의견이 모였다. 다만 <b>고객사가 non-root를 실제로 어떻게 점검하는지</b>가 불명확해, 몇몇 고객사에는 사전 확인이 필요하다는 걸 숙제로 남겼다.
 
-## 회고
+## 8. 회고
 
 결국 OpenShift가 오래 다듬어온 패턴을 우리 환경(vanilla 쿠버네티스 + 폐쇄망 납품)에 맞춰 이식한 작업이다. 이미지 하나로 어떤 고객사 UID/GID든 커버하게 되니, "고객사 수만큼 이미지"라는 곱셈이 사라졌다. 남은 건 group-writable에 대한 고객사별 보안 검토뿐인데, 그건 기술이 아니라 커뮤니케이션의 영역이다.
 
-## 🔗 참고
+## 참고
 
 - [OpenShift — Support arbitrary user IDs (image guidelines)](https://docs.openshift.com/container-platform/4.16/openshift_images/create-images.html#images-create-guide-openshift_create-images)
 - [Kubernetes — Configure a Security Context for a Pod (fsGroup, supplementalGroups)](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)

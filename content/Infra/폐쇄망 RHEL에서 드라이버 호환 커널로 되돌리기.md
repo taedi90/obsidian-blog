@@ -20,18 +20,18 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 고객 운영계에 고정된 특정 커널(`el8_8` 계열)에 NVIDIA 드라이버를 맞춰야 했는데, 기본 저장소에는 그 커널의 `kernel-devel`/`kernel-headers`가 없어 dkms가 모듈을 빌드하지 못했다. Rocky Linux vault 저장소를 dnf에 추가해 아카이브된 정확한 커널 버전을 지정 설치하고, nvidia rpm은 인터넷이 되는 호스트에서 의존성까지 받아 패키징해 폐쇄망으로 반입했다. 커널-드라이버 버전 정합성을 맞춘 뒤에야 dkms 빌드가 통과했다.
 
-## ⚙️ 환경
+## 1. 환경
 
 - 고객 운영계: RHEL 8.8 계열, 커널 `4.18.0-477.15.1.el8_8`로 고정 (버전은 대표값으로 표기)
 - GPU 서버, NVIDIA open kernel module(dkms) 방식 설치
 - 완전 폐쇄망: 외부 저장소·인터넷 직접 접근 불가
 
-## 💬 이슈
+## 2. 이슈
 
 고객 운영계 GPU 서버에 드라이버를 올려야 했다. 문제는 이 서버의 커널이 특정 버전에 <b>고정</b>돼 있다는 점이었다. 운영계는 검증된 커널에서만 돌리는 게 원칙이라 마음대로 최신으로 올릴 수 없다. 커널은 그대로 두고, 그 커널에 맞는 드라이버를 얹어야 하는 상황이었다.
 
@@ -50,7 +50,7 @@ sudo dnf install kernel-devel
 
 이유는 단순하다. RHEL/Rocky의 기본 저장소는 <b>해당 마이너 버전의 최신 포인트 릴리스만</b> 서비스한다. 이전 포인트 릴리스 패키지는 시간이 지나면 vault(아카이브)로 밀려나 기본 저장소에서 사라진다. 운영계 커널은 이미 몇 단계 뒤의 릴리스라, 그에 맞는 `kernel-devel`/`kernel-headers`가 기본 저장소엔 남아 있지 않았다. 결국 "실행 커널에 맞는 개발 패키지를 어디서 구하느냐"가 전부였다.
 
-## 🧗 해결
+## 3. 해결
 
 ### 1. Rocky vault 저장소에서 정확한 커널 패키지 확보
 
@@ -144,7 +144,7 @@ tar czf nvidia-rpms.tar.gz ./nvidia-rpms
 sudo dnf install ./nvidia-rpms/*.rpm
 ```
 
-## ✅ 확인
+## 4. 확인
 
 먼저 실행 커널과 설치된 `kernel-devel` 버전이 같은지 봤다. 이게 어긋나 있으면 나머지는 볼 필요도 없다.
 
@@ -170,7 +170,7 @@ nvidia-smi
 
 버전 정합성만 맞추면 나머지는 평범하게 굴러갔다. 폐쇄망이라 저장소를 못 붙이는 게 처음엔 막막했는데, 결국 실행 커널에 맞는 패키지를 어디서 구해 어떻게 반입하느냐의 문제였다.
 
-## 🔗 참고
+## 참고
 
 - [Rocky Linux Vault](https://dl.rockylinux.org/vault/rocky/)
 - [NVIDIA Driver Installation Guide](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html)

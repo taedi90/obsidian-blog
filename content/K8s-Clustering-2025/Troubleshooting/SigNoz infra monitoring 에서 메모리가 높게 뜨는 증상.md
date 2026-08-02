@@ -17,7 +17,7 @@ type:
   - issue
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > SigNoz의 infra monitoring 대시보드가 파드·노드 메모리를 실제 체감보다 <b>훨씬 높게</b> 표시했다. 원인은 <b>page cache(재확보 가능한 캐시 메모리)까지 "사용 중"으로 집계</b>한 것이었다. 리눅스에서 캐시는 필요하면 커널이 회수하므로 진짜 압박 지표가 아니다. OOM이 실제로 보는 값은 <b>working set</b>이라, 이 기준으로 읽어야 한다. SigNoz [이슈 #7057](https://github.com/SigNoz/signoz/issues/7057)로 트래킹됐고 이후 버전에서 고쳐질 것으로 봤다.
@@ -46,7 +46,7 @@ OOM killer가 판단에 쓰는 값은 캐시를 뺀 <b>working set</b>(`containe
 
 교훈은 단순하다. 컨테이너 메모리를 볼 땐 "usage"가 아니라 "working set"이다. 캐시까지 세는 지표로 알람을 걸면, 멀쩡한 워크로드에 계속 헛알람이 온다.
 
-## 🔗 참고
+## 참고
 
 - [[알람 구성|SigNoz 알람 구성]]
 - [SigNoz issue #7057](https://github.com/SigNoz/signoz/issues/7057)

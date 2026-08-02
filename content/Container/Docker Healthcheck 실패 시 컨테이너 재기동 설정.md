@@ -13,20 +13,20 @@ aliases:
 completed:
 ---
 
-## 📝 요약
+## 요약
 > [!summary]
 > - 도커 Healthcheck 옵션은 컨테이너의 상태를 체크만 할 수 있을 뿐 컨테이너 재기동에는 관여하지 않는다.  
 > - 때문에 Auto healing 을 위해서는 Kubernetes 나 swarm mode 와 같은 오케스트레이션 도구를 사용하는 것이 좋다.
 > - 부득이 도커로 Auto healing 을 구성해야 한다면 Healthcheck 스크립트에 비정상적인 컨테이너의 프로세스를 종료하는 로직을 추가하는 것을 고려해볼 수 있다.
 
 
-## ⚙️ 환경
+## 1. 환경
 - Docker Engine : 26.1.3
-## 💬 이슈
+## 2. 이슈
 Docker Compose 의 Healthcheck 옵션을 사용하면 상태 이상에 빠진 컨테이너를 확인할 수는 있지만, 단순히 `unhealthy` 로 표시만 될 뿐 컨테이너가 자동으로 재기동 되지 않는다. 컨테이너 재기동을 위해서는 Kubernetes 나 swarm mode 와 같이 오케스트레이션 툴을 사용하는 것이 가장 깔끔한 방법 일테지만 언제나 그렇듯 인프라 구성은 항상 내맘대로 할 수 없는걸..  
 때문에 Docker 환경에서 컨테이너가 Healthcheck 실패 시 Auto healing 맛이라도 살짝 낼 수 있는 방법을 알아봤다.  
 
-## 🧗 해결
+## 3. 해결
 방법은 크게 두가지로 생각해볼 수 있었다.
 1. 컨테이너 외부(호스트)에서 unhealty 상태의 컨테이너를 cron 등으로 모니터하고 재기동 하는 방법
 2. Healthcheck 스크립트 내부에서 fail 발생 시 컨테이너 내부의 프로세스를 kill 하는 방법  
@@ -64,9 +64,9 @@ healthcheck:
 if (curl -s -f http://127.0.0.1:$${PORT}/health); then
 ```
 
-## 🎸 기타
+## 4. 기타
 그런데 이렇게 하면 컨테이너가 재기동 된 사유를 추적하기 어렵기 때문에 애플리케이션 로그 또는 스크립트 동작 간에 로그를 남길 수 있도록 조치를 하는 것이 필요해 보인다.  
 
-## 🚀 참고
+## 참고
 - [https://stackoverflow.com/questions/47088261/restarting-an-unhealthy-docker-container-based-on-healthcheck](https://stackoverflow.com/questions/47088261/restarting-an-unhealthy-docker-container-based-on-healthcheck)
 - [https://docs.docker.com/reference/dockerfile/#healthcheck](https://docs.docker.com/reference/dockerfile/#healthcheck)

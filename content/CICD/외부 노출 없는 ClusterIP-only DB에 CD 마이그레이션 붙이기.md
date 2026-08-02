@@ -19,7 +19,7 @@ type:
   - architecture
 ---
 
-## 🚀 요약
+## 요약
 
 > [!SUMMARY]
 > 오퍼레이터가 관리하는 DB가 <b>ClusterIP로만</b> 떠 있어 외부 CI 에이전트에서 스키마 마이그레이션 경로가 끊겼다. DB를 밖으로 여는 대신, 에이전트가 kube-apiserver 터널(`kubectl port-forward`)로만 붙고 비밀번호는 런타임에 Secret에서 취득하도록 재설계했다. 권한은 <b>ClusterRole(재사용 권한셋) + 네임스페이스별 RoleBinding</b>으로 짜서 비만료 SA 토큰 하나가 바인딩된 네임스페이스에만 닿게 제한했다.
@@ -183,9 +183,9 @@ done
 
 바뀐 건 "어디로 어떻게 붙느냐"와 "권한을 어떻게 최소화하느냐"이지, "무엇을 언제 적용하느냐"의 계약은 건드리지 않았다.
 
-남은 숙제도 솔직히 적어둔다. v1 설정 파일에 남아 있는 평문 크레덴셜과 외부 NodePort 접속 정의는 이번엔 그대로 두고, 파이프라인이 런타임 `DB_URL`로 덮어쓰는 방식으로 우회했다. 평문 제거는 후속 작업이다. (아마 미래의 내가 하게 되겠지만.)
+남은 숙제도 적어둔다. v1 설정 파일에 남아 있는 평문 크레덴셜과 외부 NodePort 접속 정의는 이번엔 그대로 두고, 파이프라인이 런타임 `DB_URL`로 덮어쓰는 방식으로 우회했다. 평문 제거는 후속 작업이다. (아마 미래의 내가 하게 되겠지만.)
 
-## 🔗 참고
+## 참고
 
 - [kubectl port-forward](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#port-forward)
 - [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
