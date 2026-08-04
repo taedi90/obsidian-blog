@@ -90,7 +90,7 @@ securityContext:
 > [!NOTE]
 > node 이미지에서 `chmod -R g=u`는 <b>`USER` 전환 전(root)</b>에 실행해야 한다. 빌더에서 온 `.venv` 같은 비-소유 파일이 섞여 있으면 USER 전환 후엔 권한이 없어 chmod가 실패한다. 이거 놓쳐서 빌드가 깨진 뒤에야 순서를 바로잡았다.
 
-## 5. fsGroup은 왜 runAsGroup을 따라가나
+## 5. fsGroup을 runAsGroup과 같게 둔 이유
 
 `securityContext`의 `fsGroup`을 별도 값이 아니라 `runAsGroup`과 같게 뒀는데, 이유가 있다.
 
@@ -111,7 +111,7 @@ GPU처럼 디바이스 노드 접근이 필요한 워크로드는 도메인별 �
 
 대부분은 클러스터에 프로브 파드로 띄워 확인했고, GPU 서빙처럼 큰 이미지는 빌드 서버에서 네이티브로 빌드한 뒤 `docker run`으로 직접 검증했다.
 
-## 7. 리스크: group-writable을 어떻게 볼 것인가
+## 7. group-writable 리스크
 
 `chmod -R g=u`로 디렉토리·파일에 group 쓰기 권한(`w`)이 붙는다. 이게 걸리는 지점이다. 일부 고객사 보안 정책이나 점검 도구가 <b>"group-writable 파일/디렉토리"를 감점 또는 위반 항목으로 분류</b>할 수 있다. 그래서 납품 전 리스크 분석이 필요하다고 봤다.
 

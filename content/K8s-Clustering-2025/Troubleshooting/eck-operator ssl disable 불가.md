@@ -24,7 +24,7 @@ type:
 
 "standalone에서 되던 걸 ECK에서도 되겠지"가 안 통하는 대표적인 지점이었다.
 
-## 1. 무엇을 하려다 막혔나
+## 1. SSL을 끄려다 막힌 이슈
 
 개발·내부용이라 인증서·인증 없이 평문 HTTP로 간단히 붙고 싶었다. standalone Elasticsearch라면 `elasticsearch.yml`에 이렇게 쓰면 된다.
 

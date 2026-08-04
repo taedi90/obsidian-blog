@@ -18,7 +18,7 @@ type:
   - note
 ---
 
-## 1. 왜 RBAC을 차트로 관리하나
+## 1. RBAC을 차트로 관리하기
 
 [[OIDC(EntraID) 를 이용한 개인별 인증인가 구성|앞 글]]에서 Entra ID를 API 서버에 OIDC로 연동하고, 사용자별로 `Role`·`RoleBinding`을 붙여 권한을 나눴다. 문제는 그 `Role`·`RoleBinding`을 <b>어떻게 관리하느냐</b>다.
 
@@ -54,7 +54,7 @@ type:
 
 정의(addons)와 배정(chart)을 나눠두니, 권한 묶음은 그대로 두고 "누구에게 줄지"만 values에서 바꾸면 된다.
 
-## 3. OIDC 사용자를 어떻게 바인딩하나
+## 3. OIDC 사용자를 subjects에 어떻게 매핑하는가
 
 RBAC 바인딩의 `subjects`에는 사용자를 뭐라고 적느냐가 관건이다. API 서버가 OIDC 토큰에서 뽑아 <b>내부 username으로 쓰는 값</b>을 그대로 적어야 한다.
 

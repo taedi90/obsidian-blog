@@ -36,7 +36,7 @@ type:
 
 (참고로 OpenBao는 HashiCorp Vault의 오픈소스 포크다. Vault가 라이선스를 BUSL로 바꾸자 커뮤니티가 이전 MPL 시절을 이어받아 갈라져 나온 프로젝트라, 개념·API·심지어 사이드카 injector까지 Vault 계열과 거의 그대로 호환된다.)
 
-## 2. seal/unseal: 왜 재시작마다 다시 잠기나
+## 2. seal/unseal 동작
 
 OpenBao가 스토리지에 쓰는 <b>모든 데이터는 항상 암호문</b>이다. 이 암호화 계층을 barrier라 부른다. <b>봉인(sealed) 상태 = barrier를 여는 키가 메모리에 없는 상태</b>고, 이때 API는 `503 sealed`를 뱉는다. 키는 3단으로 겹쳐 있다.
 

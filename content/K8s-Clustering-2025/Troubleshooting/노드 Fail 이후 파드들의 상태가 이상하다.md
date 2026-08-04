@@ -24,7 +24,7 @@ type:
 
 "거슬리는 잔존 파드"와 "안 옮겨가는 StatefulSet"은 사실 성격이 완전히 다른 문제였다.
 
-## 1. 왜 Error·Completed 파드가 남나
+## 1. Error·Completed 파드가 남는 이유
 
 노드가 `NotReady`가 되면, 그 노드의 kubelet은 더 이상 자기 파드를 보고·정리하지 못한다. 컨트롤러는 대체 파드를 다른 노드에 새로 만들지만, <b>죽은 노드에 매인 옛 파드 오브젝트</b>는 API에 그대로 남는다. 그게 Error나 Completed(종료됨) 상태로 목록에 보인다.
 
@@ -36,7 +36,7 @@ type:
 - Job이라면 `ttlSecondsAfterFinished`로 완료 후 자동 삭제.
 - 그 외엔 주기적으로 `kubectl delete pod --field-selector=status.phase==Failed`(또는 Succeeded)로 청소.
 
-## 2. Deployment는 옮겨가는데 StatefulSet은 왜 안 옮겨가나
+## 2. StatefulSet은 왜 옮겨가지 않는가
 
 이게 더 중요한 지점이다. 노드 장애 직후 동작이 갈린다.
 
@@ -45,7 +45,7 @@ type:
 
 즉 StatefulSet이 "안 옮겨가는" 게 아니라, <b>안전을 위해 기다리는</b> 것이다. 옛 파드는 `Terminating`/`Unknown`으로 남는다.
 
-## 3. 그럼 StatefulSet은 어떻게 복구되나
+## 3. StatefulSet 복구 방법
 
 노드가 진짜 죽은 게 확실할 때만 진행시켜야 한다. 방법은 둘이다.
 

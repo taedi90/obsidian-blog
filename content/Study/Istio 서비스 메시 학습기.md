@@ -23,7 +23,7 @@ type:
 > [!SUMMARY]
 > 운영 클러스터가 Istio로 해결하던 것들(서비스 간 mTLS·경로 라우팅·인가 위임·타임아웃/재시도)을 그동안 제대로 살펴보지 못했다. 그래서 OCI 단일 노드 k3s에 Istio를 직접 올려 실제 서비스가 쓰는 기능을 하나씩 재현하고, 운영 레벨(egress·관측·day-2·Ambient)까지 확장해봤다. 서비스 메시의 요지는 앱이 떠안던 네트워크 로직(암호화·라우팅·인가·복원력·관측)을 사이드카(Envoy)가 트래픽을 가로채 앱 밖에서 처리하는 것이다.
 
-## 1. 데이터플레인: 사이드카는 어떻게 끼어드나
+## 1. 데이터플레인: 사이드카 주입
 
 Istio는 base(CRD) → istiod(컨트롤 플레인) → gateway 순으로 helm 세 차트로 깔린다. <b>istiod가 Mutating Webhook으로 Pod에 `istio-proxy`(Envoy)를 주입</b>하고, 그 프록시가 iptables로 파드 트래픽을 전부 가로채는 것이다. 트리거는 네임스페이스 라벨(`istio-injection=enabled`)이다.
 

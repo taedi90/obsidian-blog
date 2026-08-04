@@ -27,7 +27,7 @@ type:
 
 이 글은 [[폐쇄망 전용 싱글 바이너리 워크플로우 도구 Deck 만들기|Deck 본체 이야기]]에서 이어진다. 그쪽이 "폐쇄망에서 워크플로우 러너를 왜, 어떻게 만들었나"라면, 이 글은 그 위에 얹은 "자연어로 워크플로우를 뽑되 LLM이 지어낸 걸 어떻게 걸러내나"에 대한 기록이다.
 
-## 1. 왜 LLM을 붙였나
+## 1. 도입 배경
 
 Deck의 워크플로우는 YAML로 쓴다. `version`, `vars`, `phases`, `steps`에 typed step을 얹는 얕은 구조라 읽기는 쉬운데, 백지에서 처음 쓰는 건 여전히 일이다. `CheckHost`·`KernelModule`·`WriteContainerdConfig`·`InitKubeadm` 같은 kind가 각각 어떤 스키마를 받는지 기억하고 있어야 하고, phase 순서와 조건부 실행(`when`), step 간 출력 등록(`register`)까지 맞물려야 한다. 스키마 문서를 띄워놓고 필드를 하나씩 대조하는 그 초기 마찰이 매번 아까웠다.
 
