@@ -1,7 +1,7 @@
 ---
 title: Linux 사용자 비밀번호 변경
 date: 2022-11-28
-draft: false
+draft: true
 tags:
   - linux
 banner: 

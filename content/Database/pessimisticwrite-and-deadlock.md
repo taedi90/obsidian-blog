@@ -73,7 +73,7 @@ Caused by: javax.persistence.OptimisticLockException: org.hibernate.exception.Lo
 
 게다가 예외 종류도 락 획득 실패 시 예상했던 `PessimisticLockException`이 아니라 `OptimisticLockException`이어서 의아했다.
 
-이러한 점들 때문에 단순한 경합 문제가 아닌, 로직 상에서 의도치 않은 다른 원인이 있을 것이라 판단했고, 더 깊이 파고들어 보기로 했다.
+이러한 점들 때문에 단순한 경합 문제가 아닌, 로직 상에서 의도치 않은 다른 원인이 있을 것이라 판단했고, 원인을 더 깊이 분석해 보기로 했다.
 
 ## 3. 해결
 ### MariaDB 로그 확인
@@ -102,13 +102,13 @@ RECORD LOCKS space id 218104 page no 3 n bits 8 index PRIMARY of table `test`.`t
 *** WE ROLL BACK TRANSACTION (0)
 ```
 
-로그의 핵심은 두 트랜잭션이 `record lock`은 획득했지만 `gap lock`을 기다리다 교착 상태에 빠졌고(`lock_mode X locks rec but not gap waiting`), 결국 InnoDB 엔진이 둘 중 하나를 희생양(victim)으로 선택해 롤백했다는 것이다.
+로그를 확인하면 두 트랜잭션이 `record lock`은 획득했지만 `gap lock`은 얻지 못한 상태에서 서로를 기다리다 교착 상태에 빠졌고(`lock_mode X locks rec but not gap waiting`), 결국 InnoDB 엔진이 둘 중 하나를 희생 트랜잭션(victim)으로 선택해 롤백했다는 사실을 알 수 있다.
 
 > [!NOTE]
 > <b>갭 락(Gap Lock)이란?</b>
 > 갭 락은 인덱스 레코드 사이의 간격(Gap)을 잠그는 기능이다. 즉, 실제 존재하는 레코드뿐만 아니라, 조건에 해당하지만 <b>존재하지 않는 레코드의 범위까지 잠근다.</b> 이로 인해 다른 트랜잭션이 그 간격 내에 새로운 데이터를 추가(INSERT)하는 것을 방지하여 `Phantom Read` 현상을 막는다.
 
-여기서 새로운 의문이 생겼다. 두 트랜잭션은 서로 다른 레코드를 대상으로 락을 시도했는데 왜 교착 상태가 발생했으며, 생소한 `Gap Lock`이란 대체 무엇일까? 일반적으로 `FOR UPDATE` 쿼리는 레코드(Row) 단위로 락을 획득하므로, 서로 다른 레코드를 대상으로 할 때는 경합이 발생하지 않아야 한다고 생각했다. 하지만 여기에는 한 가지 중요한 조건이 숨어있었다.
+여기서 새로운 의문이 생겼다. 두 트랜잭션은 서로 다른 레코드를 대상으로 락을 시도했는데도 교착 상태가 발생했으며, 생소한 `Gap Lock`이 정확히 무엇인지도 확인할 필요가 있었다. 일반적으로 `FOR UPDATE` 쿼리는 레코드(Row) 단위로 락을 획득하므로, 서로 다른 레코드를 대상으로 할 때는 경합이 발생하지 않아야 한다고 생각했다. 하지만 여기에는 한 가지 중요한 조건이 숨어 있었다.
 
 ### 오류 재현
 정확한 원인을 파악하기 위해 데드락이 발생하는 상황을 직접 재현해보았다.
@@ -226,7 +226,7 @@ public class DeadLockTestService {
 ```
 
 #### 테스트 진행
-이 코드를 바탕으로 여러 케이스를 돌려봤고, 결과는 다음과 같았다.
+이 코드를 바탕으로 여러 케이스를 실행했고, 결과는 다음과 같았다.
 
 | 케이스                                                         | 데드락 발생 여부    |
 | ----------------------------------------------------------- | ------------ |
@@ -238,7 +238,7 @@ public class DeadLockTestService {
 
 
 > [!IMPORTANT]
-> 비고유(Non-unique) 인덱스를 WHERE 조건으로 사용해도 동일하게 데드락이 발생할 것이라 생각했지만 의외로 데드락이 발생하지 않았다. 이 부분에 대해서는 추가적으로 파악해보지 못했다.
+> 비고유(Non-unique) 인덱스를 WHERE 조건으로 사용해도 동일하게 데드락이 발생할 것이라 생각했지만 의외로 데드락이 발생하지 않았다. 이 부분에 대해서는 추가적으로 파악하지 못했다.
 
 ### 데드락 발생 조건 분석
 여러 테스트를 통해 데드락이 발생하는 특정 조건을 종합해볼 수 있었다. 
@@ -248,7 +248,7 @@ public class DeadLockTestService {
 - 인덱스가 아닌 컬럼을 조건으로 사용했다.
 - 1개 트랜젝션에서 for update 를 두 번 호출했다. 
 
-종합하면 <b>`READ_COMMITTED` 또는 `READ_UNCOMMITTED` 격리 수준</b>에서, <b>인덱스가 없는 컬럼</b>을 `WHERE` 조건으로 사용하여, <b>하나의 트랜잭션에서 `FOR UPDATE`를 두 번 이상 호출</b>하며, <b>여러 트랜잭션이 거의 동시에 락을 획득하려 할 때</b> 발생했다.
+테스트 결과를 테스트 결과를 테스트 결과를 종합하면 <b>`READ_COMMITTED` 또는 `READ_UNCOMMITTED` 격리 수준</b>에서, <b>인덱스가 없는 컬럼</b>을 `WHERE` 조건으로 사용하여, <b>하나의 트랜잭션에서 `FOR UPDATE`를 두 번 이상 호출</b>하며, <b>여러 트랜잭션이 거의 동시에 락을 획득하려 할 때</b> 발생했다.
 
 > [!IMPORTANT]
 > 공식 문서에서는 `REPEATABLE READ` 격리 수준 이상에서 `Gap Lock`이 발생한다고 설명하지만, 진행한 테스트에서는 `READ_COMMITTED`와 `READ_UNCOMMITTED` 격리 수준에서도 `Gap Lock`으로 인한 데드락이 발생했다. MariaDB 버전의 이슈나 특정 상황에 따라 동작이 다를 수 있는지에 대해서는 파악하지 못했다.
@@ -257,11 +257,11 @@ public class DeadLockTestService {
 > Gap locking is not needed for statements that lock rows using a unique index to search for a unique row.
 > \- MariaDB 공식 문서
 
-원인이 `Gap Lock`이라는 걸 파악하고 로직을 손봤다. 기존엔 `FOR UPDATE` 쿼리의 `WHERE`에 인덱스 없는 컬럼 조건을 썼는데, 이걸 <b>`WHERE id IN (...)`처럼 PK로 레코드를 집도록</b> 바꿨다. 위 인용대로 유니크 인덱스로 특정 행을 집을 땐 Gap Lock이 걸리지 않으니, 데드락이 사라졌다.
+`Gap Lock`이 원인이라는 사실을 파악하고 로직을 수정했다. 기존에는 `FOR UPDATE` 쿼리의 `WHERE` 절에 인덱스 없는 컬럼 조건을 사용했는데, 이것을 <b>`WHERE id IN (...)`처럼 PK로 레코드를 조회하도록</b> 변경했다. 위 인용 문구대로 유니크 인덱스로 특정 행을 조회할 때는 Gap Lock이 걸리지 않으므로 데드락이 사라졌다.
 
 ![](https://i.imgur.com/wjlZyNz.png)
 
-추가적으로, 데드락이 아니더라도 발생할 수 있는 타임아웃(`PessimisticLockException`)에 대비하여 트랜잭션 오류 시 비즈니스 로직을 재시도하는 로직을 더한다면 더욱 안정적인 서비스를 만들 수 있을 것이라 생각한다. 이는 트랜잭션 외부에서 처리하거나 별도의 스케줄링 로직으로 구현하는 것이 어떨까 싶다.
+추가적으로, 데드락이 아니더라도 발생할 수 있는 타임아웃(`PessimisticLockException`)에 대비하여 트랜잭션 오류 시 비즈니스 로직을 재시도하는 로직을 추가한다면 더욱 안정적인 서비스를 만들 수 있을 것이라 생각한다. 이러한 재시도 로직은 트랜잭션 외부에서 처리하거나 별도의 스케줄링 방식으로 구현하면 좋겠다.
 
 ## 참고
 - [mariadb 공식문서 innodb-lock-modes](https://mariadb.com/kb/en/innodb-lock-modes/)

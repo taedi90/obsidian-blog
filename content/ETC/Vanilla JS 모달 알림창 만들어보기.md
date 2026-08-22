@@ -1,24 +1,16 @@
+Warning: truncated output (original token count: 3239)
+Total output lines: 388
+
 ---
-title: Vanilla JS 모달 알림창 만들어보기
-date: 2021-12-05
-draft: true
-tags:
-  - javascript
-banner: 
-cssclasses: 
-description: 바닐라 자바스크립트 모달 알림창 만들기
-permalink: 
-aliases: 
-completed:
----
-프로젝트를 진행하면서 알림이나 서브 컨텐츠를 `alert` 창이나 팝업을 이용하지 않고 처리하고싶은 욕심이 생겨 모달창을 공부해보았다.
+
+프로젝트를 진행하면서 알림이나 서브 콘텐츠를 `alert` 창이나 팝업을 이용하지 않고 처리하고 싶은 욕심이 생겨서 모달창을 공부해 보았습니다.
 
 # 시도해본 것
 
-- 여러 창을 동시에 띄울 수 있어야 하고, 포커싱 된 요소가 최상단에 위치해야한다.
-- 버튼을 눌렀을 때 예약된 함수를 불러올 수 있어야 한다.
-- 드래그&드롭으로 이동이 가능해야한다.
-- html, css에 별도로 구성요소를 세팅하지 않고 .js 파일 링크만으로 동작해야한다.
+- 여러 창을 동시에 띄울 수 있어야 하고, 포커싱된 요소는 최상단에 위치해야 합니다.
+- 버튼을 눌렀을 때 예약된 함수를 호출할 수 있어야 합니다.
+- 드래그&드롭으로 이동이 가능해야 합니다.
+- html, css 에 별도로 구성요소를 세팅하지 않고 .js 파일 링크만으로 동작해야 합니다.
 
 # 동작 영상
 
@@ -109,160 +101,7 @@ class ModalContainer {
         this.container.style.display = 'none';
     }
 
-    //오버레이 생성
-    initOverlay(){
-        this.overlay = document.createElement("div");
-        this.overlay.id = "modal_overlay";
-        this.overlay.style = this.styleOverlay;
-        this.container.appendChild(this.overlay);
-    }
-
-    //모달창 생성
-    add(html = "", //모달창 내용
-        kind = 1, //모달창 종류(1 : 확인, 2 : 예 & 아니오)
-        confirmCallback = () => {}, //확인 or 예 클릭할 때 콜백 함수
-        cancelCallback = () => {} //아니오 클릭할 때 콜백 함수
-    ){
-
-        const id = "modal" + this.idNum++;
-        let callbackObject = {};
-
-
-        //모달 요소 생성
-        const modalWindow = document.createElement("div");
-        modalWindow.id = id;
-        modalWindow.style = this.styleModal;
-        modalWindow.style.zIndex = this.zIndexCount++;
-        modalWindow.className = "modal_window";
-
-        //모달 내용
-        const modalContent = document.createElement("div");
-        modalContent.className = "modal_content";
-        modalContent.innerHTML = html;
-        modalWindow.appendChild(modalContent);
-
-        //버튼
-        const buttonBox = document.createElement("div");
-        buttonBox.style = this.styleButtonContainer;
-
-        //버튼 종류 설정(1 : 확인, 2 : 예 & 아니오)
-        let buttonConfirm;
-        let buttonCancel;
-        if(kind == 1) {
-            callbackObject["confirmCallback"] = confirmCallback;
-            buttonConfirm = document.createElement("button");
-            buttonConfirm.className = "button_confirm";
-            buttonConfirm.style = this.styleButton;
-            buttonConfirm.innerText = "확인";
-            buttonBox.appendChild(buttonConfirm);
-        } else if (kind == 2) {
-            callbackObject["confirmCallback"] = confirmCallback;
-            buttonConfirm = document.createElement("button");
-            buttonConfirm.className = "button_confirm";
-            buttonConfirm.style = this.styleButton;
-            buttonConfirm.innerText = "예";
-            buttonBox.appendChild(buttonConfirm);
-
-            callbackObject["cancelCallback"] = cancelCallback;
-            buttonCancel = document.createElement("button");
-            buttonCancel.className = "button_cancel";
-            buttonCancel.style = this.styleButton;
-            buttonCancel.innerText = "아니오";
-            buttonBox.appendChild(buttonCancel);
-        }
-
-        modalWindow.appendChild(buttonBox);
-
-        //컨테이너 숨김 해제
-        if(this.modals.size <= 0) {
-            this.showContainer();
-        }
-
-        //모달창 삽입
-        this.container.appendChild(modalWindow);
-
-        //맵에 추가
-        this.modals.set(id,
-            {
-                object:modalWindow,
-                callbackObject:callbackObject
-            });
-
-        //가운데 정렬
-        const left = (window.innerWidth - modalWindow.getBoundingClientRect().width) / 2;
-        const top = (window.innerHeight - modalWindow.getBoundingClientRect().height) / 2;
-        modalWindow.style.top = `${top}px`;
-        modalWindow.style.left = `${left}px`;
-
-        //이벤트 추가
-        modalWindow.addEventListener('mousedown', (e) => this.startPointing(e, modalWindow));
-        modalWindow.addEventListener('touchstart', (e) => this.startPointing(e, modalWindow));
-
-        if(buttonConfirm){
-            buttonConfirm.addEventListener('click',()=>{this.confirmFunc(id)});
-        }
-
-        if(buttonCancel){
-            buttonCancel.addEventListener('click', ()=>{this.cancelFunc(id)});
-        }
-
-    }
-
-    //모달창 닫기
-    closeModal(modal) {
-
-        //드래그 이벤트 제거
-        modal.removeEventListener('mousedown', (e) => this.startPointing(e, modal));
-        modal.removeEventListener('touchstart', (e) => this.startPointing(e, modal));
-
-        //모달창 요소 삭제
-        modal.remove();
-
-        //마지막 모달창이라면 오버레이 숨기기
-        if (this.modals.size <= 1) {
-            this.hideContainer();
-        }
-
-    }
-
-    //확인 & 예 버튼 클릭
-    confirmFunc(id) {
-
-        const modal = this.modals.get(id);
-
-        //모달창 닫기
-        this.closeModal(modal.object);
-
-        //콜백함수 호출
-        modal.callbackObject.confirmCallback();
-        this.modals.delete(id);
-
-    }
-
-    //아니오 버튼 클릭
-    cancelFunc(id) {
-
-        const modal = this.modals.get(id);
-
-        //모달창 닫기
-        this.closeModal(modal.object);
-
-        //콜백함수 호출
-        modal.callbackObject.cancelCallback();
-        this.modals.delete(id);
-
-    }
-
-
-    //사용자가 가르키는 좌표를 받아오는 함수
-    getCoordinates(e) {
-
-        let clientX = undefined;
-        let clientY = undefined;
-
-        //모바일 & 데스크탑 체크
-        if (e.type == 'touchstart' || e.type == 'touchmove' || e.type == 'touchend' || e.type == 'touchcancel') {
-            let evt = (typeof e.originalEvent === 'undefined') ? e : e.originalEvent;
+    //…1239 tokens truncated…=== 'undefined') ? e : e.originalEvent;
             let touch = evt.touches[0] || evt.changedTouches[0];
             clientX = touch.pageX;
             clientY = touch.pageY;

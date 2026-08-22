@@ -151,7 +151,7 @@ nginx_config_template: nginx.conf.j2
 4. <b>플레이북 내 변수</b> (vars, vars_prompt, vars_files 등)
 5. <b>역할 변수</b> (`role/vars/main.yml`)
 6. <b>블록 변수, 태스크 변수, include_vars, set_fact</b>
-7. <b>Extra-vars</b> (`-e` 옵션, 명령행 추가 변수) — 최고 우선순위
+7. <b>Extra-vars</b> (`-e` 옵션, 명령행 추가 변수): 최고 우선순위
 
 ### 4-3. 변수 확인 명령어
 

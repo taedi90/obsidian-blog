@@ -22,7 +22,7 @@ type:
 ## 요약
 
 > [!SUMMARY]
-> 온프레미스에 서버 3식을 납품하면서 HA/Failover를 표방했는데, 정작 서버나 도커가 재기동되면 컨테이너가 자동으로 살아나지 않고 Galera·Redis 클러스터는 멤버십이 꼬였다. restart policy(`always`/`unless-stopped`), healthcheck + 자가 재기동 스크립트, Docker Swarm 세 방식을 저울질했고, <b>unhealthy 컨테이너를 자동으로 재생성해주는 건 Swarm뿐</b>이라는 게 핵심 차이였다. 다만 Swarm은 폐쇄망 registry, 공유 스토리지, stateful 서비스의 노드 고정, Galera bootstrap 선행 조치를 요구해서 그 값을 치를지가 진짜 판단 지점이었다.
+> 온프레미스에 서버 3식을 납품하면서 HA/Failover를 표방했는데, 정작 서버나 도커가 재기동되면 컨테이너가 자동으로 살아나지 않고 Galera·Redis 클러스터는 멤버십이 꼬였다. restart policy(`always`/`unless-stopped`), healthcheck + 자가 재기동 스크립트, Docker Swarm 세 방식을 저울질했고, <b>unhealthy 컨테이너를 자동으로 재생성해주는 건 Swarm뿐</b>이라는 점이 핵심 차이였다. 다만 Swarm은 폐쇄망 registry, 공유 스토리지, stateful 서비스의 노드 고정, Galera bootstrap 선행 조치를 요구하므로, 그 값을 치르더라도 도입할 가치가 있는지가 실질적인 판단 지점이었다.
 
 ## 1. 개요
 
@@ -32,7 +32,7 @@ type:
 - 컨테이너는 떠 있어도 내부 프로세스가 죽어 있는 경우(이른바 `APPLICATION FAILED TO START`)를 도커는 모른다.
 - MariaDB(Galera), Redis 같은 클러스터류는 재기동되면 클러스터 멤버로 다시 못 붙거나 master/replica 배정이 꼬인다.
 
-"3식 납품 = HA"라는 말이 반쯤은 구호였던 셈이다. 이걸 제대로 채우려고 후보를 세 개 놓고 비교했다. restart policy만으로 버티기, healthcheck에 자가 재기동 트릭을 얹기, 그리고 Docker Swarm 도입.
+"3식 납품 = HA"라는 말이 반쯤은 구호였던 셈이다. 이 명분을 제대로 채우려고 후보 세 가지를 놓고 비교했다. restart policy만으로 버티는 방식, healthcheck에 자가 재기동 방법을 추가하는 방식, 그리고 Docker Swarm을 도입하는 방식이 그 후보였다.
 
 > [!INFO]
 > unhealthy 컨테이너를 재기동하는 healthcheck 트릭 자체는 [[Docker Healthcheck 실패 시 컨테이너 재기동 설정|따로 정리해둔 글]]이 있다. 이 글은 그 트릭을 포함해 "3서버 납품에서 뭘 고를 것인가"를 저울질한 의사결정 기록이다.
@@ -43,7 +43,7 @@ type:
 
 <b>restart policy</b>는 컨테이너가 <b>종료</b>됐을 때만 개입한다. `restart: unless-stopped`를 걸면 사용자가 임의로 stop하지 않는 한 컨테이너가 죽으면 도로 띄운다. 서버 재부팅 후 자동 기동도 이걸로 어느 정도 해결된다. 문제는 두 가지다. 컨테이너가 떠 있되 안이 죽은 상태는 종료가 아니라서 손을 안 댄다. 그리고 경험상 서비스에 따라 `always`를 줘도 재기동이 안 되거나 순서 문제로 실패하는 케이스가 있었다(원인은 끝내 못 밝혔다. 어느 고객사 개발서버의 Oracle이 재시작 때 자동으로 안 뜨던 게 대표적이다).
 
-<b>healthcheck</b>는 상태를 <b>판정</b>만 한다. `curl`로 헬스 API를 찔러 `healthy`/`unhealthy`를 매기는데, 딱 거기까지다. unhealthy로 표시될 뿐 도커가 그 컨테이너를 다시 만들어주지는 않는다. 그래서 자가 치유(auto healing)를 흉내 내려면 편법이 필요했다.
+<b>healthcheck</b>는 상태를 <b>판정</b>만 한다. `curl`로 헬스 API를 호출하여 `healthy`/`unhealthy`를 매기는데, 판정까지가 전부다. unhealthy로 표시될 뿐 도커가 그 컨테이너를 다시 만들어주지는 않는다. 그래서 자가 치유(auto healing)를 흉내 내려면 우회 방법이 필요했다.
 
 - 호스트에서 crontab으로 unhealthy 컨테이너를 주기적으로 재기동: `docker ps -q -f health=unhealthy | xargs docker restart`. 되긴 하는데 관리 포인트가 호스트로 쪼개진다.
 - healthcheck 스크립트 안에서 실패가 누적되면 컨테이너 내부 프로세스를 직접 죽이는 방법. 프로세스가 죽으면 컨테이너가 종료되고, 그제야 restart policy가 받아서 다시 띄운다.
@@ -66,13 +66,13 @@ healthcheck:
   retries: 1
 ```
 
-이 방식은 도커만으로 굴러가서 폐쇄망에서도 추가 요건이 없다. 대신 "컨테이너를 일부러 죽여서 살린다"는 게 영 개운치 않고, 재기동 사유 추적이 어려워 로그를 따로 남겨야 한다.
+이 방식은 도커만으로 동작하므로 폐쇄망에서도 추가 요건이 없다. 대신 "컨테이너를 일부러 죽여서 살린다"는 점이 꺼림직하고, 재기동 사유 추적이 어려워 로그를 따로 남겨야 한다.
 
-<b>Docker Swarm</b>은 오케스트레이터라 결이 다르다. unhealthy 컨테이너를 <b>자기가 판단해서 재생성</b>한다(편법이 아니라 기본 동작이다). 노드가 죽으면 그 노드에 있던 서비스를 다른 가용 노드에 다시 스케줄한다. 3대를 모두 manager 겸 worker로 묶을 수 있고, 배포도 compose YAML을 거의 그대로 `docker stack deploy`로 쓴다. 대신 값을 치러야 한다.
+<b>Docker Swarm</b>은 오케스트레이터라서 성격이 다르다. unhealthy 컨테이너를 <b>자기가 판단해서 재생성</b>한다(편법이 아니라 기본 동작이다). 노드가 죽으면 그 노드에 있던 서비스를 다른 가용 노드에 다시 스케줄한다. 3대를 모두 manager 겸 worker로 묶을 수 있고, 배포도 compose YAML을 거의 그대로 `docker stack deploy`로 쓴다. 대신 그 대가를 치러야 한다.
 
 - 로컬 이미지로는 배포가 안 된다. 폐쇄망이라면 <b>private registry를 반드시 세워야</b> 한다. (`docker swarm init`은 폐쇄망에서도 되는 걸 개발서버에서 확인했다.)
-- 서비스가 노드 간을 옮겨 다니니 볼륨을 어떻게 공유할지가 숙제다. 공유 스토리지(NFS 등)가 제일 간단하지만 속도 이슈가 있고, 아니면 GlusterFS·Ceph·rsync 같은 걸 얹어야 하는데 사이트마다 정책이 걸린다.
-- `depends_on`은 Swarm에서 무시된다. 원래도 이건 `docker compose up`에만 먹고 재기동 상황에선 순서 없이 다 같이 뜬다. Galera가 특히 여기서 터진다.
+- 서비스가 노드 간을 옮겨 다니므로 볼륨을 어떻게 공유할지가 과제다. 공유 스토리지(NFS 등)가 가장 간단하지만 속도 문제가 있고, 아니면 GlusterFS·Ceph·rsync 같은 수단을 추가해야 하는데 사이트마다 정책이 다르다.
+- `depends_on`은 Swarm에서 무시된다. 원래도 이 옵션은 `docker compose up`에만 적용되고 재기동 상황에서는 순서 없이 한꺼번에 뜬다. Galera는 특히 이 지점에서 문제가 된다.
 
 ## 3. 비교
 
@@ -99,9 +99,9 @@ healthcheck:
 
 <b>폐쇄망 registry.</b> 로컬 이미지 배포가 막히니 사내/사이트에 private registry가 먼저 있어야 한다. 이게 없으면 `docker stack deploy`가 이미지를 못 찾는다.
 
-<b>stateful 서비스는 오케스트레이션에 안 맡긴다.</b> Redis·MariaDB처럼 상태를 쥔 놈들을 Swarm이 마음대로 옮기게 두면 데이터가 꼬인다. replica 1짜리 서비스로 쪼개 <b>노드마다 하나씩 고정 배치</b>(placement constraint)하고, 포트도 노드별로 따로 부여하는 방향이 맞다고 봤다. LB로 묶어 실컷 옮겨 다니게 하는 그림은 stateful엔 안 맞는다.
+<b>stateful 서비스는 오케스트레이션에 안 맡긴다.</b> Redis·MariaDB처럼 상태를 보유한 서비스들을 Swarm이 마음대로 옮기게 두면 데이터 정합성이 깨진다. replica 1개짜리 서비스로 분리해 <b>노드마다 하나씩 고정 배치</b>(placement constraint)하고, 포트도 노드별로 따로 부여하는 방향이 맞다고 봤다. LB로 묶어 자주 옮겨 다니게 하는 구성은 stateful에 맞지 않는다.
 
-<b>Galera bootstrap 선행 조치.</b> 이게 제일 골치다. `depends_on`이 안 먹으니 재기동 때 Galera 노드들이 순서 없이 동시에 뜨는데, 2대 이상이 함께 재기동되면 클러스터링에 실패한다. 그래서 컨테이너 기동 전에 <b>가장 최신 시퀀스(seqno)를 가진 노드를 찾아 donor로 세우고 나머지를 joiner로 붙이는</b> 부트스트랩 로직이 별도로 필요하다. Swarm이 이걸 대신 해주지는 않는다.
+<b>Galera bootstrap 선행 조치.</b> 이 부분이 가장 까다롭다. `depends_on`이 적용되지 않으니 재기동 때 Galera 노드들이 순서 없이 동시에 뜨는데, 2대 이상이 함께 재기동되면 클러스터링에 실패한다. 그래서 컨테이너 기동 전에 <b>가장 최신 시퀀스(seqno)를 가진 노드를 찾아 donor로 세우고 나머지를 joiner로 붙이는</b> 부트스트랩 로직이 별도로 필요하다. Swarm이 이 작업을 대신 해주지는 않는다.
 
 `docker stack deploy`가 `.env`를 자동으로 안 읽는 것도 미리 알아둘 함정이다. compose를 렌더링해서 넘기거나 셸에서 env를 export한 뒤 배포해야 한다.
 
@@ -113,14 +113,14 @@ set +a
 docker stack deploy -c docker-compose.yml myapp
 ```
 
-healthcheck 예시에 DB 접속 정보가 들어가는 경우가 많은데, MariaDB ping 같은 체크에 평문 비밀번호를 박지 말고 환경변수로 빼는 걸 원칙으로 했다.
+healthcheck 예시에 DB 접속 정보가 들어가는 경우가 많은데, MariaDB ping 같은 체크에 평문 비밀번호를 직접 명시하지 말고 환경변수로 분리하는 것을 원칙으로 삼았다.
 
 ```bash
 # 평문 비밀번호를 명령줄에 노출하지 않도록 환경변수로 주입한다. (<REDACTED>는 실제 값 아님)
 mysqladmin ping -uroot -p"${MYSQL_ROOT_PASSWORD}" -h 127.0.0.1
 ```
 
-정리하자면, unhealthy 자동 재생성과 노드 재배치를 얻는 대가로 registry·공유 스토리지·Galera 부트스트랩이라는 숙제를 떠안는 거래다. 3식 납품이 표방한 HA를 실제로 채우려면 이 숙제값이 아깝지 않다고 판단했다. 물론 사이트마다 스토리지 정책이 다르니, 공유 볼륨을 못 쓰는 곳에선 stateful을 노드 고정으로 도는 조합이 현실적인 절충이 될 것이다.
+정리하자면, unhealthy 자동 재생성과 노드 재배치를 얻는 대가로 registry·공유 스토리지·Galera 부트스트랩이라는 과제를 감수해야 한다. 3식 납품이 표방한 HA를 실제로 채우려면 이 과제에 드는 비용이 아깝지 않다고 판단했다. 물론 사이트마다 스토리지 정책이 다르므로, 공유 볼륨을 사용할 수 없는 곳에서는 stateful을 노드 고정으로 운영하는 조합이 현실적인 절충이 될 것이다.
 
 ## 참고
 

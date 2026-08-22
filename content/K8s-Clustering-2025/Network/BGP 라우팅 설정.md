@@ -157,7 +157,7 @@ end
 ### 3. Cilium BGP 설정
 Cilium 쪽에서도 BGP를 켜고, Pod·Service 네트워크 정보를 IDC Fortigate로 광고하도록 설정했다. Cilium 1.16부터 BGP 설정이 `CiliumBGPClusterConfig`/`CiliumBGPPeerConfig`/`CiliumBGPAdvertisement`로 쪼개졌는데, 아래는 그 세 리소스다.
 
-- <b>CiliumBGPClusterConfig</b> — 클러스터 전역 BGP 인스턴스와 피어를 정의한다.
+- <b>CiliumBGPClusterConfig</b>: 클러스터 전역 BGP 인스턴스와 피어를 정의한다.
 ```yaml
 apiVersion: cilium.io/v2alpha1
 kind: CiliumBGPClusterConfig
@@ -178,7 +178,7 @@ spec:
 ```
 클러스터의 `localASN`을 `64520`으로 두고, 같은 AS인 IDC Fortigate(`10.0.20.1`)를 iBGP 피어로 등록했다.
 
-- <b>CiliumBGPPeerConfig</b> — BGP 피어의 상세 옵션을 설정한다.
+- <b>CiliumBGPPeerConfig</b>: BGP 피어의 상세 옵션을 설정한다.
 ```yaml
 apiVersion: cilium.io/v2alpha1
 kind: CiliumBGPPeerConfig
@@ -194,7 +194,7 @@ spec:
 ```
 IPv4 유니캐스트를 쓰고, BGP 세션이 끊겨도 잠시 기존 경로를 유지하는 `gracefulRestart`를 켰다. 세션이 잠깐 튀었다고 트래픽이 바로 끊기지 않게 하는 안전장치다.
 
-- <b>CiliumBGPAdvertisement</b> — 어떤 대역을 외부에 광고할지 정의한다.
+- <b>CiliumBGPAdvertisement</b>: 어떤 대역을 외부에 광고할지 정의한다.
 ```yaml
 apiVersion: cilium.io/v2alpha1
 kind: CiliumBGPAdvertisement

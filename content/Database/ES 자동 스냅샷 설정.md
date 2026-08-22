@@ -13,7 +13,7 @@ completed:
 ---
 ## 1. 이슈
 
-데이터 보호를 위해서 일정 주기로 엘라스틱서치 데이터를 스냅샷으로 보관해둘 필요성이 생겼다. 확인해보니 SLM(snapshot lifecycle management) API 를 사용하면 자동으로 스냅샷을 기록할 수 있다고 한다.
+데이터 보호를 위해서 일정 주기로 엘라스틱서치 데이터를 스냅샷으로 보관해둘 필요성이 생겼다. 확인해보니 SLM(snapshot lifecycle management) API 를 사용하면 스냅샷을 자동으로 기록할 수 있다고 했다.
 
   
 
@@ -23,11 +23,11 @@ completed:
 
   
 
-우선 엘라스틱 실행 시 `ELASTICSEARCH_FS_SNAPSHOT_REPO_PATH` 환경변수에 스냅샷 경로를 지정해주어야한다. 그렇지않으면
+우선 엘라스틱 실행 시 `ELASTICSEARCH_FS_SNAPSHOT_REPO_PATH` 환경변수에 스냅샷 경로를 지정해주어야 한다. 그렇게 하지 않으면
 
 > <b>Doesn’t match any of the locations specified by path.repo because this setting is empty</b>
 
-와 같은 오류가 발생한다. bitnami helm 차트의 경우 values.yaml 파일에 `snapshotRepoPath` 값을 수정해주면 되고 그 외의 경우에는 ENV 등으로 변수 설정이 필요하다.
+와 같은 오류가 발생한다. bitnami helm 차트를 쓰는 경우에는 values.yaml 파일에서 `snapshotRepoPath` 값을 수정해주면 되고, 그 외의 경우에는 ENV 등으로 변수를 설정해야 한다.
 
   
 
@@ -38,7 +38,7 @@ snapshotRepoPath: "<스냅샷 데이터를 저장할 PV마운트 경로>"
 
   
 
-환경변수를 설정했으면 엘라스틱서치를 다시 실행해준다. 그리고 아래 요청을 cURL 이나 kibana 를 통해서 입력해주면 된다.
+환경변수를 설정했으면 엘라스틱서치를 다시 실행해준다. 그리고 아래 요청을 cURL 이나 kibana 를 통해 입력해주면 된다.
 
   
 
@@ -93,7 +93,7 @@ GET _slm/policy
 
   
 
-의문스러운 점은 파드를 KST 로 설정했음에도 크론탭은 UTC 기준으로 동작하는 점인데, 나중에 시간이 나면 다시 확인해봐야겠다.
+파드를 KST 로 설정했음에도 크론탭은 UTC 기준으로 동작한다는 점이 의문스러운데, 나중에 시간이 날 때 다시 확인해봐야겠다.
 
   
 

@@ -76,7 +76,7 @@ spec:
 
 ## 4. 확인
 
-업데이트 후 테스트했다. pathPattern이 설정된 StorageClass로 PVC를 생성하고 삭제해보니 결과는 이랬다.
+업데이트 후 테스트했다. pathPattern이 설정된 StorageClass로 PVC를 생성하고 삭제해보니 결과는 다음과 같았다.
 
 - PVC 삭제 시 프로비저너 로그에 삭제 성공 메시지가 남음
 - NFS 서버에서 해당 디렉토리가 정상적으로 삭제됨

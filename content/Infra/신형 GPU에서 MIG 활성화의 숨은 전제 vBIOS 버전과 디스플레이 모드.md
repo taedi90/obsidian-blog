@@ -49,7 +49,7 @@ $ nvidia-smi mig -lgip
 No MIG-supported devices found.
 ```
 
-처음엔 카드가 불량인가 싶었다. 그런데 이 모델은 스펙상 MIG를 지원하는 카드다(그러니까 산 거고). 드라이버도 최신이라 "지원 안 함"이라는 메시지가 오히려 이상했다. 하드웨어 문제라기보다 <b>내가 뭔가 전제 조건을 안 채운</b> 쪽에 가깝다고 봤다.
+처음엔 카드가 불량인가 싶었다. 그런데 이 모델은 스펙상 MIG를 지원하는 카드다(그러니까 산 거고). 드라이버도 최신이라 "지원 안 함"이라는 메시지가 오히려 이상했다. 하드웨어 문제라기보다는 <b>내가 전제 조건 중 일부를 채우지 않은</b> 쪽에 가깝다고 판단했다.
 
 ## 3. 해결
 
@@ -61,7 +61,7 @@ MIG는 카드가 지원 목록에 있다고 바로 켜지는 게 아니었다. [
 - <b>vBIOS 98.02.55.00.00 이상</b> (워크스테이션 에디션 기준)
 - <b>displayMode를 compute로 전환</b> (기본값은 graphics)
 
-내 환경과 하나씩 맞춰봤다. 드라이버는 580.65.06이라 통과. 문제는 나머지 둘이었다. vBIOS가 `98.02.52.00.02`라 요구치인 `...55...`에 미달했고, 워크스테이션 카드라 출고 상태가 그래픽 출력용(graphics) 모드였다. `Not Supported`의 정체는 이 두 개였던 셈이다.
+내 환경과 하나씩 맞춰봤다. 드라이버는 580.65.06이라 요건을 충족했다. 문제는 나머지 두 항목이었다. vBIOS가 `98.02.52.00.02`라서 요구 버전인 `...55...`에 미달했고, 워크스테이션 카드라 출고 상태가 그래픽 출력용(graphics) 모드였다. `Not Supported`의 정체는 이 두 조건이었던 셈이다.
 
 vBIOS와 현재 표시 모드는 `nvidia-smi -q`로 확인할 수 있다.
 
@@ -74,18 +74,18 @@ nvidia-smi -q
 
 두 요건은 대응 방법이 서로 달랐다.
 
-<b>vBIOS.</b> 이건 내가 어디서 받아 플래싱할 수 있는 물건이 아니었다. 카드용 vBIOS 이미지는 공개 배포처가 없어서, 구매처(리셀러)에 최소 버전 이상으로 올려달라고 요청하는 수밖에 없었다. 결국 사람한테 메일 보내는 게 해결책이라 좀 허무했지만, 펌웨어는 원래 그런 영역이다.
+<b>vBIOS.</b> 이것은 내가 임의로 받아서 플래싱할 수 있는 대상이 아니었다. 카드용 vBIOS 이미지는 공개 배포처가 없으므로, 구매처(리셀러)에 최소 버전 이상으로 올려달라고 요청하는 방법밖에 없었다. 결국 담당자에게 메일을 보내는 것이 해결책이라 다소 아쉬웠지만, 펌웨어는 본래 그런 영역이다.
 
-<b>displayMode.</b> 이쪽은 직접 바꿀 수 있었다. NVIDIA가 주는 [displayModeSelector](https://developer.nvidia.com/display-mode-selector-tool-home) 바이너리로 graphics ↔ compute를 전환한다(다운로드에 developer 계정 가입이 필요하다). 워크스테이션 카드는 화면을 뿌리는 용도라 기본이 graphics인데, MIG를 쓰려면 디스플레이 출력을 끄는 compute 모드여야 한다.
+<b>displayMode.</b> 이쪽은 직접 변경할 수 있었다. NVIDIA가 제공하는 [displayModeSelector](https://developer.nvidia.com/display-mode-selector-tool-home) 바이너리로 graphics ↔ compute를 전환한다(다운로드에는 developer 계정 가입이 필요하다). 워크스테이션 카드는 화면 출력 용도이므로 기본값이 graphics인데, MIG를 사용하려면 디스플레이 출력을 끄는 compute 모드여야 한다.
 
 > [!NOTE]
-> compute 모드로 바꾸면 그 카드로는 화면 출력을 못 한다. 처음엔 "이거 되돌릴 수 있나, 잘못 만지면 벽돌 되는 거 아닌가" 싶어 손이 멈칫했는데, 같은 `displayModeSelector`로 다시 graphics로 되돌릴 수 있다. 어차피 이 카드는 연산 전용으로 꽂을 거라 화면 출력은 애초에 필요 없었다.
+> compute 모드로 바꾸면 그 카드로는 화면 출력을 할 수 없다. 처음엔 "되돌릴 수 있는지, 잘못 건드리면 카드를 사용할 수 없게 되는 것은 아닌지" 걱정했지만, 같은 `displayModeSelector`로 다시 graphics로 되돌릴 수 있다. 어차피 이 카드는 연산 전용으로 장착할 예정이라 화면 출력은 애초에 필요 없었다.
 
 ### 3. MIG 프로파일과 디바이스 플러그인 라벨
 
-요건을 다 채우면 그 뒤 흐름은 표준적이다. MIG를 켜고, 프로파일로 인스턴스를 나눈 다음, 쿠버네티스가 그걸 인식하게 하면 된다.
+요건을 모두 충족하면 그 뒤 흐름은 표준적이다. MIG를 활성화하고, 프로파일로 인스턴스를 나눈 다음, 쿠버네티스가 그 인스턴스를 인식하도록 설정하면 된다.
 
-먼저 카드가 실제로 어떤 분할을 지원하는지 프로파일 목록을 본다. 프로파일 ID는 카드 세대·용량마다 다르니 문서 예시를 베끼지 말고 실기에서 뽑아야 한다.
+먼저 카드가 실제로 어떤 분할을 지원하는지 프로파일 목록을 확인한다. 프로파일 ID는 카드 세대와 용량마다 다르므로 문서 예시를 그대로 복사하지 말고 실제 기기에서 조회해야 한다.
 
 ```bash
 # MIG 활성화 후, 이 카드가 지원하는 GPU 인스턴스 프로파일 목록 조회
@@ -100,7 +100,7 @@ nvidia-smi mig -lgip
 sudo nvidia-smi mig -cgi <profile-id>,<profile-id>,... -C
 ```
 
-`nvidia-smi`만으로도 기본 파티셔닝은 되지만, 노드가 늘고 카드별로 분할 형상을 다르게 가져가려면 [nvidia-mig-parted](https://github.com/NVIDIA/mig-parted)로 원하는 구성을 선언형(declarative)으로 정의해두는 편이 관리가 낫다.
+`nvidia-smi`만으로도 기본 파티셔닝은 가능하지만, 노드 수가 늘고 카드별로 분할 형상을 다르게 유지하려면 [nvidia-mig-parted](https://github.com/NVIDIA/mig-parted)로 원하는 구성을 선언형(declarative)으로 정의해두는 편이 관리에 유리하다.
 
 쿠버네티스 쪽은 [NVIDIA device plugin](https://docs.nvidia.com/datacenter/cloud-native/kubernetes/latest/index.html)이 붙는다. MIG 전략(`single`/`mixed`)에 따라 device plugin이 노드에 자동으로 라벨을 달아준다. mixed 전략이면 인스턴스 형상이 이런 이름으로 리소스화된다.
 
@@ -109,11 +109,11 @@ sudo nvidia-smi mig -cgi <profile-id>,<profile-id>,... -C
 nvidia.com/mig-<slice_count>g.<memory_size>gb
 ```
 
-파드는 `nvidia.com/gpu` 대신 이 라벨을 `resources.limits`로 요청해서 쪼갠 조각 하나를 할당받는다. 카드 한 장을 여러 워크로드가 나눠 쓰게 만드는 게 애초에 MIG를 도입한 목적이었다.
+파드는 `nvidia.com/gpu` 대신 이 리소스 이름을 `resources.limits`로 요청하여 분할된 인스턴스 하나를 할당받는다. 카드 한 장을 여러 워크로드가 나눠 쓰도록 만드는 것이 애초에 MIG를 도입한 목적이었다.
 
 ## 4. 확인
 
-세 요건을 다 채웠으면 활성화 자체가 경고 없이 통과하고, 프로파일 목록이 정상적으로 나온다.
+세 요건을 모두 충족하면 활성화 자체가 경고 없이 통과하고, 프로파일 목록이 정상적으로 출력된다.
 
 ```bash
 # MIG 상태와 지원 프로파일이 뜨는지 확인
@@ -121,14 +121,14 @@ nvidia-smi                # MIG 열이 N/A가 아니라 Enabled로 표기
 nvidia-smi mig -lgip      # "No MIG-supported devices found"가 아니라 프로파일 목록 출력
 ```
 
-쿠버네티스에서는 device plugin이 올라온 뒤 노드에 `nvidia.com/mig-*` 리소스가 잡히는지 본다.
+쿠버네티스에서는 device plugin이 배포된 뒤 노드에 `nvidia.com/mig-*` 리소스가 등장하는지 확인한다.
 
 ```bash
 # 노드에 MIG 리소스가 등록됐는지 확인
 kubectl describe node <gpu-node> | grep nvidia.com/mig
 ```
 
-다만 이 글을 쓰는 시점엔 vBIOS 회신을 기다리는 중이라 활성화까지 완전히 닫진 못했다. `Not Supported`가 카드 문제가 아니라 드라이버·펌웨어·표시 모드라는 세 전제 조건 문제였다는 것, 그리고 각각을 리셀러 요청과 `displayModeSelector`로 나눠 처리해야 한다는 것까지 규명한 단계다. vBIOS만 올라오면 위 확인 절차대로 마무리된다.
+다만 이 글을 쓰는 시점에는 vBIOS 회신을 기다리는 중이라 활성화까지 완전히 마치지 못했다. `Not Supported`가 카드 문제가 아니라 드라이버·펌웨어·표시 모드라는 세 전제 조건 문제였다는 사실, 그리고 각각을 리셀러 요청과 `displayModeSelector`로 나누어 처리해야 한다는 사실까지 규명한 단계다. vBIOS만 업그레이드되면 위 확인 절차대로 마무리된다.
 
 ## 참고
 

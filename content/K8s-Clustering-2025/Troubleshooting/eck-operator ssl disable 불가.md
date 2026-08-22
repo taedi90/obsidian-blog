@@ -20,7 +20,7 @@ type:
 ## 요약
 
 > [!SUMMARY]
-> ECK(Elastic Cloud on Kubernetes) operator로 띄운 Elasticsearch에서, standalone처럼 `elasticsearch.yml`에 `xpack.security.*`를 넣어 TLS·인증을 끄려 했는데 안 먹었다. ECK가 관리하는 설정은 <b>사용자가 덮어써도 operator가 되돌리기</b> 때문이다. 끌 수 있는 건 <b>HTTP 계층의 자체서명 인증서</b>(`spec.http.tls.selfSignedCertificate.disabled: true`)까지고, <b>노드 간 transport TLS와 보안 자체</b>는 ECK가 강제한다.
+> ECK(Elastic Cloud on Kubernetes) operator로 띄운 Elasticsearch에서, standalone처럼 `elasticsearch.yml`에 `xpack.security.*`를 넣어 TLS·인증을 끄려 했는데 반영되지 않았다. ECK가 관리하는 설정은 <b>사용자가 덮어써도 operator가 되돌리기</b> 때문이다. 끌 수 있는 것은 <b>HTTP 계층의 자체서명 인증서</b>(`spec.http.tls.selfSignedCertificate.disabled: true`)까지고, <b>노드 간 transport TLS와 보안 자체</b>는 ECK가 강제한다.
 
 "standalone에서 되던 걸 ECK에서도 되겠지"가 안 통하는 대표적인 지점이었다.
 
@@ -34,7 +34,7 @@ xpack.security.http.ssl.enabled: false
 xpack.security.transport.ssl.enabled: false
 ```
 
-그런데 ECK로 만든 `Elasticsearch` 리소스의 `spec.config`에 같은 걸 넣어도 반영이 안 되거나, 클러스터가 안 뜬다. operator가 자기가 관리하는 설정을 <b>다시 자기 값으로 덮기</b> 때문이다.
+그런데 ECK로 만든 `Elasticsearch` 리소스의 `spec.config`에 같은 설정을 넣어도 반영되지 않거나, 클러스터가 뜨지 않는다. operator가 자기가 관리하는 설정을 <b>다시 자기 값으로 덮어쓰기</b> 때문이다.
 
 ## 2. ECK는 일부 설정을 "관리 대상"으로 잡고 되돌린다
 
@@ -59,7 +59,7 @@ spec:
 ## 4. 정리
 
 - <b>가능</b>: HTTP 계층 자체서명 인증서 비활성화(`spec.http.tls.selfSignedCertificate.disabled`), 또는 내 인증서로 교체.
-- <b>불가</b>: 노드 간 transport TLS 끄기, 보안(인증) 자체 끄기 — ECK가 관리·강제.
+- <b>불가</b>: 노드 간 transport TLS 끄기, 보안(인증) 자체 끄기. ECK가 관리하고 강제하기 때문이다.
 - <b>교훈</b>: ECK를 쓰기로 했으면 "operator가 관리하는 영역"을 먼저 확인해야 한다. standalone 감각으로 `elasticsearch.yml`을 덮으려다 시간을 버렸다. 평문·무인증이 꼭 필요하면 ECK가 아니라 standalone 배포를 골랐어야 하는 문제다.
 
 ## 참고

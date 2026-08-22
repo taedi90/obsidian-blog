@@ -1,7 +1,7 @@
 ---
 title: Elasticsearch 인덱스 복제본 수 기본 설정
 date: 2023-02-09
-draft: false
+draft: true
 tags:
   - elasticsearch
 banner: 
@@ -20,7 +20,7 @@ completed:
 
 ## 1. 이슈
 
-엘라스틱서치 인덱스를 생성할 때마다 복제본 수를 지정하기 위해서 `number_of_replicas` 를 지정해주는 것이 번거로워 일괄적으로 복제본 수 를 수정할 수 있는 방법을 알아보았다.
+엘라스틱서치 인덱스를 생성할 때마다 `number_of_replicas` 로 복제본 수를 지정해주는 작업이 번거로웠기 때문에, 복제본 수를 일괄적으로 수정할 수 있는 방법을 알아보았다.
 
   
 

@@ -29,13 +29,13 @@ type:
 
 문제는 이 컴포넌트들이 환경별로 <b>조금씩만</b> 다르다는 거였다. istiod pilot 리소스나 gateway NodePort 매핑, mesh 설정은 사실상 모든 환경이 같다. 정작 갈리는 건 GPU가 있는 환경이냐(prod), 이미지를 사내 레지스트리에서 당겨오냐, NFS를 어느 노드에 핀(pin)하냐 정도다. 그런데 관리 방식은 환경마다 values 파일을 통째로 복사해두고 다른 부분만 손으로 고치는 식이었다.
 
-이러면 뻔한 사고가 난다. 공통이어야 할 gateway 포트 하나를 stg에서만 고치고 prod에는 반영을 잊는다. 새 환경을 하나 추가하려면 수백 줄짜리 values를 복붙한 뒤 무엇이 공통이고 무엇이 환경 고유인지 다시 눈으로 훑어야 한다. "이 클러스터 기반 컴포넌트를 어떻게 깔았더라"가 사람 머릿속에만 있고 코드에 없었다.
+이렇게 하면 뻔한 사고가 난다. 공통이어야 할 gateway 포트 하나를 stg에서만 고치고 prod에는 반영을 잊는다. 새 환경을 하나 추가하려면 수백 줄짜리 values를 복붙한 뒤 무엇이 공통이고 무엇이 환경 고유인지 다시 눈으로 훑어야 한다. "이 클러스터 기반 컴포넌트를 어떻게 깔았더라"가 사람 머릿속에만 있고 코드에 없었다.
 
-그래서 두 가지를 코드로 옮기고 싶었다. 하나는 <b>공통 값과 환경 값의 분리</b>, 다른 하나는 <b>컴포넌트 사이의 설치 순서</b>다.
+그래서 두 가지를 코드로 옮기고자 했다. 하나는 <b>공통 값과 환경 값의 분리</b>, 다른 하나는 <b>컴포넌트 사이의 설치 순서</b>다.
 
 ## 2. 공통 값과 환경 값 딥머지
 
-디렉토리는 이렇게 잡았다. 공통 값 하나에 환경별 디렉토리를 나란히 둔다.
+디렉토리 구조는 다음과 같이 잡았다. 공통 값 하나에 환경별 디렉토리를 나란히 둔다.
 
 ```text
 cluster-base/
@@ -52,7 +52,7 @@ cluster-base/
 
 `common`을 베이스로 깔고 환경 값으로 <b>덮어쓰는</b> 딥머지로 만들었다. Helm 자체는 여러 values 파일을 순서대로 오버레이해주지만, 나는 파일을 나열하는 것보다 "공통 트리 위에 환경 트리를 재귀적으로 병합"하는 규칙 하나로 통일하고 싶었다. 그래서 sprig의 `mergeOverwrite`(재귀 딥머지)를 쓰는 `gotmpl`을 직접 짰다.
 
-`env.gotmpl`은 환경 스코프에서 동작한다. `TARGET_ENV`로 어떤 환경인지 받아 common과 해당 환경 values를 읽고, 통째로 딥머지한 결과를 helmfile의 환경 값으로 내놓는다. 이 값이 `condition:` 판단(어떤 release를 설치할지)에 쓰인다.
+`env.gotmpl`은 환경 스코프에서 동작한다. 이 템플릿은 `TARGET_ENV`로 어떤 환경인지 받아 common과 해당 환경 values를 읽고, 통째로 딥머지한 결과를 helmfile의 환경 값으로 내놓는다. 이 값이 `condition:` 판단(어떤 release를 설치할지)에 쓰인다.
 
 ```gotmpl
 {{/* env.gotmpl — common + 환경 values를 통째로 딥머지해 환경 값으로 노출 */}}
@@ -93,9 +93,9 @@ cluster-base/
 {{- if ne (len $merged) 0 }}{{ $merged | toYaml }}{{ end -}}
 ```
 
-여기서 조금 헷갈렸던 게 `enabled` 필드다. 나는 `enabled`를 두 용도로 쓰고 싶었다. helmfile 레벨에선 "이 release를 아예 설치할지 말지"의 스위치(`condition`)로, 하지만 그 값을 차트 values에까지 그대로 흘려보내면 차트에 따라 의미가 겹치거나 스키마에서 걸린다. 그래서 release 스코프 병합 결과에서 `enabled`를 `unset`으로 걷어냈다. 스위치는 환경 스코프에만 남기고, 차트에는 설정 값만 넘긴다는 뜻이다.
+여기서 조금 헷갈렸던 부분이 `enabled` 필드다. 나는 `enabled`를 두 용도로 쓰고 싶었다. helmfile 레벨에선 "이 release를 아예 설치할지 말지"의 스위치(`condition`)로, 하지만 그 값을 차트 values에까지 그대로 흘려보내면 차트에 따라 의미가 겹치거나 스키마에서 걸린다. 그래서 release 스코프 병합 결과에서 `enabled`를 `unset`으로 걷어냈다. 스위치는 환경 스코프에만 남기고, 차트에는 설정 값만 넘긴다는 뜻이다.
 
-common의 `values.yaml`은 이렇게 생겼다. 기본은 다 꺼두고(`enabled: false`) 공통 설정만 담아둔다.
+common의 `values.yaml`은 다음과 같이 생겼다. 기본은 다 꺼두고(`enabled: false`) 공통 설정만 담아둔다.
 
 ```yaml
 # values/common/values.yaml — 공통값. 켜는 건 환경 값의 몫
@@ -136,9 +136,9 @@ gpu-operator:
 
 ## 3. helmfile needs로 엮은 설치 순서
 
-값만 정리해선 부족했다. 이 컴포넌트들엔 순서가 있다. istio-base(CRD)가 먼저 들어가야 istiod가 뜨고, istiod가 있어야 gateway가 의미 있다. nfs 프로비저너는 nfs-server가 떠 있어야 스토리지클래스를 붙인다. 예전엔 이 순서가 설치 스크립트의 명령어 나열 순서, 즉 사람 기억에 있었다.
+값만 정리해서는 부족했다. 이 컴포넌트들엔 순서가 있다. istio-base(CRD)가 먼저 들어가야 istiod가 뜨고, istiod가 있어야 gateway가 의미 있다. nfs 프로비저너는 nfs-server가 떠 있어야 스토리지클래스를 붙인다. 예전엔 이 순서가 설치 스크립트의 명령어 나열 순서, 즉 사람 기억에 있었다.
 
-helmfile `needs`는 이 의존성을 release 사이의 그래프로 선언하게 해준다. 실행 순서를 내가 나열하는 게 아니라, "무엇이 무엇을 필요로 하는지"만 적으면 helmfile이 위상 정렬해서 순서를 정한다.
+helmfile `needs`는 이 의존성을 release 사이의 그래프로 선언하게 해 준다. 실행 순서를 내가 나열하는 게 아니라, "무엇이 무엇을 필요로 하는지"만 적으면 helmfile이 위상 정렬해서 순서를 정한다.
 
 ```yaml
 # helmfile.yaml (발췌) — condition으로 설치 여부, needs로 순서를 선언
@@ -175,7 +175,7 @@ releases:
 
 ## 4. TARGET_ENV 하나로 프로비저닝
 
-환경을 바꾸는 축이 `TARGET_ENV` 환경변수 하나로 수렴한다.
+환경을 바꾸는 축은 `TARGET_ENV` 환경변수 하나로 수렴한다.
 
 ```bash
 # 계획만 렌더해서 눈으로 확인 (아무것도 설치 안 함)
@@ -193,13 +193,13 @@ TARGET_ENV=prod helmfile sync
 
 이 구조를 실제로 굴리다 istio를 helm으로 업그레이드할 때 벽에 부딪혔다. `sync`가 istio 리소스에서 field conflict를 뱉으며 멈췄다.
 
-원인은 소유권이었다. istio를 처음 깔 때, 또는 istioctl이나 다른 경로가 한 번이라도 리소스를 만졌으면, 그 리소스의 일부 필드에 <b>다른 field manager가 소유권</b>을 갖게 된다. 이 상태에서 helm이 client-side로 apply하면 "이 필드는 네가 관리하는 게 아닌데 왜 바꾸려 하냐"며 충돌이 난다. istio처럼 CRD와 webhook, 여러 리소스가 얽힌 컴포넌트에서 특히 잘 터진다.
+원인은 필드 소유권에 있었다. istio를 처음 깔 때, 또는 istioctl이나 다른 경로가 한 번이라도 리소스를 만졌으면, 그 리소스의 일부 필드에 <b>다른 field manager가 소유권</b>을 갖게 된다. 이 상태에서 helm이 client-side로 apply하면 "이 필드는 네가 관리하는 게 아닌데 왜 바꾸려 하냐"며 충돌이 난다. istio처럼 CRD와 webhook, 여러 리소스가 얽힌 컴포넌트에서 특히 잘 터진다.
 
-해결은 helm의 apply 방식을 <b>server-side apply</b>로 바꾸고 충돌을 강제로 넘기는 것이다. `--server-side=true`로 필드 소유권을 API 서버가 관리하게 하고, `--force-conflicts`로 충돌하는 필드의 소유권을 지금 이 apply 주체(helm)로 가져온다. "이 필드는 이제 내가 관리한다"고 선언하고 밀어붙이는 것이다.
+해결 방법은 helm의 apply 방식을 <b>server-side apply</b>로 바꾸고 충돌을 강제로 넘기는 것이다. `--server-side=true`로 필드 소유권을 API 서버가 관리하게 하고, `--force-conflicts`로 충돌하는 필드의 소유권을 지금 이 apply 주체(helm)로 가져온다. "이 필드는 이제 내가 관리한다"고 선언하고 밀어붙이는 것이다.
 
-처음엔 이 두 인자를 helmDefaults의 `args`에 박아 모든 release에 default로 걸어봤다. 그런데 이렇게 두니 `helmfile diff`가 깨졌다. server-side로 켜면 diff 단계에서 오류가 나서, 계획을 텍스트로 먼저 확인하는 흐름(4절)을 못 쓰게 된다. 그래서 helmDefaults에 상시로 두는 건 접고 주석 처리했다.
+처음에는 이 두 인자를 helmDefaults의 `args`에 넣어 모든 release에 default로 걸어 보았다. 그런데 이렇게 두니 `helmfile diff`가 깨졌다. server-side로 켜면 diff 단계에서 오류가 나서, 계획을 텍스트로 먼저 확인하는 흐름(4절)을 못 쓰게 된다. 그래서 helmDefaults에 상시로 두는 건 접고 주석 처리했다.
 
-대신 평소 `sync`는 그대로 두고, 충돌이 나는 업그레이드에서만 sync에 인자를 실어 보내는 쪽으로 갔다.
+대신 평소 `sync` 방식은 그대로 두고, 충돌이 나는 업그레이드에서만 sync에 인자를 실어 보내는 쪽으로 전환했다.
 
 ```bash
 # 필드 소유권 충돌이 나는 업그레이드에서만 server-side apply 를 실어 sync

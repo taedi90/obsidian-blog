@@ -43,7 +43,7 @@ service:
     logs:    { receivers: [otlp], processors: [memory_limiter, batch], exporters: [...] }
 ```
 
-핵심은 `service.pipelines`다. 블록을 정의만 해두면 아무 일도 안 일어나고, <b>파이프라인에 엮어야</b> 그 경로가 산다. traces·metrics·logs가 각자의 파이프라인을 가지되 processor는 공유할 수 있다. 순서도 의미가 있어서, `memory_limiter`를 `batch`보다 앞에 둬 collector가 밀릴 때 먼저 배압을 걸게 한다.
+핵심은 `service.pipelines`다. 블록을 정의만 해두면 아무 일도 일어나지 않고, <b>파이프라인에 엮어야</b> 그 경로가 동작한다. traces·metrics·logs가 각자의 파이프라인을 가지되 processor는 공유할 수 있다. 순서도 의미가 있어서, `memory_limiter`를 `batch`보다 앞에 두면 collector가 밀릴 때 먼저 배압을 걸게 된다.
 
 앱 쪽은 이 receiver의 OTLP 엔드포인트만 알면 된다([[자바 메트릭 설정|자바 앱]]도 javaagent가 여기로 쏜다). 백엔드가 SigNoz든 다른 것이든, 바뀌는 건 exporter 한 곳이라 앱은 건드릴 일이 없다.
 
@@ -61,10 +61,10 @@ collector를 한 덩어리로 두지 않고 역할을 둘로 갈랐다.
                           SigNoz (ClickHouse)
 ```
 
-- <b>agent(DaemonSet)</b> — 노드마다 하나. 그 노드의 파드가 보낸 OTLP를 가까이서 받고, 노드/파드 로컬 지표(kubelet·호스트 메트릭, 파일 로그)를 붙여 gateway로 넘긴다. 앱 입장에선 "가장 가까운 노드-로컬 수신처"라 네트워크 경로가 짧다.
-- <b>gateway(Deployment/StatefulSet)</b> — 중앙에서 모아 클러스터 단위 가공(리소스 속성 정리 등)을 하고 백엔드로 내보낸다. 부하에 따라 스케일하는 지점도 여기다.
+- <b>agent(DaemonSet)</b>: 노드마다 하나씩 떠서, 그 노드의 파드가 보낸 OTLP를 가까이서 받고 노드/파드 로컬 지표(kubelet·호스트 메트릭, 파일 로그)를 붙여 gateway로 넘긴다. 앱 입장에서는 "가장 가까운 노드-로컬 수신처"라서 네트워크 경로가 짧다.
+- <b>gateway(Deployment/StatefulSet)</b>: 중앙에서 모아 클러스터 단위 가공(리소스 속성 정리 등)을 하고 백엔드로 내보낸다. 부하에 따라 스케일하는 지점도 여기다.
 
-이렇게 나누면 노드-로컬 관심사(그 노드에서만 아는 것)와 클러스터 관심사(모아서 봐야 아는 것)가 분리된다. 부작용도 있는데, 두 계층이 같은 대상을 이중으로 긁으면 메트릭이 중복된다 — 이건 [[otel-collector 중복 스크래핑 이슈|따로]] 겪고 정리했다.
+이렇게 나누면 노드-로컬 관심사(그 노드에서만 아는 것)와 클러스터 관심사(모아서 봐야 아는 것)가 분리된다. 부작용도 있는데, 두 계층이 같은 대상을 이중으로 긁으면 메트릭이 중복된다. 이 문제는 [[otel-collector 중복 스크래핑 이슈|따로]] 겪고 정리했다.
 
 ## 참고
 

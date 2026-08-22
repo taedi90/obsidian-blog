@@ -33,7 +33,7 @@ type:
 
 빌드 잡이 소스를 체크아웃하다 LFS 객체를 받는 단계에서 실패했다. 로그를 파보면 LFS API 응답이 <b>Bad credentials</b>였다.
 
-이상했던 건, git 자체 체크아웃(clone/fetch)은 멀쩡히 됐다는 점이다. 토큰은 분명히 잘 먹고 있는데 LFS만 인증에서 튕겼다. 원인은 <b>git-lfs가 별도 프로세스</b>라는 데 있었다.
+이상했던 건, git 자체 체크아웃(clone/fetch)은 멀쩡히 됐다는 점이다. 토큰은 분명히 정상적으로 통과하는데 LFS만 인증에서 거부됐다. 원인은 <b>git-lfs가 별도 프로세스</b>라는 데 있었다.
 
 git이 LFS로 추적되는 파일을 체크아웃할 때는 <b>smudge</b> 필터가 돈다. 이 필터가 git-lfs를 별도 프로세스로 띄워 LFS API에서 실제 파일 본체를 내려받는데, 이 프로세스는 Jenkins가 git remote helper에 꽂아준 자격증명을 자동으로 물려받지 못한다. 그러니 git 본체는 토큰으로 인증되는데 git-lfs는 무인증(또는 엉뚱한 자격증명)으로 LFS API를 두드리다 "Bad credentials"를 맞고, 체크아웃이 통째로 깨지는 구조였다.
 
@@ -86,7 +86,7 @@ checkout([
 ])
 ```
 
-여기서 한 번 더 밟은 지뢰가 리모트 URL 프로토콜이었다. `http://`로 두면 GitHub가 `https://`로 리다이렉트하는데, 그 리다이렉트를 타는 과정에서 git-lfs 자격증명 흐름이 깨졌다. 그래서 URL은 처음부터 `https://`로 박아야 했다. (LFS를 안 쓰는 GitOps 리포에서는 `GitLFSPull`이 그냥 no-op라 넣어둬도 무해하다.)
+여기서 한 번 더 겪은 문제는 리모트 URL 프로토콜이었다. `http://`로 두면 GitHub가 `https://`로 리다이렉트하는데, 그 리다이렉트를 거치는 과정에서 git-lfs 자격증명 흐름이 깨졌다. 그래서 URL은 처음부터 `https://`로 고정해야 했다. (LFS를 안 쓰는 GitOps 리포에서는 `GitLFSPull`이 그냥 no-op라 넣어둬도 무해하다.)
 
 ### 3. 셸 기반 체크아웃: skip-smudge 후 명시적 pull
 

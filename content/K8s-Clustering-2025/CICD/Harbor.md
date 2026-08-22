@@ -63,7 +63,7 @@ persistence:
       size: 5Gi
 ```
 
-`resourcePolicy: "keep"`은 차트를 삭제해도 PVC를 남겨둔다. 재설치 시 데이터가 날아가는 걸 방지하기 위한 안전장치다.
+`resourcePolicy: "keep"` 설정은 차트를 삭제해도 PVC를 남겨둔다. 재설치 시 데이터가 삭제되는 상황을 방지하기 위한 안전장치다.
 
 ## 4. 업데이트 전략
 

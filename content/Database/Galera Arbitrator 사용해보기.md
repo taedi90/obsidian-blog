@@ -18,13 +18,13 @@ completed:
 - galera 26.22
 
 ## 2. 이슈
-Galera Cluster 가 Failover 를 처리하기 위해서는 최소 3개의 노드가 필요하다. 하지만 불가피하게 2개 노드에서 Galera Cluster 를 이용해야하는 상황이 생겨 Galera Arbitrator 를 활용하는 방법을 알아보았다.  
-Galera Cluster 는 클러스터 분산이 이뤄지면 Quorum 알고리즘을 이용해 Primary 클러스터와 non-Primary 클러스터 섹션을 구분하는데 Quorum 알고리즘에 일반 노드가 아닌 Galera Arbitrator(이하 garbd) 노드도 참여가 가능하다고 한다.  
+Galera Cluster 가 Failover 를 처리하기 위해서는 최소 3개의 노드가 필요하다. 하지만 불가피하게 2개 노드에서 Galera Cluster 를 이용해야 하는 상황이 생겨 Galera Arbitrator 를 활용하는 방법을 알아보았다.  
+Galera Cluster 는 클러스터 분산이 이루어지면 Quorum 알고리즘을 이용해 Primary 클러스터와 non-Primary 클러스터 섹션을 구분하는데, Quorum 알고리즘에는 일반 노드가 아닌 Galera Arbitrator(이하 garbd) 노드도 참여할 수 있다고 한다.  
 
 ## 3. 해결
 ### 1. garbd 컨테이너 이미지 생성
-garbd 공식 컨테이너 이미지는 없기 때문에 생성이 필요했고, 기존 mariadb 컨테이너와 별도로 준비해도 되겠지만 굳이 분리할 필요가 없다면 1개 이미지로 통합시키고 command 로 일반 galera node 와 garbd 노드로 분리하는 방법을 택했다.  
-현재 클러스터 버전과 일치하는 garbd 를 설치하기 위해 [mariadb 공식 문서](https://mariadb.com/kb/en/meta/galera-versions/)를 확인해봤지만 정확하게 일치하는 버전은 없었으나 갈레라 major 버전이 26인 경우 galera-arbitrator-4 를 설치하는 것이 맞을 것으로 판단되어 아래와 같이 Dockerfile 내용을 추가했다.  
+garbd 공식 컨테이너 이미지는 없기 때문에 이미지 생성이 필요했다. 기존 mariadb 컨테이너와 별도로 준비해도 되겠지만 굳이 분리할 필요가 없다면 하나의 이미지로 통합한 뒤 command 로 일반 galera node 와 garbd 노드를 구분하는 방법을 택했다.  
+현재 클러스터 버전과 일치하는 garbd 를 설치하기 위해 [mariadb 공식 문서](https://mariadb.com/kb/en/meta/galera-versions/)를 확인해봤지만 정확히 일치하는 버전은 없었다. 다만 galera major 버전이 26인 경우 galera-arbitrator-4 를 설치하는 것이 맞을 것으로 판단되어 아래와 같이 Dockerfile 내용을 추가했다.  
 
 ```dockerfile
 RUN apt update --fix-missing && apt -y upgrade
@@ -33,7 +33,7 @@ RUN apt install -y --no-install-recommends software-properties-common &&\
     apt install -y --no-install-recommends galera-arbitrator-4
 ```
 
-향후 `https://releases.galeracluster.com/galera-4/ubuntu` 리포가 항상 존재할지와 상위버전이 계속해서 현재 Galera Cluster 를 지원할지 고민스럽긴 하지만 나중에 고민하기로 했다.  
+향후 `https://releases.galeracluster.com/galera-4/ubuntu` 리포가 항상 존재할지와 상위 버전이 계속해서 현재 Galera Cluster 를 지원할지는 고민되는 부분이지만, 나중에 고민하기로 했다.  
 
 > [!NOTE] 
 > galera-arbitrator-3 을 설치하면 아래와 같은 오류가 발생한다.  
@@ -74,10 +74,10 @@ options="base_dir=/bitnami/mariadb"
 ```
 
 ### 3. failover 확인
-garbd 노드가 정상적으로 실행되면 wsrep_cluster_size 이 1 증가하고 정상적으로 클러스터에 join 한 것으로 보인다. 하지만 이정도로는 garbd 가 정상적으로 동작하는지 판단하기가 난감하다. 그렇기때문에 인위적으로 장애를 발생시키고 garbd 노드 유무에 따른 failover 처리 여부를 파악했다.   
+garbd 노드가 정상적으로 실행되면 wsrep_cluster_size 가 1 증가하고 클러스터에 정상적으로 join 한 것으로 보인다. 하지만 이 정도로는 garbd 가 정상적으로 동작하는지 판단하기 어렵다. 그렇기 때문에 인위적으로 장애를 발생시키고 garbd 노드의 유무에 따른 failover 처리 여부를 파악했다.   
 
 #### 테스트 방식
-galera 노드와 garbd 노드 모두 도커 컨테이너로 구성되어 있기 때문에 물리적으로 네트워크 단절을 시키기는 어렵고 `docker network disconnect` 명령어를 사용해서 노드간 네트워크를 단절시켰다. 이렇게 되면 각 노드가 계속해서 실행중이지만 서로 통신이 되지 않는 상태(split)가 발생한다.  
+galera 노드와 garbd 노드 모두 도커 컨테이너로 구성되어 있기 때문에 물리적으로 네트워크를 단절시키기는 어렵다. 그래서 `docker network disconnect` 명령어를 사용해 노드 간 네트워크를 단절시켰다. 그러면 각 노드가 계속 실행 중이지만 서로 통신할 수 없는 상태(split)가 발생한다.  
 
 ```bash
 # 네트워크 단절
@@ -87,12 +87,12 @@ docker network connect garbd-test_galera-net garbd-test-0
 ```
 
 > [!NOTE]
-> docker stop 으로 컨테이너를 정상 종료할 경우 1개 노드만 남더라도 트랜젝션이 정상적으로 동작한다.
+> docker stop 으로 컨테이너를 정상 종료할 경우 노드가 1개만 남더라도 트랜젝션이 정상적으로 동작한다.
 
 
 #### 케이스1 - galera 노드 2, garbd 노드 1
 
-클러스터를 init 한 직후 클러스터 사이즈와 상태는 다음과 같다.  
+클러스터를 init 한 직후의 클러스터 사이즈와 상태는 다음과 같다.  
 
 ```sql
 MariaDB [(none)]> SHOW STATUS LIKE 'wsrep_cluster_size';
@@ -116,7 +116,7 @@ MariaDB [(none)]> SHOW STATUS LIKE 'wsrep_cluster_status';
 docker network disconnect garbd-test_galera-net garbd-test-0
 ```
 
-1번 노드에서 확인해보면 0번 노드가 분리되어 클러스터 사이즈가 줄었지만 Primary 섹션임을 확인할 수 있다.  
+1번 노드에서 확인해보면 0번 노드가 분리되어 클러스터 사이즈가 줄었음에도 Primary 섹션임을 확인할 수 있다.  
 
 ```sql
 MariaDB [(none)]> SHOW STATUS LIKE 'wsrep_cluster_size';
@@ -134,7 +134,7 @@ MariaDB [(none)]> SHOW STATUS LIKE 'wsrep_cluster_status';
 +----------------------+---------+
 ```
 
-때문에 트랜젝션 처리가 정상적으로 가능하다.  
+따라서 트랜젝션 처리가 정상적으로 가능하다.  
 
 ```sql
 MariaDB [(none)]> create database test4;
@@ -143,7 +143,7 @@ Query OK, 1 row affected (0.017 sec)
 
 #### 케이스2 - galera 노드 2, garbd 노드 0
 
-클러스터를 init 한 직후 클러스터 사이즈와 상태는 다음과 같다.  
+클러스터를 init 한 직후의 클러스터 사이즈와 상태는 다음과 같다.  
 
 ```sql
 MariaDB [(none)]> SHOW STATUS LIKE 'wsrep_cluster_size';
@@ -167,7 +167,7 @@ MariaDB [(none)]> SHOW STATUS LIKE 'wsrep_cluster_status';
 docker network disconnect garbd-test_galera-net garbd-test-0
 ```
 
-1번 노드에서 확인해보면 0번 노드가 분리되어 클러스터 사이즈가 줄었고 non-Primary 섹션임을 확인할 수 있다. (split brain).   
+1번 노드에서 확인해보면 0번 노드가 분리되어 클러스터 사이즈가 줄었고 non-Primary 섹션임을 확인할 수 있다(split brain).   
 
 ```sql
 MariaDB [(none)]> SHOW STATUS LIKE 'wsrep_cluster_size';

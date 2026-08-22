@@ -19,17 +19,17 @@ type:
 ## 요약
 
 > [!SUMMARY]
-> CI라면 Jenkins·Drone CI·GitLab CI만 써봤는데, [[폐쇄망 전용 싱글 바이너리 워크플로우 도구 Deck 만들기|Deck]]을 GitHub에서 하며 GitHub Actions를 처음 만졌다. 이후 사내 여러 리포 CI도 Actions로 옮기며 이벤트 트리거·job/step·재사용 워크플로우(`workflow_call`)·매트릭스·`make` 위임·릴리스/배포 트리거가 손에 익었다. 로직은 `make`로 밀어 로컬과 CI를 일치시키고, 공통 본체는 `workflow_call`로 한 번만, 보안 스캔은 상시 잡으로 둔 게 골자다.
+> CI라면 Jenkins·Drone CI·GitLab CI만 사용해 봤지만, [[폐쇄망 전용 싱글 바이너리 워크플로우 도구 Deck 만들기|Deck]] 작업을 GitHub에서 진행하며 GitHub Actions를 처음 접했다. 이후 사내 여러 리포의 CI도 Actions로 옮기면서 이벤트 트리거와 job/step 구조, 재사용 워크플로우(`workflow_call`), 매트릭스, `make` 위임, 릴리스/배포 트리거가 손에 익었다. 실행 로직은 `make`로 위임해서 로컬과 CI를 일치시키고, 공통 본체는 `workflow_call`로 한 곳에만 두되, 보안 스캔은 상시 잡으로 유지한 것이 골자다.
 
-Jenkins·GitLab CI에서 하던 걸 Actions 어휘로 다시 배우는 과정이었다.
+Jenkins·GitLab CI에서 하던 방식을 Actions의 개념 체계로 다시 배우는 과정이었다.
 
 ## 1. 기존 CI와 다르게 느낀 점
 
-먼저 감을 잡느라 알던 것과 대응부터 시켰다.
+먼저 감을 잡기 위해 알고 있던 기존 도구의 개념과 대응 관계부터 정리했다.
 
-- GitLab CI는 리포 하나에 `.gitlab-ci.yml` 하나, `stages`로 순서를 잡는다. GitHub Actions는 `.github/workflows/` 아래 파일 여러 개를 두고 각각을 이벤트로 켠다.
-- Jenkins는 서버(컨트롤러+에이전트)를 내가 세우고 관리해야 했다. Actions는 GitHub 호스티드 러너가 있어 `runs-on: ubuntu-latest`면 실행 환경이 그냥 주어진다. (self-hosted도 되지만, 관리 부담 없이 시작할 수 있는 게 컸다.)
-- 제일 낯설었던 건 이벤트 기반이라는 점이다. "push되면", "PR 열리면", "태그 밀면", "매일 밤", "수동 버튼"이 각각 별도 트리거고, 하나의 워크플로우가 그중 무엇에 반응할지를 `on:`에 적는다.
+- GitLab CI는 리포 하나에 `.gitlab-ci.yml` 파일 하나를 두고 `stages`로 실행 순서를 잡는다. GitHub Actions는 `.github/workflows/` 아래에 파일 여러 개를 두고 각각을 이벤트로 활성화한다.
+- Jenkins는 서버(컨트롤러와 에이전트)를 직접 세워서 관리해야 했다. Actions에는 GitHub 호스티드 러너가 있으므로 `runs-on: ubuntu-latest`만 지정하면 실행 환경이 그대로 주어진다. (self-hosted 러너도 사용할 수 있지만, 관리 부담 없이 시작할 수 있다는 점이 컸다.)
+- 가장 낯설었던 점은 이벤트 기반이라는 것이다. "push되면", "PR이 열리면", "태그를 push하면", "매일 밤", "수동 버튼"이 각각 별도 트리거이며, 하나의 워크플로우가 그중 무엇에 반응할지를 `on:` 항목에 적는다.
 
 ```yaml
 # 이벤트가 워크플로우를 켠다 — PR/브랜치별로 다른 파일을 둘 수 있다
@@ -42,7 +42,7 @@ on:
 
 ## 2. job과 step, 그리고 make로 몰기
 
-워크플로우는 `jobs`로 나뉘고, 각 job은 격리된 러너에서 돈다. job 안은 `steps`의 나열이고, step은 액션(`uses:`)이나 셸 명령(`run:`)이다.
+워크플로우는 `jobs` 단위로 나뉘고, 각 job은 격리된 러너에서 실행된다. job 내부는 `steps`의 나열이며, step은 액션(`uses:`)이나 셸 명령(`run:`)이다.
 
 ```yaml
 jobs:
@@ -56,11 +56,11 @@ jobs:
       - run: make verify-generated       # 생성물(문서 등)이 최신인지
 ```
 
-여기서 원칙을 하나 정했다. 실제 로직은 전부 `make`로 밀었다. `run:`에 긴 스크립트를 박지 않고 `make build`, `make lint`, `make vuln`처럼 부른다. CI YAML이 얇아져 읽기 쉽고, 같은 명령을 로컬에서도 그대로 돌릴 수 있어 "CI에서만 되고 내 노트북에선 안 되는" 상황이 준다. Jenkins Groovy에 로직을 몰아넣었다가 로컬 재현이 안 돼 고생했던 게 반면교사였다.
+여기서 원칙을 하나 정했다. 실제 로직은 전부 `make` 타깃으로 위임했다. `run:` 항목에 긴 스크립트를 넣지 않고 `make build`, `make lint`, `make vuln`처럼 호출한다. CI YAML이 얇아져 읽기 쉽고, 같은 명령을 로컬에서도 그대로 실행할 수 있으므로 "CI에서만 되고 내 노트북에서는 안 되는" 상황이 줄어든다. Jenkins Groovy에 로직을 몰아 넣었다가 로컬 재현이 안 되어 고생했던 경험이 반면교사였다.
 
 ## 3. 재사용 워크플로우로 중복 없애기
 
-Deck에는 트리거가 여럿이다. main push용(`ci-main.yml`), PR용(`ci-pr.yml`). 둘이 하는 일(빌드·린트·검증·보안)은 거의 같아서, 복붙하면 한쪽만 고치는 사고가 난다. 그래서 재사용 워크플로우(`workflow_call`)로 공통 본체를 빼고, 트리거 파일은 그걸 호출만 한다.
+Deck에는 트리거가 여럿이다. main push용(`ci-main.yml`)과 PR용(`ci-pr.yml`)이 그것이다. 두 워크플로우가 수행하는 일(빌드·린트·검증·보안)은 거의 같아서, 복사해서 붙이면 한쪽만 수정하는 문제가 발생한다. 그래서 재사용 워크플로우(`workflow_call`)로 공통 본체를 분리하고, 트리거 파일은 그것을 호출하기만 한다.
 
 ```yaml
 # ci-reusable.yml — 공통 본체
@@ -77,11 +77,11 @@ jobs:
     uses: ./.github/workflows/ci-reusable.yml
 ```
 
-GitLab CI의 `include:`/`extends:`로 하던 재사용을 Actions에선 `workflow_call`로 한다. 트리거별로 파일은 나뉘어도 진짜 CI 내용은 한 곳에만 있다.
+GitLab CI에서 `include:`/`extends:`로 하던 재사용을 Actions에서는 `workflow_call`로 구현한다. 트리거별로 파일은 나뉘더라도 실질적인 CI 내용은 한 곳에만 존재한다.
 
 ## 4. 매트릭스와 보안 잡
 
-<b>매트릭스.</b> 같은 job을 값만 바꿔 병렬로 돌린다. OS·버전 조합을 검증할 때 좋다.
+<b>매트릭스.</b> 같은 job을 값만 바꾸어 병렬로 실행한다. OS·버전 조합을 검증할 때 유용하다.
 
 ```yaml
 strategy:
@@ -90,25 +90,25 @@ strategy:
 runs-on: ${{ matrix.os }}
 ```
 
-<b>보안 잡.</b> CI에 취약점 스캔을 상시 스텝으로 넣었다. Deck에선 `security` job이 `make vuln`(Go 코드·의존성 스캔)을 돌린다. 취약점 점검을 "가끔 수동으로"가 아니라 PR마다 자동으로 돌게 한 게 포인트다. (스캔 도구와 대응 방식은 [[govulncheck와 린트로 Go 프로젝트 기본기 잡기|따로]] 정리했다.)
+<b>보안 잡.</b> CI에 취약점 스캔을 상시 스텝으로 추가했다. Deck에서는 `security` job이 `make vuln`(Go 코드·의존성 스캔)을 실행한다. 취약점 점검을 "가끔 수동으로"가 아니라 PR마다 자동으로 실행하게 만든 것이 포인트다. (스캔 도구와 대응 방식은 [[govulncheck와 린트로 Go 프로젝트 기본기 잡기|따로]] 정리했다.)
 
 ## 5. 릴리스와 문서 배포 트리거
 
-이벤트가 다양하다는 걸 제일 체감한 건 릴리스·배포였다.
+이벤트 종류가 다양하다는 것을 가장 체감한 영역은 릴리스와 배포였다.
 
-- <b>릴리스(태그 트리거).</b> `on: push: tags: ['v*']`. `v1.2.3`을 밀면 릴리스 워크플로우가 돈다. 스모크 테스트 후 [[goreleaser 릴리스 자동화|goreleaser]]로 바이너리·패키지·brew formula를 낸다.
-- <b>문서 배포(Pages).</b> `docs/`가 바뀌면 [[Docusaurus 도입기|Docusaurus]]를 빌드해 GitHub Pages로 배포한다. `permissions: pages: write`와 `concurrency`(진행 중 배포는 안 끊기게)를 처음 써봤다.
-- <b>야간 e2e(스케줄).</b> `on: schedule:`로 매일 밤 종단 테스트를 돌려, 커밋이 없어도 회귀를 잡는다.
+- <b>릴리스(태그 트리거).</b> `on: push: tags: ['v*']` 형태로 설정한다. `v1.2.3` 태그를 push하면 릴리스 워크플로우가 실행된다. 스모크 테스트를 통과한 뒤 [[goreleaser 릴리스 자동화|goreleaser]]로 바이너리·패키지·brew formula를 산출한다.
+- <b>문서 배포(Pages).</b> `docs/` 디렉터리가 바뀌면 [[Docusaurus 도입기|Docusaurus]]를 빌드해서 GitHub Pages로 배포한다. `permissions: pages: write` 권한 설정과 `concurrency`(진행 중인 배포를 중간에 중단하지 않도록 하는 옵션)를 처음 사용했다.
+- <b>야간 e2e(스케줄).</b> `on: schedule:` 트리거로 매일 밤 종단 테스트를 실행해서, 커밋이 없는 날에도 회귀 문제를 잡아낸다.
 
 ## 6. 여러 리포에 짜면서 종합한 것
 
-Deck 말고도 사내 리포 CI를 Actions로 옮기면서 패턴이 굳었다(구체 내용은 사내라 생략).
+Deck 외에도 사내 리포의 CI를 Actions로 옮기면서 패턴이 굳어졌다(세부 내용은 사내 정보라 생략한다).
 
 - 제품 리포: 빌드·테스트 매트릭스 + 컨테이너 이미지 빌드·푸시.
 - 차트 리포: 헬름 차트 lint·템플릿 렌더 검증 + 사용 이미지 취약점 스캔.
 - 인프라 리포: [[Terraform으로 GPU VM 찍어내기|Terraform]] `fmt`/`validate`.
 
-리포가 달라도 굳은 습관은 셋이었다. 로직은 `make`로 밀어 로컬과 CI를 일치시키고, 공통 본체는 `workflow_call`로 한 번만 쓰고, 보안 스캔은 상시 잡으로 파이프라인에 박는다. 결국 낯설었던 건 도구가 아니라 이벤트 기반·호스티드 러너·재사용 워크플로우라는 Actions 특유의 어휘였다.
+리포가 달라도 굳어진 습관은 셋이었다. 로직은 `make`로 위임해서 로컬과 CI를 일치시키고, 공통 본체는 `workflow_call`로 한 번만 정의하며, 보안 스캔은 상시 잡으로 파이프라인에 포함시킨다. 결국 낯설었던 부분은 도구 자체가 아니라 이벤트 기반 모델·호스티드 러너·재사용 워크플로우라는 Actions 특유의 개념이었다.
 
 ## 참고
 

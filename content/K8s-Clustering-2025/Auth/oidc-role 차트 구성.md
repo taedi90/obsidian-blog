@@ -47,10 +47,10 @@ type:
 
 역할을 둘로 갈라둔 게 핵심이다.
 
-- <b>`addons/` — 권한 정의(무엇을 할 수 있나).</b> `Role`/`ClusterRole`을 `.gotmpl`로 둔다. "개발자는 이 리소스들을 읽고 쓸 수 있다" 같은 <b>권한 묶음</b> 자체다. 사람과 무관하게 재사용된다.
-- <b>`chart/templates/` — 바인딩(누구에게 주나).</b> 위에서 정의한 권한을 특정 OIDC 사용자에 잇는 `RoleBinding`/`ClusterRoleBinding`이다.
-- <b>`environments/*/values.yaml` — 매핑값.</b> "이 클러스터에서 누가 어떤 role을 갖는지"를 값으로 둔다. 클러스터마다 구성원·권한이 다르니 환경으로 분리한다.
-- <b>`helmfile.yaml` — 오케스트레이션.</b> addons(권한 정의)와 chart(바인딩)를 환경별 values와 함께 한 번에 적용한다.
+- <b>`addons/`: 권한 정의(무엇을 할 수 있나).</b> `Role`/`ClusterRole`을 `.gotmpl`로 둔다. "개발자는 이 리소스들을 읽고 쓸 수 있다" 같은 <b>권한 묶음</b> 자체다. 사람과 무관하게 재사용된다.
+- <b>`chart/templates/`: 바인딩(누구에게 주나).</b> 위에서 정의한 권한을 특정 OIDC 사용자에 잇는 `RoleBinding`/`ClusterRoleBinding`이다.
+- <b>`environments/*/values.yaml`: 매핑값.</b> "이 클러스터에서 누가 어떤 role을 갖는지"를 값으로 둔다. 클러스터마다 구성원·권한이 다르니 환경으로 분리한다.
+- <b>`helmfile.yaml`: 오케스트레이션.</b> addons(권한 정의)와 chart(바인딩)를 환경별 values와 함께 한 번에 적용한다.
 
 정의(addons)와 배정(chart)을 나눠두니, 권한 묶음은 그대로 두고 "누구에게 줄지"만 values에서 바꾸면 된다.
 
@@ -78,7 +78,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
-`values.yaml`에는 이 매핑을 사람이 읽기 쉬운 형태로 둔다 — 대략 "사용자 → (네임스페이스, role)" 목록이다. chart 템플릿이 그 목록을 돌며 위 같은 바인딩을 찍어낸다. 사람이 하나 늘면 values에 한 줄 추가하고 적용하면 끝이다.
+`values.yaml`에는 이 매핑을 사람이 읽기 쉬운 형태로 둔다. 대략 "사용자 → (네임스페이스, role)" 목록이다. chart 템플릿이 그 목록을 돌며 위 같은 바인딩을 찍어낸다. 사람이 하나 늘면 values에 한 줄 추가하고 적용하면 끝이다.
 
 <b>네임스페이스 한정이면 `Role`+`RoleBinding`, 클러스터 전역이면 `ClusterRole`+`ClusterRoleBinding`</b>을 쓴다. 대부분의 개인 권한은 특정 네임스페이스로 한정했고(그래서 `Role` 쪽이 주력), 노드·PV·CRD처럼 네임스페이스에 안 매이는 리소스나 클러스터 관리자급만 `ClusterRole`로 뒀다.
 

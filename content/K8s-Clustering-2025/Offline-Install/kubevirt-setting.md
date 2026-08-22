@@ -19,7 +19,7 @@ type:
 
 ## 1. 개요
 
-쿠버네티스(Kubernetes) 오프라인 설치를 테스트하려면 외부 네트워크가 완전히 끊긴 환경이 필요했다. 별도 서버에 KVM이나 VirtualBox로 VM을 올리고 네트워크를 끊는 방법도 있지만, 구성이 번거롭기도 하고 이왕 클러스터에 익숙해진 김에 전부 클러스터 안에서 해결하고 싶었다.
+쿠버네티스(Kubernetes) 오프라인 설치를 테스트하려면 외부 네트워크가 완전히 끊긴 환경이 필요했다. 별도 서버에 KVM이나 VirtualBox로 VM을 올리고 네트워크를 끊는 방법도 있지만, 구성이 번거롭기도 했고 이왕 클러스터에 익숙해진 김에 전부 클러스터 안에서 해결하고 싶었다.
 
 찾아보니 <b>KubeVirt</b>로 노드 자원을 써서 VM을 띄울 수 있었고, 여기에 <b>CiliumNetworkPolicy</b>를 얹으면 외부망 차단까지 깔끔하게 될 것 같았다.
 
@@ -27,7 +27,7 @@ type:
 
 KubeVirt는 쿠버네티스에서 가상 머신(VM)을 다룰 수 있게 해주는 오픈소스다. VM 기반 워크로드를 컨테이너 애플리케이션과 같은 플랫폼에서 굴리자는 게 핵심이다.
 
-동작 방식은 사용자 정의 리소스(CRD, Custom Resource Definitions)로 쿠버네티스 API를 확장하는 것이다. 그래서 쿠버네티스가 VM 객체를 파드처럼 이해하고 관리한다. VM을 만들면 실제로는 KVM(Kernel-based Virtual Machine) 인스턴스를 품은 특수한 파드 안에서 돌아간다. 이 구조 덕분에 CiliumNetworkPolicy 같은 파드용 정책이 VM에도 그대로 먹힌다는 게 나중에 유용했다.
+동작 방식은 사용자 정의 리소스(CRD, Custom Resource Definitions)로 쿠버네티스 API를 확장하는 것이다. 그래서 쿠버네티스가 VM 객체를 파드처럼 이해하고 관리한다. VM을 만들면 실제로는 KVM(Kernel-based Virtual Machine) 인스턴스를 품은 특수한 파드 안에서 돌아간다. 이 구조 덕분에 CiliumNetworkPolicy 같은 파드용 정책이 VM에도 그대로 적용된다는 점이 나중에 유용했다.
 
 ## 3. 사전 준비
 

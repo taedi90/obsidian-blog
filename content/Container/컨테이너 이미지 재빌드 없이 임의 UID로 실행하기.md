@@ -23,22 +23,22 @@ featured: true
 ## 요약
 
 > [!SUMMARY]
-> 고객사마다 요구하는 실행 UID/GID가 달라서, 그에 맞춰 컨테이너 이미지를 <b>매번 다시 빌드</b>하고 있었다. 고객사 수만큼 이미지 변형이 생겨 관리가 어렵고 납품·업데이트마다 재빌드가 필요했다. <b>빌드 UID와 런타임 UID를 분리</b>해서, 이미지는 한 번만 빌드하고 런타임 UID/GID는 배포 시 `securityContext`로만 지정하도록 바꿨다. 방식은 OpenShift의 <b>arbitrary-UID 패턴</b>을 vanilla 쿠버네티스에 이식한 것 — 이미지 내부 파일을 빌드 그룹(GID) 소유 + group-writable(`chmod -R g=u`)로 두고, 파드에 그 GID를 `supplementalGroups`로 등록하면 런타임 UID가 무엇이든 group 권한으로 파일에 접근한다. 언어 런타임별로 걸리는 지점(`HOME`, node의 passwd 조회)은 `ENV HOME`과 `nss_wrapper`로 메웠다. 기존 고정 UID 방식은 그대로 두고, 그 위에 임의 UID로도 돌 수 있는 "여지"를 얹는 변경이라 무손상이다.
+> 고객사마다 요구하는 실행 UID/GID가 달라서, 그에 맞춰 컨테이너 이미지를 <b>매번 다시 빌드</b>하고 있었다. 고객사 수만큼 이미지 변형이 생겨 관리가 어렵고 납품·업데이트마다 재빌드가 필요했다. <b>빌드 UID와 런타임 UID를 분리</b>해서, 이미지는 한 번만 빌드하고 런타임 UID/GID는 배포 시 `securityContext`로만 지정하도록 바꿨다. 방식은 OpenShift의 <b>arbitrary-UID 패턴</b>을 vanilla 쿠버네티스에 이식한 것이다: 이미지 내부 파일을 빌드 그룹(GID) 소유 + group-writable(`chmod -R g=u`)로 두고, 파드에 그 GID를 `supplementalGroups`로 등록하면 런타임 UID가 무엇이든 group 권한으로 파일에 접근한다. 언어 런타임별로 걸리는 지점(`HOME`, node의 passwd 조회)은 `ENV HOME`과 `nss_wrapper`로 보완했다. 기존 고정 UID 방식은 그대로 두고, 그 위에 임의 UID로도 돌 수 있는 "여지"를 더하는 변경이라 무손상이다.
 
 ## 1. 고객사마다 이미지를 다시 빌드하던 문제
 
 제품은 여러 고객사에 폐쇄망으로 납품된다. 그런데 고객사마다 컨테이너를 실행할 UID/GID를 다르게 요구하는 경우가 있었다. 보안 정책상 "이 서비스는 UID 2222로 띄워라" 같은 식이다.
 
-그때마다 우리가 한 건 <b>그 UID/GID에 맞춰 이미지를 다시 빌드</b>하는 것이었다. 이미지 안의 파일 소유권을 그 UID로 맞춰 구우니까. 문제는 이게 쌓인다는 거다.
+그때마다 우리가 한 건 <b>그 UID/GID에 맞춰 이미지를 다시 빌드</b>하는 것이었다. 이미지 안의 파일 소유권을 해당 UID로 맞춰 고정했기 때문이다. 문제는 이런 변형이 계속 축적된다는 점이다.
 
-- 고객사 수만큼 <b>이미지 변형</b>이 생겼다. 같은 서비스인데 UID만 다른 이미지가 여러 개.
+- 고객사 수만큼 <b>이미지 변형</b>이 생겼다. 같은 서비스인데 UID만 다른 이미지가 여러 개 존재하게 되었다.
 - 납품·업데이트 때마다 그 변형들을 <b>다시 빌드</b>해야 했다. GPU 서빙 이미지처럼 무거운 건 빌드 시간도 만만치 않았다.
 
-목표는 단순했다. <b>이미지는 한 번만 빌드하고, 런타임 UID/GID는 배포할 때만 정하게</b> 만드는 것. 빌드 시점의 UID와 런타임 UID를 떼어놓는 것이다.
+목표는 단순했다. <b>이미지는 한 번만 빌드하고, 런타임 UID/GID는 배포할 때만 정하도록</b> 만드는 것이었다. 빌드 시점의 UID와 런타임 UID를 분리하는 것이다.
 
 ## 2. OpenShift의 arbitrary-UID 패턴 빌려오기
 
-찾다 보니 이건 OpenShift가 이미 표준으로 푸는 문제였다. OpenShift는 컨테이너 탈출 시 피해를 줄이고 특정 UID에 의존하는 이미지를 못 쓰게 하려고, 기본적으로 <b>프로젝트별 범위 내의 임의 UID(arbitrary UID)로 컨테이너를 실행</b>한다. 그래서 이미지를 만들 때 "특정 UID에 묶지 말고, group 권한으로 돌아가게 만들라"고 권장한다 — 파일을 `GID 0` 소유 + group-writable로 두는 식.
+찾다 보니 이건 OpenShift가 이미 표준으로 푸는 문제였다. OpenShift는 컨테이너 탈출 시 피해를 줄이고 특정 UID에 의존하는 이미지를 못 쓰게 하려고, 기본적으로 <b>프로젝트별 범위 내의 임의 UID(arbitrary UID)로 컨테이너를 실행</b>한다. 그래서 이미지를 만들 때 "특정 UID에 묶지 말고, group 권한으로 돌아가게 만들라"고 권장한다. 구체적으로는 파일을 `GID 0` 소유 + group-writable로 두는 방식이다.
 
 우리는 OpenShift가 아니라 vanilla 쿠버네티스라 이게 강제사항은 아니다. 하지만 <b>보안성과 이식성</b> 때문에 널리 쓰이는 검증된 패턴이라, 이번 UID/GID 종속 문제를 푸는 방식으로 그대로 채택했다.
 
@@ -74,7 +74,7 @@ securityContext:
 `g=u`만으로 다 되면 좋았을 텐데, 임의 UID로 띄우면 언어 런타임별로 다른 데서 걸렸다. 걸림돌은 세 종류였다.
 
 <b>① 런타임 쓰기 경로 권한 (`chmod -R g=u`)</b>
-런타임이 작업·로그·캐시 디렉토리에 쓰려는데 group 쓰기 권한이 없으면 `EACCES`로 죽는다. `/app`, `/var/log/supervisor`, `/run`, GPU 서빙의 `/vllm-workspace` 같은 경로들. 여기에 `g=u`를 걸어 group이 owner만큼 쓰게 했다.
+런타임이 작업·로그·캐시 디렉토리에 쓰려는데 group 쓰기 권한이 없으면 `EACCES` 오류로 종료된다. 해당 경로에는 `/app`, `/var/log/supervisor`, `/run`, GPU 서빙의 `/vllm-workspace` 같은 곳이 포함되었다. 이 경로들에 `g=u`를 적용해 group이 owner만큼 쓸 수 있게 했다.
 
 <b>② `HOME`이 `/`로 잡히는 문제 (`ENV HOME` / 캐시 env)</b>
 임의 UID는 `/etc/passwd`에 엔트리가 없다. 그러면 `HOME`이 `/`로 잡히고, `~/.cache` 같은 데 쓰려다 실패한다. 두 갈래로 대응했다.
@@ -85,7 +85,7 @@ securityContext:
 <b>③ node의 passwd 조회 (`nss_wrapper`)</b>
 이건 <b>node 런타임 전용</b> 함정이었다. node의 `os.userInfo()`(내부적으로 `uv_os_get_passwd`)는 현재 UID가 passwd에 없으면 예외를 던지며 죽는다. python·go·java·dotnet은 이걸 안 하는데 node만 한다.
 
-대응은 `nss_wrapper`다. `LD_PRELOAD=libnss_wrapper.so`를 entrypoint에 걸어, 임의 UID를 passwd 엔트리로 <b>동적 매핑</b>해준다. node가 "나는 UID 2222"를 조회하면 wrapper가 가짜 passwd 엔트리를 만들어 돌려주는 식. code-server, 사용자 node 앱, MCP 서버 같은 node 기반 이미지에만 이 entrypoint를 붙였다.
+대응은 `nss_wrapper`다. `LD_PRELOAD=libnss_wrapper.so`를 entrypoint에 걸어, 임의 UID를 passwd 엔트리로 <b>동적 매핑</b>해준다. node가 "나는 UID 2222"를 조회하면 wrapper가 가짜 passwd 엔트리를 만들어 돌려주는 방식이다. code-server, 사용자 node 앱, MCP 서버 같은 node 기반 이미지에만 이 entrypoint를 붙였다.
 
 > [!NOTE]
 > node 이미지에서 `chmod -R g=u`는 <b>`USER` 전환 전(root)</b>에 실행해야 한다. 빌더에서 온 `.venv` 같은 비-소유 파일이 섞여 있으면 USER 전환 후엔 권한이 없어 chmod가 실패한다. 이거 놓쳐서 빌드가 깨진 뒤에야 순서를 바로잡았다.
@@ -107,7 +107,7 @@ GPU처럼 디바이스 노드 접근이 필요한 워크로드는 도메인별 �
 1. 빌드 UID 그대로 (`3000:3000`)
 2. 임의 UID/GID (예 `2222:2233`)
 
-둘 다 `supplementalGroups: [3000]`을 주고, 런타임 쓰기 경로에 `mkdir` + `touch` 프로브를 돌려 쓰기가 되는지 봤다. 여기서 한 가지 지름길이 있다. <b>임의 UID(group 권한)로 통과하면 빌드 UID 3000(owner 권한)은 자동으로 충족</b>된다 — `g=u`로 group이 owner와 같으니까. 그래서 임의 UID 케이스만 통과하면 끝이었다.
+둘 다 `supplementalGroups: [3000]`을 주고, 런타임 쓰기 경로에 `mkdir` + `touch` 프로브를 돌려 쓰기가 되는지 확인했다. 여기서 한 가지 지름길이 있다. <b>임의 UID(group 권한)로 통과하면 빌드 UID 3000(owner 권한)은 자동으로 충족</b>된다. `g=u`로 group 권한이 owner와 같아졌기 때문이다. 그래서 임의 UID 케이스만 통과하면 끝이었다.
 
 대부분은 클러스터에 프로브 파드로 띄워 확인했고, GPU 서빙처럼 큰 이미지는 빌드 서버에서 네이티브로 빌드한 뒤 `docker run`으로 직접 검증했다.
 

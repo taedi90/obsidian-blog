@@ -26,19 +26,19 @@ kubectl -n "${namespace}" patch daemonset "${daemonset_name}" --type json -p='[{
 
 ## 1. 이슈
 
-Statefulset 이나 Replicaset 은 `scale` 을 사용하여 파드를 모두 종료하거나 원하는 사이즈로 조절이 가능하다.
+Statefulset 이나 Replicaset 은 `scale` 을 사용하여 파드를 모두 종료하거나 원하는 사이즈로 조절할 수 있다.
 
 ```bash
 kubectl scale --replicas <원하는 숫자> -n <네임스페이스> statefulset <statefulset 네임>
 ```
 
-Daemonset 을 `scale` 한다는 것은 말이 안되지만 (기본적으로 노드 당 1개의 파드를 구동하는 형태이므로) PVC 볼륨을 교체한다거나 기능을 일시 중단하기 위해서 모든 파드를 잠시 꺼야하는 상황이 생겼을 때의 처리 방법이 필요했다.
+Daemonset 을 `scale` 하는 것은 원래 성립하지 않지만(기본적으로 노드 당 1개의 파드를 구동하는 형태이므로) PVC 볼륨을 교체하거나 기능을 일시 중단하기 위해서 모든 파드를 잠시 꺼야 하는 상황이 생겼을 때의 처리 방법이 필요했다.
 
   
 
 ## 2. 해결
 
-해당 데몬셋 명세의 `nodeSelector` 를 수정하여 해당하는 노드가 아예 존재하지 않도록 하여 전체 노드에 존재하는 데몬셋 파드를 삭제할 수 있다.
+해당 데몬셋 명세의 `nodeSelector` 를 수정하여 조건에 맞는 노드가 아예 존재하지 않도록 만들면, 전체 노드에 존재하는 데몬셋 파드를 삭제할 수 있다.
 
 (이런 식으로 응용할 수 있을거라곤 생각지도 못했다.. 와우)
 

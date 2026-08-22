@@ -229,9 +229,9 @@ kube_oidc_username_claim: email
 
 클러스터가 뜨고 나면 할 일이 아직 남아 있다.
 
-1. <b>Cilium 설치</b> — kube-proxy를 껐으니 서비스 트래픽이 안通된다. 최대한 빨리 올려야 한다.
-2. <b>플러그인 컴포넌트 설치</b> — Helmfile로 관리하는 애플리케이션들(Longhorn, SigNoz, Argo CD 등)을 배포한다.
-3. <b>GPU 노드 설정</b> — NVIDIA 드라이버와 container toolkit을 올린다.
-4. <b>etcd 백업</b> — CronJob으로 etcd 스냅샷을 주기적으로 찍는다.
+1. <b>Cilium 설치</b>: kube-proxy를 껐으니 서비스 트래픽이 안 통한다. 최대한 빨리 올려야 한다.
+2. <b>플러그인 컴포넌트 설치</b>: Helmfile로 관리하는 애플리케이션들(Longhorn, SigNoz, Argo CD 등)을 배포한다.
+3. <b>GPU 노드 설정</b>: NVIDIA 드라이버와 container toolkit을 올린다.
+4. <b>etcd 백업</b>: CronJob으로 etcd 스냅샷을 주기적으로 찍는다.
 
 이 과정들은 각각 별도 글로 정리해뒀다.

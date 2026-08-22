@@ -31,7 +31,7 @@ type:
 
 ## 2. 이슈
 
-차트 버전만 올렸는데 ArgoCD Application이 sync를 못 하고 앉아 있었다. 상태가 좀 이상했다.
+차트 버전만 올렸는데 ArgoCD Application이 sync를 수행하지 못한 채 멈춰 있었다. 상태가 좀 특이했다.
 
 - sync는 `Unknown`
 - health는 `Healthy` (이미 떠 있는 워크로드는 멀쩡히 돌고 있었다)

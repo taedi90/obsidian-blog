@@ -102,9 +102,9 @@ Kubespray가 이 값을 읽어서 containerd 설정 파일에 `nvidia` 런타임
 
 GPU 노드를 클러스터에 붙이는 전체 흐름은 이렇다.
 
-1. <b>NVIDIA 드라이버·CUDA·toolkit 설치</b> — `install_cuda.yml` 플레이북
-2. <b>클러스터 조인</b> — Kubespray `scale.yml` (또는 `cluster.yml`)
-3. <b>GPU Operator 설치</b> — Helmfile로 GPU Operator 차트 배포
+1. <b>NVIDIA 드라이버·CUDA·toolkit 설치</b>: `install_cuda.yml` 플레이북으로 실행한다.
+2. <b>클러스터 조인</b>: Kubespray `scale.yml` (또는 `cluster.yml`)로 수행한다.
+3. <b>GPU Operator 설치</b>: Helmfile로 GPU Operator 차트를 배포한다.
 
 > [!NOTE]
 > 드라이버 설치와 클러스터 조인 순서는 바뀌어도 큰 문제는 없다. 다만 containerd 설정에 NVIDIA 런타임이 들어가야 GPU 파드가 정상적으로 스케줄링되니, 조인 전에 드라이버와 toolkit을 올리는 편이 순서상 깔끔하다.

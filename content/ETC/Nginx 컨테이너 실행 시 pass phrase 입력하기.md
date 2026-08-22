@@ -19,15 +19,14 @@ completed:
 ## 1. 환경
 - Nginx : 1.22
 ## 2. 이슈
-pass phrase 가 적용된 인증서를 사용하려 할 때 nginx 를 컨테이너로 실행하면 어째서인지 인터렉티브 모드를 허용해도 `Enter PEM pass phrase:` 메세지가 나오지 않는다. 컨테이너는 일반적으로 인터렉티브 모드를 지양하기 때문에 '굳이 그걸 왜써? ssl_password_file 적용해' 와 같은 내용들이 주류를 이루고 있었지만...
-고객사 보안 담당자가 무슨일이 있어도 본인이 입력 하겠다는데 어떡해 방법을 찾아야지 ㅋㅋㅋ  
+pass phrase 가 적용된 인증서를 사용하려 할 때 nginx 를 컨테이너로 실행하면 어째서인지 인터랙티브 모드를 허용해도 `Enter PEM pass phrase:` 메시지가 표시되지 않습니다. 컨테이너는 일반적으로 인터랙티브 모드를 지양하기 때문에 '굳이 그걸 왜 써? ssl_password_file 을 적용해'와 같은 내용들이 주류를 이루고 있었지만, 고객사 보안 담당자가 무슨 일이 있어도 본인이 직접 입력하겠다고 하니 방법을 찾을 수밖에 없었습니다.
 
 ## 3. 해결
-- nginx -s reload 명령어를 사용하면 프로세스를 종료하지 않고 설정을 로드할 수 있다고 한다. > 실패
-	- 명령어 실행 이후 변경이 안됨 (config 가 올바르게 리로드 되는지 의문이 생김)
-- service nginx reload 도 안됨
+- `nginx -s reload` 명령어를 사용하면 프로세스를 종료하지 않고 설정을 로드할 수 있다고 합니다. 다만 실패했습니다.
+	- 명령어 실행 이후에도 변경이 이루어지지 않았습니다. (config 가 올바르게 리로드되는지 의문이 생깁니다.)
+- `service nginx reload` 도 동작하지 않았습니다.
 	- Reloading nginx: nginx failed!
-- service nginx restart 는 됨
+- `service nginx restart` 는 동작했습니다.
 
 ```bash
 #!/bin/bash
@@ -37,7 +36,7 @@ cat /etc/nginx/templates/default.conf.template.original > /etc/nginx/conf.d/defa
 service nginx restart
 ```
 
-초기에 nginx 프로세스가 port 를 점유하고 있으면 bind 실패 오류가 발생한다.
+초기에 nginx 프로세스가 port 를 점유하고 있으면 bind 실패 오류가 발생합니다.
 
 ```
 Restarting nginx: nginxEnter PEM pass phrase:

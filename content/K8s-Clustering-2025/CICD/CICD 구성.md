@@ -1,7 +1,7 @@
 ---
 title: CICD 순서도
 date: 2025-07-16
-draft: false
+draft: true
 tags: 
 banner: 
 cssclasses: 

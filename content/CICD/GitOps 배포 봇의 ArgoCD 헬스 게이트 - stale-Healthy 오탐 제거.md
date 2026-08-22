@@ -150,7 +150,7 @@ cases := []struct {
 }
 ```
 
-`stale healthy no rev`는 Healthy·Synced인데 후보 리비전이 비어 있는 상태 — 딱 머지 직후의 그 순간이다. 이게 `false`로 나오면 오탐은 잡힌 것이다.
+`stale healthy no rev`는 Healthy·Synced인데 후보 리비전이 비어 있는 상태다. 바로 머지 직후의 그 순간이다. 이 케이스가 `false`로 나오면 오탐은 잡힌 것이다.
 
 실제 폴링 루프는 앱별로 한 줄씩 상태를 그려 슬랙에 갱신한다. 아직 도달 안 한 앱은 `⏳`, 게이트를 통과하면 `✅`로 바뀐다.
 
